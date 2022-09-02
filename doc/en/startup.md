@@ -2,12 +2,12 @@ How to get started quickly, take a simple vulnerability scan as an example
 
 # 1. Download jar dependencies
 
-Maven Repository provides the complete list of jar files that can be downloaded [](). Install jre/jdk 11 for our engine.
+the jar file  can be [downloaded here](https://github.com/bytedance/appshark/releases/download/0.1/AppShark-0.1-all.jar). Install jre/jdk 11 for our engine.
 
 # 2. Download the config folder on Github
 
 ```shell
-git clone 
+git clone  https://github.com/bytedance/appshark
 ```
 
 # 3. Update the config file
@@ -23,5 +23,5 @@ java -jar AppShark-0.1-all.jar config/config.json5
 ```
 
 # 5. Check out results
-The results locate in the output folder (./out by default). The results.json file gives the detected vulnerability list. A detailed explanation can be found in [](result.md).
+The results locate in the output folder (./out by default). The results.json file gives the detected vulnerability list. A detailed explanation can be found in [result.md](result.md).
 If you have questions about a specific vulnerability, you can check the file provided by the url field.

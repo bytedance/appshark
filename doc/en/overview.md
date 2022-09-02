@@ -3,7 +3,7 @@
 Appshark is a static analysis tool for Android apps. Its goal is to analyze very large apps (Douyin currently has 1.5 million methods). Appshark supports the following features:
 
 - JSON-based customized scanning rules to discover security vulnerabilities and privacy compliance issues you care about
-- Flexible configuration -- you can tradeoff between accuracy and scanning time and space usage
+- Flexible configuration -- you can trade off between accuracy and scanning time and space usage
 - Custom extension rules to customize the analysis based on business needs
 
 ## Overview
