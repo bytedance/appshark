@@ -1,0 +1,31 @@
+{
+  "unZipSlipSliceMode": {
+    "DirectMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "unZipSlip",
+      "category": "FileRisk",
+      "detail": "",
+      "wiki": "",
+      "possibility": "",
+      "model": ""
+    },
+    "entry": {
+      "methods": [
+        "<net.bytedance.security.app.pathfinder.testdata.ZipSlip: void f()>"
+      ]
+    },
+    "source": {
+      "Return": [
+        "<java.util.zip.ZipEntry: java.lang.String getName()>"
+      ]
+    },
+    "sink": {
+      "<java.io.FileOutputStream: * <init>(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      }
+    }
+  }
+}

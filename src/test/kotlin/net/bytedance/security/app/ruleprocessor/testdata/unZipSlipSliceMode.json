@@ -1,0 +1,28 @@
+{
+  "unZipSlipSliceMode": {
+    "SliceMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "unZipSlip"
+    },
+    "entry": {
+    },
+    "source": {
+      "Return": [
+        "<java.util.zip.ZipEntry: java.lang.String getName()>"
+      ]
+    },
+    "sink": {
+      "<java.io.FileWriter: * <init>(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      },
+      "<java.io.FileOutputStream: * <init>(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      }
+    }
+  }
+}

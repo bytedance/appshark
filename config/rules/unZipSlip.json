@@ -1,0 +1,62 @@
+{
+  "unZipSlip": {
+    "SliceMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "unZipSlip",
+      "category": "FileRisk",
+      "detail": "ZIP Slip is a highly critical security vulnerability aimed at these kind of applications. ZIP Slip makes your application vulnerable to Path traversal attack and Sensitive data exposure.",
+      "wiki": "",
+      "possibility": "4",
+      "model": "middle"
+    },
+    "entry": {
+    },
+    "source": {
+      "Return": [
+        "<java.util.zip.ZipEntry: java.lang.String getName()>"
+      ]
+    },
+    "sanitize": {
+      "rule1": {
+        "<java.io.File: java.lang.String getCanonicalPath()>": {
+          "TaintCheck": [
+            "@this"
+          ]
+        }
+      },
+      "containsDotDot": {
+        "<java.lang.String: boolean contains(java.lang.CharSequence)>": {
+          "TaintCheck": [
+            "@this"
+          ],
+          "p0": [
+            "..*"
+          ]
+        }
+      },
+      "indexDotDot": {
+        "<java.lang.String: boolean indexOf(java.lang.String)>": {
+          "TaintCheck": [
+            "@this"
+          ],
+          "p0": [
+            "..*"
+          ]
+        }
+      }
+    },
+    "sink": {
+      "<java.io.FileWriter: * <init>(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      },
+      "<java.io.FileOutputStream: * <init>(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      }
+    }
+  }
+}

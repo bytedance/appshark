@@ -1,0 +1,47 @@
+{
+  "serial_Log": {
+    "SliceMode": true,
+    "traceDepth": 12,
+    "PrimTypeAsTaint": true,
+    "desc": {
+      "name": "serial_Log",
+      "detail": "write serial to log",
+      "category": "ComplianceInfo",
+      "complianceCategory": "serial_Log",
+      "complianceCategoryDetail": "serial_Log",
+      "level": "L4"
+    },
+    "source": {
+      "Field": [
+        "<android.os.Build: * SERIAL>"
+      ]
+    },
+    "sink": {
+      "<android.util.Log: * d(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      },
+      "<android.util.Log: * e(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      },
+      "<android.util.Log: * i(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      },
+      "<android.util.Log: * w(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      },
+      "<android.util.Log: * v(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      }
+    }
+  }
+}

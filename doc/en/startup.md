@@ -1,0 +1,27 @@
+How to get started quickly, take a simple vulnerability scan as an example
+
+# 1. Download jar dependencies
+
+Maven Repository provides the complete list of jar files that can be downloaded [](). Install jre/jdk 11 for our engine.
+
+# 2. Download the config folder on Github
+
+```shell
+git clone 
+```
+
+# 3. Update the config file
+
+1. Change apkPath to the target apk file's absolute path.
+2. Specify the rule(s) to be applied, separated by a comma. The rules should locate in the config/rules folder, since Appshark searches this folder for the rules.
+3. Specify the output folder of the results. Its default value is ./out folder, you can change it to any other directory.
+
+# 4. Run Appshark
+
+```shell
+java -jar AppShark-0.1-all.jar config/config.json5
+```
+
+# 5. Check out results
+The results locate in the output folder (./out by default). The results.json file gives the detected vulnerability list. A detailed explanation can be found in [](result.md).
+If you have questions about a specific vulnerability, you can check the file provided by the url field.

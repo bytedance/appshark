@@ -1,0 +1,1568 @@
+{
+  /// matched functions seem like that  they did not exist during analyze
+  IgnoreList: {
+    "PackageName": [
+      "com.meituan.robust",
+      "kotlin.jvm.internal.Intrinsics",
+      "com.bytedance.frameworks.apm.trace.MethodCollector"
+    ],
+    "MethodName": [],
+    "MethodSignature": []
+  },
+  Callback: {
+    /*
+    These functions are automatically called when instances of the following classes are created
+     */
+    "param": {
+      "java.lang.Runnable": [
+        "void run()"
+      ],
+      "android.os.AsyncTask": [
+        "java.lang.Object doInBackground(java.lang.Object[])",
+        "void onCancelled()",
+        "void onPostExecute(java.lang.Object)",
+        "void onProgressUpdate(java.lang.Object[])",
+        "void onPreExecute()"
+      ],
+      "android.content.BroadcastReceiver": [
+        "void onReceive(android.content.Context,android.content.Intent)"
+      ],
+      "android.os.Handler": [
+        "void handleMessage(android.os.Message)"
+      ],
+      "android.view.View$OnClickListener": [
+        "*"
+      ],
+      "android.content.DialogInterface$OnClickListener": [
+        "*"
+      ],
+      "android.accessibilityservice.AccessibilityButtonController$AccessibilityButtonCallback": [
+        "*"
+      ],
+      "android.accessibilityservice.AccessibilityService$GestureResultCallback": [
+        "*"
+      ],
+      "android.accessibilityservice.AccessibilityService$MagnificationController$OnMagnificationChangedListener": [
+        "*"
+      ],
+      "android.accessibilityservice.AccessibilityService$SoftKeyboardController$OnShowModeChangedListener": [
+        "*"
+      ],
+      "android.accessibilityservice.FingerprintGestureController$FingerprintGestureCallback": [
+        "*"
+      ],
+      "android.accounts.AccountManagerCallback": [
+        "*"
+      ],
+      "android.accounts.OnAccountsUpdateListener": [
+        "*"
+      ],
+      "android.animation.Animator$AnimatorListener": [
+        "*"
+      ],
+      "android.animation.Animator$AnimatorPauseListener": [
+        "*"
+      ],
+      "android.animation.LayoutTransition$TransitionListener": [
+        "*"
+      ],
+      "android.animation.TimeAnimator$TimeListener": [
+        "*"
+      ],
+      "android.animation.ValueAnimator$AnimatorUpdateListener": [
+        "*"
+      ],
+      "android.app.ActionBar$OnMenuVisibilityListener": [
+        "*"
+      ],
+      "android.app.ActionBar$OnNavigationListener": [
+        "*"
+      ],
+      "android.app.ActionBar$TabListener": [
+        "*"
+      ],
+      "android.app.AlarmManager$OnAlarmListener": [
+        "*"
+      ],
+      "android.app.AppOpsManager$OnOpChangedListener": [
+        "*"
+      ],
+      "android.app.Application$ActivityLifecycleCallbacks": [
+        "*"
+      ],
+      "android.app.Application$OnProvideAssistDataListener": [
+        "*"
+      ],
+      "android.app.DatePickerDialog$OnDateSetListener": [
+        "*"
+      ],
+      "android.app.FragmentBreadCrumbs$OnBreadCrumbClickListener": [
+        "*"
+      ],
+      "android.app.FragmentHostCallback": [
+        "*"
+      ],
+      "android.app.FragmentManager$OnBackStackChangedListener": [
+        "*"
+      ],
+      "android.app.KeyguardManager$KeyguardDismissCallback": [
+        "*"
+      ],
+      "android.app.KeyguardManager$OnKeyguardExitResult": [
+        "*"
+      ],
+      "android.app.LoaderManager$LoaderCallbacks": [
+        "*"
+      ],
+      "android.app.PendingIntent$OnFinished": [
+        "*"
+      ],
+      "android.app.SearchManager$OnCancelListener": [
+        "*"
+      ],
+      "android.app.SearchManager$OnDismissListener": [
+        "*"
+      ],
+      "android.app.SharedElementCallback": [
+        "*"
+      ],
+      "android.app.SharedElementCallback$OnSharedElementsReadyListener": [
+        "*"
+      ],
+      "android.app.TimePickerDialog$OnTimeSetListener": [
+        "*"
+      ],
+      "android.app.UiAutomation$OnAccessibilityEventListener": [
+        "*"
+      ],
+      "android.app.WallpaperManager$OnColorsChangedListener": [
+        "*"
+      ],
+      "android.app.admin.DevicePolicyManager$OnClearApplicationUserDataListener": [
+        "*"
+      ],
+      "android.app.usage.NetworkStatsManager$UsageCallback": [
+        "*"
+      ],
+      "android.bluetooth.BluetoothAdapter$LeScanCallback": [
+        "*"
+      ],
+      "android.bluetooth.BluetoothGattCallback": [
+        "*"
+      ],
+      "android.bluetooth.BluetoothGattServerCallback": [
+        "*"
+      ],
+      "android.bluetooth.BluetoothHealthCallback": [
+        "*"
+      ],
+      "android.bluetooth.BluetoothHidDevice$Callback": [
+        "*"
+      ],
+      "android.bluetooth.BluetoothProfile$ServiceListener": [
+        "*"
+      ],
+      "android.bluetooth.le.AdvertiseCallback": [
+        "*"
+      ],
+      "android.bluetooth.le.AdvertisingSetCallback": [
+        "*"
+      ],
+      "android.bluetooth.le.ScanCallback": [
+        "*"
+      ],
+      "android.companion.CompanionDeviceManager$Callback": [
+        "*"
+      ],
+      "android.content.ClipboardManager$OnPrimaryClipChangedListener": [
+        "*"
+      ],
+      "android.content.DialogInterface$OnCancelListener": [
+        "*"
+      ],
+      "android.content.DialogInterface$OnDismissListener": [
+        "*"
+      ],
+      "android.content.DialogInterface$OnKeyListener": [
+        "*"
+      ],
+      "android.content.DialogInterface$OnMultiChoiceClickListener": [
+        "*"
+      ],
+      "android.content.DialogInterface$OnShowListener": [
+        "*"
+      ],
+      "android.content.IntentSender$OnFinished": [
+        "*"
+      ],
+      "android.content.Loader$OnLoadCanceledListener": [
+        "*"
+      ],
+      "android.content.Loader$OnLoadCompleteListener": [
+        "*"
+      ],
+      "android.content.SharedPreferences$OnSharedPreferenceChangeListener": [
+        "*"
+      ],
+      "android.content.SyncStatusObserver": [
+        "*"
+      ],
+      "android.content.pm.LauncherApps$Callback": [
+        "*"
+      ],
+      "android.content.pm.PackageInstaller$SessionCallback": [
+        "*"
+      ],
+      "android.database.sqlite.SQLiteTransactionListener": [
+        "*"
+      ],
+      "android.drm.DrmManagerClient$OnErrorListener": [
+        "*"
+      ],
+      "android.drm.DrmManagerClient$OnEventListener": [
+        "*"
+      ],
+      "android.drm.DrmManagerClient$OnInfoListener": [
+        "*"
+      ],
+      "android.gesture.GestureOverlayView$OnGestureListener": [
+        "*"
+      ],
+      "android.gesture.GestureOverlayView$OnGesturePerformedListener": [
+        "*"
+      ],
+      "android.gesture.GestureOverlayView$OnGesturingListener": [
+        "*"
+      ],
+      "android.graphics.ImageDecoder$OnHeaderDecodedListener": [
+        "*"
+      ],
+      "android.graphics.ImageDecoder$OnPartialImageListener": [
+        "*"
+      ],
+      "android.graphics.SurfaceTexture$OnFrameAvailableListener": [
+        "*"
+      ],
+      "android.graphics.drawable.Animatable2$AnimationCallback": [
+        "*"
+      ],
+      "android.graphics.drawable.Drawable$Callback": [
+        "*"
+      ],
+      "android.graphics.drawable.Icon$OnDrawableLoadedListener": [
+        "*"
+      ],
+      "android.hardware.Camera$AutoFocusCallback": [
+        "*"
+      ],
+      "android.hardware.Camera$AutoFocusMoveCallback": [
+        "*"
+      ],
+      "android.hardware.Camera$ErrorCallback": [
+        "*"
+      ],
+      "android.hardware.Camera$FaceDetectionListener": [
+        "*"
+      ],
+      "android.hardware.Camera$OnZoomChangeListener": [
+        "*"
+      ],
+      "android.hardware.Camera$PictureCallback": [
+        "*"
+      ],
+      "android.hardware.Camera$PreviewCallback": [
+        "*"
+      ],
+      "android.hardware.Camera$ShutterCallback": [
+        "*"
+      ],
+      "android.hardware.SensorEventCallback": [
+        "*"
+      ],
+      "android.hardware.SensorEventListener": [
+        "*"
+      ],
+      "android.hardware.SensorListener": [
+        "*"
+      ],
+      "android.hardware.SensorManager$DynamicSensorCallback": [
+        "*"
+      ],
+      "android.hardware.TriggerEventListener": [
+        "*"
+      ],
+      "android.hardware.biometrics.BiometricPrompt$AuthenticationCallback": [
+        "*"
+      ],
+      "android.hardware.camera2.CameraCaptureSession$CaptureCallback": [
+        "*"
+      ],
+      "android.hardware.camera2.CameraCaptureSession$StateCallback": [
+        "*"
+      ],
+      "android.hardware.camera2.CameraDevice$StateCallback": [
+        "*"
+      ],
+      "android.hardware.camera2.CameraManager$AvailabilityCallback": [
+        "*"
+      ],
+      "android.hardware.camera2.CameraManager$TorchCallback": [
+        "*"
+      ],
+      "android.hardware.display.DisplayManager$DisplayListener": [
+        "*"
+      ],
+      "android.hardware.display.VirtualDisplay$Callback": [
+        "*"
+      ],
+      "android.hardware.fingerprint.FingerprintManager$AuthenticationCallback": [
+        "*"
+      ],
+      "android.hardware.input.InputManager$InputDeviceListener": [
+        "*"
+      ],
+      "android.inputmethodservice.KeyboardView$OnKeyboardActionListener": [
+        "*"
+      ],
+      "android.location.GnssMeasurementsEvent$Callback": [
+        "*"
+      ],
+      "android.location.GnssNavigationMessage$Callback": [
+        "*"
+      ],
+      "android.location.GnssStatus$Callback": [
+        "*"
+      ],
+      "android.location.GpsStatus$Listener": [
+        "*"
+      ],
+      "android.location.GpsStatus$NmeaListener": [
+        "*"
+      ],
+      "android.location.LocationListener": [
+        "*"
+      ],
+      "android.location.OnNmeaMessageListener": [
+        "*"
+      ],
+      "android.media.AudioDeviceCallback": [
+        "*"
+      ],
+      "android.media.AudioManager$AudioPlaybackCallback": [
+        "*"
+      ],
+      "android.media.AudioManager$AudioRecordingCallback": [
+        "*"
+      ],
+      "android.media.AudioManager$OnAudioFocusChangeListener": [
+        "*"
+      ],
+      "android.media.AudioRecord$OnRecordPositionUpdateListener": [
+        "*"
+      ],
+      "android.media.AudioRecord$OnRoutingChangedListener": [
+        "*"
+      ],
+      "android.media.AudioRouting$OnRoutingChangedListener": [
+        "*"
+      ],
+      "android.media.AudioTrack$OnPlaybackPositionUpdateListener": [
+        "*"
+      ],
+      "android.media.AudioTrack$OnRoutingChangedListener": [
+        "*"
+      ],
+      "android.media.ImageReader$OnImageAvailableListener": [
+        "*"
+      ],
+      "android.media.ImageWriter$OnImageReleasedListener": [
+        "*"
+      ],
+      "android.media.JetPlayer$OnJetEventListener": [
+        "*"
+      ],
+      "android.media.MediaCas$EventListener": [
+        "*"
+      ],
+      "android.media.MediaCodec$Callback": [
+        "*"
+      ],
+      "android.media.MediaCodec$OnFrameRenderedListener": [
+        "*"
+      ],
+      "android.media.MediaDrm$OnEventListener": [
+        "*"
+      ],
+      "android.media.MediaDrm$OnExpirationUpdateListener": [
+        "*"
+      ],
+      "android.media.MediaDrm$OnKeyStatusChangeListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnBufferingUpdateListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnCompletionListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnDrmInfoListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnDrmPreparedListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnErrorListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnInfoListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnMediaTimeDiscontinuityListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnPreparedListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnSeekCompleteListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnSubtitleDataListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnTimedMetaDataAvailableListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnTimedTextListener": [
+        "*"
+      ],
+      "android.media.MediaPlayer$OnVideoSizeChangedListener": [
+        "*"
+      ],
+      "android.media.MediaRecorder$OnErrorListener": [
+        "*"
+      ],
+      "android.media.MediaRecorder$OnInfoListener": [
+        "*"
+      ],
+      "android.media.MediaRouter$Callback": [
+        "*"
+      ],
+      "android.media.MediaRouter$SimpleCallback": [
+        "*"
+      ],
+      "android.media.MediaRouter$VolumeCallback": [
+        "*"
+      ],
+      "android.media.MediaScannerConnection$MediaScannerConnectionClient": [
+        "*"
+      ],
+      "android.media.MediaScannerConnection$OnScanCompletedListener": [
+        "*"
+      ],
+      "android.media.MediaSync$Callback": [
+        "*"
+      ],
+      "android.media.MediaSync$OnErrorListener": [
+        "*"
+      ],
+      "android.media.RemoteControlClient$OnGetPlaybackPositionListener": [
+        "*"
+      ],
+      "android.media.RemoteControlClient$OnMetadataUpdateListener": [
+        "*"
+      ],
+      "android.media.RemoteControlClient$OnPlaybackPositionUpdateListener": [
+        "*"
+      ],
+      "android.media.RemoteController$OnClientUpdateListener": [
+        "*"
+      ],
+      "android.media.SoundPool$OnLoadCompleteListener": [
+        "*"
+      ],
+      "android.media.audiofx.AudioEffect$OnControlStatusChangeListener": [
+        "*"
+      ],
+      "android.media.audiofx.AudioEffect$OnEnableStatusChangeListener": [
+        "*"
+      ],
+      "android.media.audiofx.BassBoost$OnParameterChangeListener": [
+        "*"
+      ],
+      "android.media.audiofx.EnvironmentalReverb$OnParameterChangeListener": [
+        "*"
+      ],
+      "android.media.audiofx.Equalizer$OnParameterChangeListener": [
+        "*"
+      ],
+      "android.media.audiofx.PresetReverb$OnParameterChangeListener": [
+        "*"
+      ],
+      "android.media.audiofx.Virtualizer$OnParameterChangeListener": [
+        "*"
+      ],
+      "android.media.audiofx.Visualizer$OnDataCaptureListener": [
+        "*"
+      ],
+      "android.media.browse.MediaBrowser$ConnectionCallback": [
+        "*"
+      ],
+      "android.media.browse.MediaBrowser$ItemCallback": [
+        "*"
+      ],
+      "android.media.browse.MediaBrowser$SubscriptionCallback": [
+        "*"
+      ],
+      "android.media.effect$EffectUpdateListener": [
+        "*"
+      ],
+      "android.media.effect.EffectUpdateListener": [
+        "*"
+      ],
+      "android.media.midi.MidiManager$DeviceCallback": [
+        "*"
+      ],
+      "android.media.midi.MidiManager$OnDeviceOpenedListener": [
+        "*"
+      ],
+      "android.media.projection.MediaProjection$Callback": [
+        "*"
+      ],
+      "android.media.session.MediaController$Callback": [
+        "*"
+      ],
+      "android.media.session.MediaSession$Callback": [
+        "*"
+      ],
+      "android.media.session.MediaSessionManager$OnActiveSessionsChangedListener": [
+        "*"
+      ],
+      "android.media.tv.TvInputManager$TvInputCallback": [
+        "*"
+      ],
+      "android.media.tv.TvRecordingClient$RecordingCallback": [
+        "*"
+      ],
+      "android.media.tv.TvView$OnUnhandledInputEventListener": [
+        "*"
+      ],
+      "android.media.tv.TvView$TimeShiftPositionCallback": [
+        "*"
+      ],
+      "android.media.tv.TvView$TvInputCallback": [
+        "*"
+      ],
+      "android.net.ConnectivityManager$NetworkCallback": [
+        "*"
+      ],
+      "android.net.ConnectivityManager$OnNetworkActiveListener": [
+        "*"
+      ],
+      "android.net.nsd.NsdManager$DiscoveryListener": [
+        "*"
+      ],
+      "android.net.nsd.NsdManager$RegistrationListener": [
+        "*"
+      ],
+      "android.net.nsd.NsdManager$ResolveListener": [
+        "*"
+      ],
+      "android.net.sip.SipAudioCall$Listener": [
+        "*"
+      ],
+      "android.net.sip.SipRegistrationListener": [
+        "*"
+      ],
+      "android.net.sip.SipSession$Listener": [
+        "*"
+      ],
+      "android.net.wifi.WifiManager$LocalOnlyHotspotCallback": [
+        "*"
+      ],
+      "android.net.wifi.WifiManager$WpsCallback": [
+        "*"
+      ],
+      "android.net.wifi.aware.AttachCallback": [
+        "*"
+      ],
+      "android.net.wifi.aware.DiscoverySessionCallback": [
+        "*"
+      ],
+      "android.net.wifi.aware.IdentityChangedListener": [
+        "*"
+      ],
+      "android.net.wifi.p2p.WifiP2pManager$ActionListener": [
+        "*"
+      ],
+      "android.net.wifi.p2p.WifiP2pManager$ChannelListener": [
+        "*"
+      ],
+      "android.net.wifi.p2p.WifiP2pManager$ConnectionInfoListener": [
+        "*"
+      ],
+      "android.net.wifi.p2p.WifiP2pManager$DnsSdServiceResponseListener": [
+        "*"
+      ],
+      "android.net.wifi.p2p.WifiP2pManager$DnsSdTxtRecordListener": [
+        "*"
+      ],
+      "android.net.wifi.p2p.WifiP2pManager$GroupInfoListener": [
+        "*"
+      ],
+      "android.net.wifi.p2p.WifiP2pManager$PeerListListener": [
+        "*"
+      ],
+      "android.net.wifi.p2p.WifiP2pManager$ServiceResponseListener": [
+        "*"
+      ],
+      "android.net.wifi.p2p.WifiP2pManager$UpnpServiceResponseListener": [
+        "*"
+      ],
+      "android.net.wifi.rtt.RangingResultCallback": [
+        "*"
+      ],
+      "android.nfc.NfcAdapter$CreateBeamUrisCallback": [
+        "*"
+      ],
+      "android.nfc.NfcAdapter$CreateNdefMessageCallback": [
+        "*"
+      ],
+      "android.nfc.NfcAdapter$OnNdefPushCompleteCallback": [
+        "*"
+      ],
+      "android.nfc.NfcAdapter$OnTagRemovedListener": [
+        "*"
+      ],
+      "android.nfc.NfcAdapter$ReaderCallback": [
+        "*"
+      ],
+      "android.os.CancellationSignal$OnCancelListener": [
+        "*"
+      ],
+      "android.os.Handler$Callback": [
+        "*"
+      ],
+      "android.os.IBinder$DeathRecipient": [
+        "*"
+      ],
+      "android.os.MessageQueue$IdleHandler": [
+        "*"
+      ],
+      "android.os.MessageQueue$OnFileDescriptorEventListener": [
+        "*"
+      ],
+      "android.os.ParcelFileDescriptor$OnCloseListener": [
+        "*"
+      ],
+      "android.os.ProxyFileDescriptorCallback": [
+        "*"
+      ],
+      "android.os.RecoverySystem$ProgressListener": [
+        "*"
+      ],
+      "android.os.StrictMode$OnThreadViolationListener": [
+        "*"
+      ],
+      "android.os.StrictMode$OnVmViolationListener": [
+        "*"
+      ],
+      "android.os.storage.OnObbStateChangeListener": [
+        "*"
+      ],
+      "android.preference.Preference$OnPreferenceChangeListener": [
+        "*"
+      ],
+      "android.preference.Preference$OnPreferenceClickListener": [
+        "*"
+      ],
+      "android.preference.PreferenceFragment$OnPreferenceStartFragmentCallback": [
+        "*"
+      ],
+      "android.preference.PreferenceManager$OnActivityDestroyListener": [
+        "*"
+      ],
+      "android.preference.PreferenceManager$OnActivityResultListener": [
+        "*"
+      ],
+      "android.preference.PreferenceManager$OnActivityStopListener": [
+        "*"
+      ],
+      "android.print.PrintDocumentAdapter$LayoutResultCallback": [
+        "*"
+      ],
+      "android.print.PrintDocumentAdapter$WriteResultCallback": [
+        "*"
+      ],
+      "android.printservice.CustomPrinterIconCallback": [
+        "*"
+      ],
+      "android.provider.FontsContract$FontRequestCallback": [
+        "*"
+      ],
+      "android.renderscript.Allocation$OnBufferAvailableListener": [
+        "*"
+      ],
+      "android.sax.ElementListener": [
+        "*"
+      ],
+      "android.sax.EndElementListener": [
+        "*"
+      ],
+      "android.sax.EndTextElementListener": [
+        "*"
+      ],
+      "android.sax.StartElementListener": [
+        "*"
+      ],
+      "android.sax.TextElementListener": [
+        "*"
+      ],
+      "android.se.omapi.SEService$OnConnectedListener": [
+        "*"
+      ],
+      "android.security.ConfirmationCallback": [
+        "*"
+      ],
+      "android.security.KeyChainAliasCallback": [
+        "*"
+      ],
+      "android.service.autofill.FillCallback": [
+        "*"
+      ],
+      "android.service.autofill.SaveCallback": [
+        "*"
+      ],
+      "android.service.carrier.CarrierMessagingService$ResultCallback": [
+        "*"
+      ],
+      "android.service.voice.AlwaysOnHotwordDetector$Callback": [
+        "*"
+      ],
+      "android.speech.RecognitionListener": [
+        "*"
+      ],
+      "android.speech.RecognitionService$Callback": [
+        "*"
+      ],
+      "android.speech.tts.SynthesisCallback": [
+        "*"
+      ],
+      "android.speech.tts.TextToSpeech$OnInitListener": [
+        "*"
+      ],
+      "android.speech.tts.TextToSpeech$OnUtteranceCompletedListener": [
+        "*"
+      ],
+      "android.speech.tts.UtteranceProgressListener": [
+        "*"
+      ],
+      "android.support.v4.app.FragmentManager$OnBackStackChangedListener": [
+        "*"
+      ],
+      "android.support.v4.content.Loader$OnLoadCompleteListener": [
+        "*"
+      ],
+      "android.support.v4.view.PagerTitleStrip$PageListener": [
+        "*"
+      ],
+      "android.support.v4.view.ViewPager$OnAdapterChangeListener": [
+        "*"
+      ],
+      "android.support.v4.view.ViewPager$OnPageChangeListener": [
+        "*"
+      ],
+      "android.support.v4.view.ViewPager$SimpleOnPageChangeListener": [
+        "*"
+      ],
+      "androidx.fragment.app.FragmentManager$OnBackStackChangedListener": [
+        "*"
+      ],
+      "androidx.loader.content.Loader$OnLoadCompleteListener": [
+        "*"
+      ],
+      "androidx.viewpager.widget.PagerTitleStrip$PageListener": [
+        "*"
+      ],
+      "androidx.viewpager.widget.ViewPager$OnAdapterChangeListener": [
+        "*"
+      ],
+      "androidx.viewpager.widget.ViewPager$OnPageChangeListener": [
+        "*"
+      ],
+      "androidx.viewpager.widget.ViewPager$SimpleOnPageChangeListener": [
+        "*"
+      ],
+      "android.telecom.Call$Callback": [
+        "*"
+      ],
+      "android.telecom.InCallService$VideoCall$Callback": [
+        "*"
+      ],
+      "android.telecom.RemoteConference$Callback": [
+        "*"
+      ],
+      "android.telecom.RemoteConnection$Callback": [
+        "*"
+      ],
+      "android.telecom.RemoteConnection$VideoProvider$Callback": [
+        "*"
+      ],
+      "android.telephony.PhoneStateListener": [
+        "*"
+      ],
+      "android.telephony.SubscriptionManager$OnSubscriptionsChangedListener": [
+        "*"
+      ],
+      "android.telephony.TelephonyManager$UssdResponseCallback": [
+        "*"
+      ],
+      "android.telephony.TelephonyScanManager$NetworkScanCallback": [
+        "*"
+      ],
+      "android.telephony.mbms.DownloadProgressListener": [
+        "*"
+      ],
+      "android.telephony.mbms.DownloadStatusListener": [
+        "*"
+      ],
+      "android.telephony.mbms.MbmsDownloadSessionCallback": [
+        "*"
+      ],
+      "android.telephony.mbms.MbmsStreamingSessionCallback": [
+        "*"
+      ],
+      "android.telephony.mbms.StreamingServiceCallback": [
+        "*"
+      ],
+      "android.text.TextUtils$EllipsizeCallback": [
+        "*"
+      ],
+      "android.text.TextWatcher": [
+        "*"
+      ],
+      "android.text.method.BaseKeyListener": [
+        "*"
+      ],
+      "android.text.method.DateKeyListener": [
+        "*"
+      ],
+      "android.text.method.DateTimeKeyListener": [
+        "*"
+      ],
+      "android.text.method.DialerKeyListener": [
+        "*"
+      ],
+      "android.text.method.DigitsKeyListener": [
+        "*"
+      ],
+      "android.text.method.KeyListener": [
+        "*"
+      ],
+      "android.text.method.MetaKeyKeyListener": [
+        "*"
+      ],
+      "android.text.method.MultiTapKeyListener": [
+        "*"
+      ],
+      "android.text.method.NumberKeyListener": [
+        "*"
+      ],
+      "android.text.method.QwertyKeyListener": [
+        "*"
+      ],
+      "android.text.method.TextKeyListener": [
+        "*"
+      ],
+      "android.text.method.TimeKeyListener": [
+        "*"
+      ],
+      "android.transition.Transition$EpicenterCallback": [
+        "*"
+      ],
+      "android.transition.Transition$TransitionListener": [
+        "*"
+      ],
+      "android.view.ActionMode$Callback": [
+        "*"
+      ],
+      "android.view.ActionProvider$VisibilityListener": [
+        "*"
+      ],
+      "android.view.Choreographer$FrameCallback": [
+        "*"
+      ],
+      "android.view.GestureDetector$OnContextClickListener": [
+        "*"
+      ],
+      "android.view.GestureDetector$OnDoubleTapListener": [
+        "*"
+      ],
+      "android.view.GestureDetector$OnGestureListener": [
+        "*"
+      ],
+      "android.view.GestureDetector$SimpleOnGestureListener": [
+        "*"
+      ],
+      "android.view.InputQueue$Callback": [
+        "*"
+      ],
+      "android.view.KeyEvent$Callback": [
+        "*"
+      ],
+      "android.view.MenuItem$OnActionExpandListener": [
+        "*"
+      ],
+      "android.view.MenuItem$OnMenuItemClickListener": [
+        "*"
+      ],
+      "android.view.OrientationEventListener": [
+        "*"
+      ],
+      "android.view.OrientationListener": [
+        "*"
+      ],
+      "android.view.PixelCopy$OnPixelCopyFinishedListener": [
+        "*"
+      ],
+      "android.view.ScaleGestureDetector$OnScaleGestureListener": [
+        "*"
+      ],
+      "android.view.ScaleGestureDetector$SimpleOnScaleGestureListener": [
+        "*"
+      ],
+      "android.view.SurfaceHolder$Callback": [
+        "*"
+      ],
+      "android.view.SurfaceHolder$Callback2": [
+        "*"
+      ],
+      "android.view.TextureView$SurfaceTextureListener": [
+        "*"
+      ],
+      "android.view.View$OnApplyWindowInsetsListener": [
+        "*"
+      ],
+      "android.view.View$OnAttachStateChangeListener": [
+        "*"
+      ],
+      "android.view.View$OnCapturedPointerListener": [
+        "*"
+      ],
+      "android.view.View$OnContextClickListener": [
+        "*"
+      ],
+      "android.view.View$OnCreateContextMenuListener": [
+        "*"
+      ],
+      "android.view.View$OnDragListener": [
+        "*"
+      ],
+      "android.view.View$OnFocusChangeListener": [
+        "*"
+      ],
+      "android.view.View$OnGenericMotionListener": [
+        "*"
+      ],
+      "android.view.View$OnHoverListener": [
+        "*"
+      ],
+      "android.view.View$OnKeyListener": [
+        "*"
+      ],
+      "android.view.View$OnLayoutChangeListener": [
+        "*"
+      ],
+      "android.view.View$OnLongClickListener": [
+        "*"
+      ],
+      "android.view.View$OnScrollChangeListener": [
+        "*"
+      ],
+      "android.view.View$OnSystemUiVisibilityChangeListener": [
+        "*"
+      ],
+      "android.view.View$OnTouchListener": [
+        "*"
+      ],
+      "android.view.View$OnUnhandledKeyEventListener": [
+        "*"
+      ],
+      "android.view.ViewGroup$OnHierarchyChangeListener": [
+        "*"
+      ],
+      "android.view.ViewStub$OnInflateListener": [
+        "*"
+      ],
+      "android.view.ViewTreeObserver$OnDrawListener": [
+        "*"
+      ],
+      "android.view.ViewTreeObserver$OnGlobalFocusChangeListener": [
+        "*"
+      ],
+      "android.view.ViewTreeObserver$OnGlobalLayoutListener": [
+        "*"
+      ],
+      "android.view.ViewTreeObserver$OnPreDrawListener": [
+        "*"
+      ],
+      "android.view.ViewTreeObserver$OnScrollChangedListener": [
+        "*"
+      ],
+      "android.view.ViewTreeObserver$OnTouchModeChangeListener": [
+        "*"
+      ],
+      "android.view.ViewTreeObserver$OnWindowAttachListener": [
+        "*"
+      ],
+      "android.view.ViewTreeObserver$OnWindowFocusChangeListener": [
+        "*"
+      ],
+      "android.view.Window$Callback": [
+        "*"
+      ],
+      "android.view.Window$OnFrameMetricsAvailableListener": [
+        "*"
+      ],
+      "android.view.Window$OnRestrictedCaptionAreaChangedListener": [
+        "*"
+      ],
+      "android.view.accessibility.AccessibilityManager$AccessibilityStateChangeListener": [
+        "*"
+      ],
+      "android.view.accessibility.AccessibilityManager$TouchExplorationStateChangeListener": [
+        "*"
+      ],
+      "android.view.accessibility.CaptioningManager$CaptioningChangeListener": [
+        "*"
+      ],
+      "android.view.animation.Animation$AnimationListener": [
+        "*"
+      ],
+      "android.view.autofill.AutofillManager$AutofillCallback": [
+        "*"
+      ],
+      "android.view.inputmethod.InputMethod$SessionCallback": [
+        "*"
+      ],
+      "android.view.inputmethod.InputMethodSession$EventCallback": [
+        "*"
+      ],
+      "android.view.textservice.SpellCheckerSession$SpellCheckerSessionListener": [
+        "*"
+      ],
+      "android.webkit.DownloadListener": [
+        "*"
+      ],
+      "android.webkit.GeolocationPermissions$Callback": [
+        "*"
+      ],
+      "android.webkit.ValueCallback": [
+        "*"
+      ],
+      "android.webkit.WebChromeClient$CustomViewCallback": [
+        "*"
+      ],
+      "android.webkit.WebIconDatabase$IconListener": [
+        "*"
+      ],
+      "android.webkit.WebMessagePort$WebMessageCallback": [
+        "*"
+      ],
+      "android.webkit.WebView$FindListener": [
+        "*"
+      ],
+      "android.webkit.WebView$PictureListener": [
+        "*"
+      ],
+      "android.webkit.WebView$VisualStateCallback": [
+        "*"
+      ],
+      "android.widget.AbsListView$MultiChoiceModeListener": [
+        "*"
+      ],
+      "android.widget.AbsListView$OnScrollListener": [
+        "*"
+      ],
+      "android.widget.AbsListView$RecyclerListener": [
+        "*"
+      ],
+      "android.widget.ActionMenuView$OnMenuItemClickListener": [
+        "*"
+      ],
+      "android.widget.AdapterView$OnItemClickListener": [
+        "*"
+      ],
+      "android.widget.AdapterView$OnItemLongClickListener": [
+        "*"
+      ],
+      "android.widget.AdapterView$OnItemSelectedListener": [
+        "*"
+      ],
+      "android.widget.AdapterView.OnItemSelectedListener": [
+        "*"
+      ],
+      "android.widget.AutoCompleteTextView$OnDismissListener": [
+        "*"
+      ],
+      "android.widget.CalendarView$OnDateChangeListener": [
+        "*"
+      ],
+      "android.widget.Chronometer$OnChronometerTickListener": [
+        "*"
+      ],
+      "android.widget.CompoundButton$OnCheckedChangeListener": [
+        "*"
+      ],
+      "android.widget.DatePicker$OnDateChangedListener": [
+        "*"
+      ],
+      "android.widget.ExpandableListView$OnChildClickListener": [
+        "*"
+      ],
+      "android.widget.ExpandableListView$OnGroupClickListener": [
+        "*"
+      ],
+      "android.widget.ExpandableListView$OnGroupCollapseListener": [
+        "*"
+      ],
+      "android.widget.ExpandableListView$OnGroupExpandListener": [
+        "*"
+      ],
+      "android.widget.Filter$FilterListener": [
+        "*"
+      ],
+      "android.widget.NumberPicker$OnDismissListener": [
+        "*"
+      ],
+      "android.widget.NumberPicker$OnScrollListener": [
+        "*"
+      ],
+      "android.widget.NumberPicker$OnValueChangeListener": [
+        "*"
+      ],
+      "android.widget.PopupMenu$OnDismissListener": [
+        "*"
+      ],
+      "android.widget.PopupMenu$OnMenuItemClickListener": [
+        "*"
+      ],
+      "android.widget.PopupWindow$OnDismissListener": [
+        "*"
+      ],
+      "android.widget.RadioGroup$OnCheckedChangeListener": [
+        "*"
+      ],
+      "android.widget.RatingBar$OnRatingBarChangeListener": [
+        "*"
+      ],
+      "android.widget.SearchView$OnCloseListener": [
+        "*"
+      ],
+      "android.widget.SearchView$OnQueryTextListener": [
+        "*"
+      ],
+      "android.widget.SearchView$OnSuggestionListener": [
+        "*"
+      ],
+      "android.widget.SeekBar$OnSeekBarChangeListener": [
+        "*"
+      ],
+      "android.widget.ShareActionProvider$OnShareTargetSelectedListener": [
+        "*"
+      ],
+      "android.widget.SlidingDrawer$OnDrawerCloseListener": [
+        "*"
+      ],
+      "android.widget.SlidingDrawer$OnDrawerOpenListener": [
+        "*"
+      ],
+      "android.widget.SlidingDrawer$OnDrawerScrollListener": [
+        "*"
+      ],
+      "android.widget.TabHost$OnTabChangeListener": [
+        "*"
+      ],
+      "android.widget.TextView$OnEditorActionListener": [
+        "*"
+      ],
+      "android.widget.TimePicker$OnTimeChangedListener": [
+        "*"
+      ],
+      "android.widget.Toolbar$OnMenuItemClickListener": [
+        "*"
+      ],
+      "android.widget.ZoomButtonsController$OnZoomListener": [
+        "*"
+      ],
+      "com.android.volley.Response$ErrorListener": [
+        "*"
+      ],
+      "com.android.volley.Response$Listener": [
+        "*"
+      ],
+      "java.beans.PropertyChangeListener": [
+        "*"
+      ],
+      "java.util.EventListener": [
+        "*"
+      ],
+      "java.util.prefs.NodeChangeListener": [
+        "*"
+      ],
+      "java.util.prefs.PreferenceChangeListener": [
+        "*"
+      ],
+      "javax.net.ssl.HandshakeCompletedListener": [
+        "*"
+      ],
+      "javax.net.ssl.SSLSessionBindingListener": [
+        "*"
+      ],
+      "javax.security.auth.callback.Callback": [
+        "*"
+      ],
+      "javax.security.auth.callback.PasswordCallback": [
+        "*"
+      ],
+      "javax.sql.ConnectionEventListener": [
+        "*"
+      ],
+      "javax.sql.RowSetListener": [
+        "*"
+      ],
+      "javax.sql.StatementEventListener": [
+        "*"
+      ],
+      "javax.xml.transform.ErrorListener": [
+        "*"
+      ]
+    },
+    // if CallBackEnhance is true,the following class's subclass are ignored,even if it's an inner class
+    "enhanceIgnore": []
+  },
+  Library: {
+    "Package": [
+      "java.",
+      "sun.",
+      "javax.",
+      "com.sun.",
+      "com.google.",
+      "org.omg.",
+      "org.xml.",
+      "org.json.",
+      "org.w3c.dom",
+      "android.",
+      "androidx.",
+      "io.",
+      "kotlin.",
+      "kotlinx.",
+      "org.android.",
+      "org.apache.",
+      "okhttp3.",
+      "com.android.volley.",
+      "org.chromium.net.",
+      "junit.",
+      "jdk.",
+      "org.xmlpull.",
+      "dalvik."
+    ],
+    "ExcludeLibraryContains": [
+    ]
+  },
+  PointerFlowRule: {
+    "MethodName": {
+      "add": {
+        "params->@this": {
+          "I": [
+            "p*"
+          ],
+          "O": [
+            "@this"
+          ]
+        },
+        "params->@this.data": {
+          "I": [
+            "p*"
+          ],
+          "O": [
+            "@this.data"
+          ]
+        }
+      },
+      "addAll": {
+        "params->@this": {
+          "I": [
+            "p*"
+          ],
+          "O": [
+            "@this"
+          ]
+        },
+        "@this.data->ret": {
+          "I": [
+            "@this.data"
+          ],
+          "O": [
+            "ret"
+          ]
+        }
+      },
+      "putAll": {
+        "params->@this": {
+          "I": [
+            "p*"
+          ],
+          "O": [
+            "@this"
+          ]
+        },
+        "params->@this.data": {
+          "I": [
+            "p*"
+          ],
+          "O": [
+            "@this.data"
+          ]
+        },
+        "@this.data->ret": {
+          "I": [
+            "@this.data"
+          ],
+          "O": [
+            "ret"
+          ]
+        }
+      },
+      "put": {
+        "params->@this": {
+          "I": [
+            "p*"
+          ],
+          "O": [
+            "@this"
+          ]
+        },
+        "params->@this.data": {
+          "I": [
+            "p*"
+          ],
+          "O": [
+            "@this.data"
+          ]
+        },
+        "@this.data->ret": {
+          "I": [
+            "@this.data"
+          ],
+          "O": [
+            "ret"
+          ]
+        }
+      },
+      "iterator": {
+        "@this->ret": {
+          "I": [
+            "@this"
+          ],
+          "O": [
+            "ret"
+          ]
+        },
+        "@this.data->ret": {
+          "I": [
+            "@this.data"
+          ],
+          "O": [
+            "ret"
+          ]
+        }
+      },
+      "entrySet": {
+        "@this->ret": {
+          "I": [
+            "@this"
+          ],
+          "O": [
+            "ret"
+          ]
+        },
+        "@this.data->ret": {
+          "I": [
+            "@this.data"
+          ],
+          "O": [
+            "ret"
+          ]
+        }
+      }
+    },
+    "MethodSignature": {
+      "<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>": {
+        "@this->ret": {
+          "I": [
+            "@this"
+          ],
+          "O": [
+            "ret"
+          ]
+        }
+      },
+      "<java.util.Map: java.lang.Object keySet()>": {
+        "@this.data->ret": {
+          "I": [
+            "@this.data"
+          ],
+          "O": [
+            "ret"
+          ]
+        }
+      }
+    }
+  },
+  VariableFlowRule: {
+    "InstantDefault": {
+      "params->ret": {
+        "I": [
+          "p*"
+        ],
+        "O": [
+          "ret"
+        ]
+      },
+      "params->@this.data": {
+        "I": [
+          "p*"
+        ],
+        "O": [
+          "@this.data"
+        ]
+      },
+      "params->@this": {
+        "I": [
+          "p*"
+        ],
+        "O": [
+          "@this"
+        ]
+      },
+      "@this.data->ret": {
+        "I": [
+          "@this.data"
+        ],
+        "O": [
+          "ret"
+        ]
+      },
+      "@this->ret": {
+        "I": [
+          "@this"
+        ],
+        "O": [
+          "ret"
+        ]
+      }
+    },
+    "InstantSelfDefault": {
+      "params->ret": {
+        "I": [
+          "p*"
+        ],
+        "O": [
+          "ret"
+        ]
+      },
+      "@this->ret": {
+        "I": [
+          "@this"
+        ],
+        "O": [
+          "ret"
+        ]
+      }
+    },
+    "StaticDefault": {
+      "params->ret": {
+        "I": [
+          "p*"
+        ],
+        "O": [
+          "ret"
+        ]
+      }
+    },
+    "MethodName": {
+      "checkPermission": {},
+      "startActivityForResult": {},
+      "getApplicationContext": {},
+      "startActivity": {},
+      "getContext": {},
+      "<init>": {
+        "params->@this.data": {
+          "I": [
+            "p*"
+          ],
+          "O": [
+            "@this.data"
+          ]
+        },
+        "params->@this": {
+          "I": [
+            "p*"
+          ],
+          "O": [
+            "@this"
+          ]
+        }
+      },
+      "equals": {
+        "params->@this": {
+          "I": [
+            "p*"
+          ],
+          "O": [
+            "@this"
+          ]
+        }
+      },
+      "toString": {
+        "@this.data->ret": {
+          "I": [
+            "@this.data"
+          ],
+          "O": [
+            "ret"
+          ]
+        },
+        "@this->ret": {
+          "I": [
+            "@this"
+          ],
+          "O": [
+            "ret"
+          ]
+        }
+      }
+    },
+    "MethodSignature": {
+      "<java.util.Map: boolean containsKey(java.lang.Object)>": {},
+      "<java.util.Map: java.lang.Object remove(java.lang.Object)>": {
+        "@this.data->ret": {
+          "I": [
+            "@this.data"
+          ],
+          "O": [
+            "ret"
+          ]
+        },
+        "@this->ret": {
+          "I": [
+            "@this"
+          ],
+          "O": [
+            "ret"
+          ]
+        }
+      }
+    }
+  }
+}

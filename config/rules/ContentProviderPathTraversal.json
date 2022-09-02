@@ -1,0 +1,57 @@
+{
+  "ContentProviderPathTraversal": {
+    "SliceMode": true,
+    "traceDepth": 14,
+    "desc": {
+      "name": "ContentProviderPathTraversal",
+      "category": "",
+      "wiki": "",
+      "detail": "If the ContentProvider overwrites openFile but does not validate the Uri path, then an attacker may attempt to use ../ to access unexpected files",
+      "possibility": "",
+      "model": ""
+    },
+    "source": {
+      "Param": {
+        "<*: android.os.ParcelFileDescriptor openFile(*)>": [
+          "p0"
+        ]
+      }
+    },
+    "sink": {
+      "<android.os.ParcelFileDescriptor: android.os.ParcelFileDescriptor open(java.io.File,int)>": {
+        "TaintCheck": [
+          "p0"
+        ]
+      }
+    },
+    "sanitize": {
+      "getCanonicalFile": {
+        "<java.io.File: java.io.File getCanonicalFile()>": {
+          "TaintCheck": [
+            "@this"
+          ]
+        },
+        "<java.lang.String: boolean startsWith(java.lang.String)>": {
+          "TaintCheck": [
+            "@this"
+          ]
+        }
+      },
+      "containsDotDot": {
+        "<java.lang.String: boolean contains(java.lang.CharSequence)>": {
+          "TaintCheck": [
+            "@this"
+          ],
+          "p0": [
+            "..*"
+          ]
+        },
+        "<java.lang.String: boolean startsWith(java.lang.String)>": {
+          "TaintCheck": [
+            "@this"
+          ]
+        }
+      }
+    }
+  }
+}

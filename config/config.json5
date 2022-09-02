@@ -1,0 +1,10 @@
+{
+  //apk to anlayze
+  "apkPath": "/Users/aaa/Downloads/app.apk",
+  //result output directory
+  "out": "out",
+  "rules": "unZipSlip.json",
+  "maxPointerAnalyzeTime": 600,
+  //print more info about this rule
+  "debugRule": "unZipSlip"
+}

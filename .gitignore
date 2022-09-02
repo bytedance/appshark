@@ -1,0 +1,12 @@
+target/
+sootOutput/
+out2/
+.idea/*
+config/zbconfig.json
+config/bzxconfig.json5
+tools/server/
+.gradle/*
+build/*
+.DS_Store
+flowdroidAndSoot.src/*
+out/

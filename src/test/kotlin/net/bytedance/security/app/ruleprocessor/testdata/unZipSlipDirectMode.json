@@ -1,0 +1,31 @@
+{
+  "unZipSlipDirectModeMode": {
+    "DirectMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "unZipSlip"
+    },
+    "entry": {
+      "methods": [
+        "<net.bytedance.security.app.ruleprocessor.testdata.ZipSlip: void UnZipFolder(java.lang.String,java.lang.String)>"
+      ]
+    },
+    "source": {
+      "Return": [
+        "<java.util.zip.ZipEntry: java.lang.String getName()>"
+      ]
+    },
+    "sink": {
+      "<java.io.FileWriter: * <init>(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      },
+      "<java.io.FileOutputStream: * <init>(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      }
+    }
+  }
+}

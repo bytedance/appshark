@@ -1,0 +1,103 @@
+{
+  "PendingIntentMutable": {
+    "SliceMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "PendingIntentMutable",
+      "category": "PendingIntent",
+      "detail": "When a malicious application received the vulnerable PendingIntent, the malicious application can modify the content of the original intent and the intent will be send under the context of the vulnerable application.",
+      "wiki": "",
+      "possibility": "4",
+      "model": "middle"
+    },
+    "entry": {
+    },
+    "source": {
+      "NewInstance": [
+        "android.content.Intent"
+      ]
+    },
+    "sanitize": {
+      "setClassNameString": {
+        "<android.content.Intent: android.content.Intent setClassName(java.lang.String,java.lang.String)>": {
+          "TaintCheck": [
+            "@this"
+          ],
+          "NotTaint": [
+            "p0",
+            "p1"
+          ]
+        }
+      },
+      "initializeWithComponentAndUrl": {
+        "<android.content.Intent: void <init>(java.lang.String,android.net.Uri,android.content.Context,java.lang.Class)>": {
+          "TaintCheck": [
+            "@this"
+          ]
+        }
+      },
+      "setClassName": {
+        "<android.content.Intent: android.content.Intent setClassName(android.content.Context,java.lang.String)>": {
+          "TaintCheck": [
+            "@this"
+          ],
+          "NotTaint": [
+            "p1"
+          ]
+        }
+      },
+      "setComponent": {
+        "<android.content.Intent: android.content.Intent setComponent(android.content.ComponentName)>": {
+          "TaintCheck": [
+            "@this"
+          ]
+        }
+      },
+      "setPackage": {
+        "<android.content.Intent: android.content.Intent setPackage(java.lang.String)>": {
+          "TaintCheck": [
+            "@this"
+          ]
+        }
+      },
+      "setClass": {
+        "<android.content.Intent: android.content.Intent setClass(android.content.Context,java.lang.Class)>": {
+          "TaintCheck": [
+            "@this"
+          ],
+          "NotTaint": [
+            "p1"
+          ]
+        }
+      },
+      "initializeWithComponent": {
+        "<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>": {
+          "TaintCheck": [
+            "@this"
+          ]
+        }
+      },
+      "immutable": {
+        "<android.app.PendingIntent: android.app.PendingIntent get*(*)>": {
+          "p3": [
+            "67108864:&"
+          ],
+          "TaintCheck": [
+            "p2"
+          ]
+        }
+      }
+    },
+    "sink": {
+      "<android.app.PendingIntent: android.app.PendingIntent get*(*)>": {
+        "TaintCheck": [
+          "p2"
+        ],
+        "TaintParamType": [
+          "android.content.Intent",
+          "android.content.Intent[]"
+        ]
+      }
+    }
+  }
+}

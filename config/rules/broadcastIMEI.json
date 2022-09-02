@@ -1,0 +1,43 @@
+{
+  "IMEI_SendBroadcast": {
+    "SliceMode": true,
+    "traceDepth": 12,
+    "PrimTypeAsTaint": true,
+    "desc": {
+      "name": "IMEI_SendBroadcast",
+      "detail": "IMEI SendBroadcast",
+      "category": "ComplianceInfo",
+      "complianceCategory": "IMEI_SendBroadcast",
+      "complianceCategoryDetail": "IMEI_SendBroadcast",
+      "level": "L4"
+    },
+    "source": {
+      "Return": [
+        "<android.telephony.TelephonyManager: * getDeviceId(*)>"
+      ]
+    },
+    "sink": {
+      "<*: * sendBroadcast*(*)>": {
+        "LibraryOnly": true,
+        "TaintParamType": [
+          "android.content.Intent",
+          "android.content.Intent[]"
+        ],
+        "TaintCheck": [
+          "p*"
+        ]
+      },
+      "<*: * sendOrderedBroadcast*(*)>": {
+        "LibraryOnly": true,
+        "TaintParamType": [
+          "android.content.Intent",
+          "android.content.Intent[]"
+        ],
+        "TaintCheck": [
+          "p*"
+        ]
+      }
+    }
+  }
+}
+

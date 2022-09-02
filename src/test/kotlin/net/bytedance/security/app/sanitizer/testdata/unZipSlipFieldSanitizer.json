@@ -1,0 +1,35 @@
+{
+  "unZipSlipFieldSanitizer": {
+    "SliceMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "unZipSlipFieldSanitizer"
+    },
+    "entry": {
+      "methods": [
+        "<net.bytedance.security.app.sanitizer.ZipSlip: void f()>"
+      ]
+    },
+    "source": {
+      "Return": [
+        "<java.util.zip.ZipEntry: java.lang.String getName()>"
+      ]
+    },
+    "sink": {
+      "<java.io.FileWriter: * <init>(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      }
+    },
+    "sanitize": {
+      "rule2": {
+        "<net.bytedance.security.app.sanitizer.testdata.ZipSlip: java.lang.String instanceField>": {
+          "TaintCheck": [
+            "@this"
+          ]
+        }
+      }
+    }
+  }
+}
