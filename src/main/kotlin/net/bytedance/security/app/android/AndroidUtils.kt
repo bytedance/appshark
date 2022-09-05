@@ -510,10 +510,10 @@ object AndroidUtils {
         val aXmlNode = c.aXmlNode
         val xmlInfo = ComponentDescription()
         var isExportedCompo = c.isExported
-        val enabled = c.isEnabled
-        if (enabled) {
+        if (c.isEnabled) {
             val childNodes = aXmlNode.getChildrenWithTag("intent-filter")
-            if (childNodes.isNotEmpty()) {
+            //refer https://developer.android.com/guide/topics/manifest/activity-element#exported
+            if (childNodes.isNotEmpty() && !aXmlNode.hasAttribute("exported")) {
                 isExportedCompo = true
             }
         }
