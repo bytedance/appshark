@@ -34,9 +34,9 @@ object MethodPatch {
     private var callBackEnhance = false
 
 
-    private val floatConstant = FloatConstant.v(3f)
-    private val doubleConstant = DoubleConstant.v(2.0)
-    private val intConstant = IntConstant.v(1)
+    private val floatConstant = FloatConstant.v(0f)
+    private val doubleConstant = DoubleConstant.v(0.0)
+    private val intConstant = IntConstant.v(0)
     private val nullConstant = NullConstant.v()
     private fun createNewInvokeUnit(sm: SootMethod, base: Value): Unit? {
         val args: MutableList<Value> = ArrayList()
