@@ -84,7 +84,7 @@ object SootHelper {
 
     fun initSootForClasses(_name: String, classesFilePath: String) {
         val version = System.getProperty("java.version")
-        Assertions.assertEquals(version, "11.0.12", "this test only works on jdk11")
+        Assertions.assertTrue(version.startsWith("11."), "this test only works on jdk11")
         soot.G.reset()
         TestHelper.appsharkInit()
         Options.v().set_src_prec(Options.src_prec_class)
