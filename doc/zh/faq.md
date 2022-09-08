@@ -42,3 +42,7 @@ public class FieldSensitive{
 }
 ```
 不会形成一条从source到sink的传播路径,因为x.f1和x.f2是不同的field.
+
+## 5. 哪些是appshark不能解决的问题
+
+- appshark是一个静态分析引擎,因此凡是需要运行app进行识别的,都不支持. 比如app在同意隐私政策前,调用了哪些api. 再比如把app运行起来,收集一下它调用了哪些函数等.
