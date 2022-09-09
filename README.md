@@ -1,6 +1,6 @@
 # AppShark
 
-Appshark is a static taint analysis platform to scan vulnerabilities in an Android app.
+Appshark is a static taint analysis platform to scan vulnerabilities in an Android app.test1
 
 ## Prerequisites
 
