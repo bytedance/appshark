@@ -1,13 +1,13 @@
 ## Document Index
 - [1.overview](doc/zh/overview.md)
-- [2.startup](startup.md)
-- [3.how to write rules](how_to_write_rules.md)
-- [4.how to find compliance problems use appshark](how_to_find_compliance_problem_use_appshark.md)
-- [5.a path traversal game](path_traversal_game.md)
-- [6.argument](argument.md)
-- [7.engine config](EngineConfig.md)
-- [8.result](result.md)
-- [9.faq](faq.md)
+- [2.startup](doc/zh/startup.md)
+- [3.how to write rules](doc/zh/how_to_write_rules.md)
+- [4.how to find compliance problems use appshark](doc/zh/how_to_find_compliance_problem_use_appshark.md)
+- [5.a path traversal game](doc/zh/path_traversal_game.md)
+- [6.argument](doc/zh/argument.md)
+- [7.engine config](doc/zh/EngineConfig.md)
+- [8.result](doc/zh/result.md)
+- [9.faq](doc/zh/faq.md)
 
 
 # AppShark
