@@ -1,4 +1,17 @@
+## 文档索引
+- [1.概述](overview.md)
+- [2.如何使用](startup.md)
+- [3.规则撰写指南](how_to_write_rules.md)
+- [4.如何使用appshark找出程序中的隐私合规问题](how_to_find_compliance_problem_use_appshark.md)
+- [5.appshark深入教程](path_traversal_game.md)
+- [6.参数配置](argument.md)
+- [7.更深入的配置](EngineConfig.md)
+- [8.报告格式](result.md)
+- [9.常见问题](faq.md)
+
+
 # 常见问题
+ 
 
 ## 1. Appshark与soot的关系?
 Appshark分析的对象是soot生成的jimple IR,soot 是Appshark的基座. 但是Appshark有自己独立的规则系统,以及独立实现的指针分析和污点分析算法. 
