@@ -150,7 +150,4 @@ Below is an example of the `results.json`.
 
 AppShark is licensed under the [APACHE LICENSE, VERSION 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-# others
-![](https://github.com/knownsec/404StarLink-Project/raw/master/logo.png)
-
-Appshark has joined [404Starlink](https://github.com/knownsec/404StarLink)
+ 
