@@ -127,7 +127,7 @@ app完整的源码位于 [BypassPathTraversal](https://github.com/nkbai/BypassPa
 ```
 运行命令如下:
 ```shell
-java -jar AppShark-0.1-all.jar config/config.json5
+java -jar AppShark-0.1.1-all.jar config/config.json5
 ```
 
 可以在out目录中的results.json中发现下面的内容:

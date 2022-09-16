@@ -61,7 +61,7 @@ configurations.all {
 }
 
 group = "net.bytedance.security.app"
-version = "0.1"
+version = "0.1.1"
 description = "appshark"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 

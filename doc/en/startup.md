@@ -2,7 +2,7 @@ How to get started quickly, take a simple vulnerability scan as an example
 
 # 1. Download jar dependencies
 
-the jar file  can be [downloaded here](https://github.com/bytedance/appshark/releases/download/0.1/AppShark-0.1-all.jar). Install jre/jdk 11 for our engine.
+the jar file  can be [downloaded here](https://github.com/bytedance/appshark/releases/download/0.1/AppShark-0.1.1-all.jar). Install jre/jdk 11 for our engine.
 
 # 2. Download the config folder on Github
 
@@ -19,7 +19,7 @@ git clone  https://github.com/bytedance/appshark
 # 4. Run Appshark
 
 ```shell
-java -jar AppShark-0.1-all.jar config/config.json5
+java -jar AppShark-0.1.1-all.jar config/config.json5
 ```
 
 # 5. Check out results
