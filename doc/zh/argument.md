@@ -167,13 +167,19 @@ Class C{
 }
 ```
 如果skipPointerPropagationForLibraryMethod为true,append是library中的method,所以在指针传播过程中,会根据规则,得到
+
 s1->{new StringBuffer();} //根据    StringBuffer s1=new StringBuffer();
+
 s2->{new StringBuffer();,null} //根据s2=s1.append("aa"); 以及PointerFlowRule
+
 s3->{null}
 
 如果skipPointerPropagationForLibraryMethod为false,那么指针指向关系将是:
+
 s1->{new StringBuffer();} //根据    StringBuffer s1=new StringBuffer();
+
 s2->{new StringBuffer();,null} //根据s2=s1.append("aa"); 以及PointerFlowRule
+
 s3->{new StringBuffer();,null}
 
 
