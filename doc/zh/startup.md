@@ -14,7 +14,7 @@
 # 1. 下载jar
 
 
-[点击下载jar包](https://github.com/bytedance/appshark/releases/download/0.1.1/AppShark-0.1.1-all.jar). 要求系统安装有jre11环境,
+[点击下载jar包](https://github.com/bytedance/appshark/releases/download/v0.1.1/AppShark-0.1.1-all.jar). 要求系统安装有jre11环境,
 
 # 2. 通过github下载config文件夹
 
