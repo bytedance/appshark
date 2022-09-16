@@ -11,7 +11,7 @@
 
 
 # 如何为Appshark撰写规则
- 
+
 
 使用Appshark进行数据流分析,最重要的就是明确告诉Appshark你关心的分析入口,source,sink以及santizer. 根据source的特殊性,将其分类为:
 
@@ -474,3 +474,30 @@ void f(){
 
 
 
+## APIMode
+
+APIMode和前面的几种mode都不一样,他并不是一个数据流分析的规则,而是一个简单的查找指定api的规则, 比如下面的一个规则(来自 [camile.json](https://github.com/bytedance/appshark/blob/main/config/rules/camile.json)).
+
+```json
+{
+  "获取蓝牙设备信息": {
+    "desc": {
+      "category": "camille",
+      "detail": "获取蓝牙设备信息",
+      "name": "获取蓝牙设备信息",
+      "complianceCategory": "ComplianceInfo"
+    },
+    "sink": {
+      "<android.bluetooth.BluetoothAdapter: * getName(*)>": {
+      },
+      "<android.bluetooth.BluetoothDevice: * getAddress(*)>": {
+      },
+      "<android.bluetooth.BluetoothDevice: * getName(*)>": {
+      }
+    },
+    "APIMode": true
+  }
+}
+```
+
+这个规则会在整个app中检测,是否存在android.bluetooth.BluetoothAdapter.getName等三个函数的调用,并给出具体的调用位置.
