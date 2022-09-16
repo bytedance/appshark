@@ -1,0 +1,21 @@
+{
+  "MAC": {
+    "APIMode": true,
+    "desc": {
+      "name": "MAC",
+      "detail": "call get mac address",
+      "category": "ComplianceInfo",
+      "complianceCategory": "MAC",
+      "complianceCategoryDetail": "MAC",
+      "level": "L4"
+    },
+    "entry": {},
+    "source": {},
+    "sink": {
+      "<android.bluetooth.BluetoothAdapter: * getAddress(*)>": {},
+      "<android.bluetooth.BluetoothDevice: * getAddress(*)>": {},
+      "<android.net.wifi.WifiInfo: * getMacAddress(*)>": {},
+      "<java.net.NetworkInterface: * getHardwareAddress(*)>": {}
+    }
+  }
+}

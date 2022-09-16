@@ -33,6 +33,9 @@ open class RuleFactory : IRuleFactory {
             val r = DirectModeRule(name, ruleData)
             r.initIfNeeded()
             return r
+        } else if (ruleData.APIMode == true) {
+            val r = ApiModeRule(name, ruleData)
+            return r
         }
         throw Exception("Unknown rule type $name")
     }

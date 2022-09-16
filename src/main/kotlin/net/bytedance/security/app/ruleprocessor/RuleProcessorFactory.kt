@@ -27,6 +27,7 @@ object RuleProcessorFactory {
             "ConstNumberMode" -> ConstNumberModeProcessor(ctx)
             "DirectMode" -> DirectModeProcessor(ctx)
             "SliceMode" -> SliceModeProcessor(ctx)
+            "APIMode" -> ApiModeProcessor(ctx)
             else -> throw Exception("Unknown mode: $mode")
         }
         if (p.name() == "DirectMode") {
