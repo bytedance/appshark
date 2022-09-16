@@ -1,0 +1,195 @@
+//this file is generated from https://github.com/zhengjim/camille/blob/master/script.js
+{
+  "申请权限": {
+    "desc": {
+      "category": "camille",
+      "detail": "申请权限",
+      "name": "申请权限",
+      "complianceCategory": "ComplianceInfo"
+    },
+    "sink": {
+      "<androidx.core.app.ActivityCompat: * requestPermissions(*)>": {
+      },
+      "<android.support.v4.app.ActivityCompat: * requestPermissions(*)>": {
+      }
+    },
+    "APIMode": true
+  },
+  "获取其他app信息": {
+    "desc": {
+      "category": "camille",
+      "detail": "获取其他app信息",
+      "name": "获取其他app信息",
+      "complianceCategory": "ComplianceInfo"
+    },
+    "sink": {
+      "<android.content.pm.PackageManager: * getInstalledPackages(*)>": {
+      },
+      "<android.app.ApplicationPackageManager: * queryIntentActivities(*)>": {
+      },
+      "<android.app.ApplicationPackageManager: * getInstallerPackageName(*)>": {
+      },
+      "<android.app.ApplicationPackageManager: * getInstalledPackages(*)>": {
+      },
+      "<android.app.ActivityManager: * getRunningAppProcesses(*)>": {
+      },
+      "<android.content.pm.PackageManager: * getInstalledApplications(*)>": {
+      },
+      "<android.app.ApplicationPackageManager: * getPackageInfoAsUser(*)>": {
+      },
+      "<android.app.ApplicationPackageManager: * getInstalledApplications(*)>": {
+      }
+    },
+    "APIMode": true
+  },
+  "获取网络信息": {
+    "desc": {
+      "category": "camille",
+      "detail": "获取网络信息",
+      "name": "获取网络信息",
+      "complianceCategory": "ComplianceInfo"
+    },
+    "sink": {
+      "<android.net.NetworkInfo: * getType(*)>": {
+      },
+      "<android.net.wifi.WifiInfo: * getBSSID(*)>": {
+      },
+      "<android.net.wifi.WifiInfo: * getSSID(*)>": {
+      },
+      "<android.net.NetworkInfo: * getExtraInfo(*)>": {
+      },
+      "<android.net.NetworkInfo: * isAvailable(*)>": {
+      },
+      "<android.net.wifi.WifiInfo: * getMacAddress(*)>": {
+      },
+      "<android.net.wifi.WifiManager: * getScanResults(*)>": {
+      },
+      "<android.net.wifi.WifiManager: * getConnectionInfo(*)>": {
+      },
+      "<android.net.wifi.WifiManager: * getConfiguredNetworks(*)>": {
+      },
+      "<android.net.NetworkInfo: * getTypeName(*)>": {
+      },
+      "<android.net.NetworkInfo: * isConnected(*)>": {
+      },
+      "<java.net.NetworkInterface: * getHardwareAddress(*)>": {
+      },
+      "<java.net.InetAddress: * getHostAddress(*)>": {
+      }
+    },
+    "APIMode": true
+  },
+  "获取位置信息": {
+    "desc": {
+      "category": "camille",
+      "detail": "获取位置信息",
+      "name": "获取位置信息",
+      "complianceCategory": "ComplianceInfo"
+    },
+    "sink": {
+      "<android.location.LocationManager: * requestLocationUpdates(*)>": {
+      },
+      "<android.location.LocationManager: * getLastKnownLocation(*)>": {
+      }
+    },
+    "APIMode": true
+  },
+  "获取电话相关信息": {
+    "desc": {
+      "category": "camille",
+      "detail": "获取电话相关信息",
+      "name": "获取电话相关信息",
+      "complianceCategory": "ComplianceInfo"
+    },
+    "sink": {
+      "<android.telephony.TelephonyManager: * getSimCountryIso(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * getMeid(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * getSubscriberId(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * getLine1Number(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * getCellLocation(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * getServiceState(*)>": {
+      },
+      "<android.telephony.gsm.GsmCellLocation: * getLac(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * getImei(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * requestCellInfoUpdate(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * getDeviceId(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * getAllCellInfo(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * getSimSerialNumber(*)>": {
+      },
+      "<android.telephony.cdma.CdmaCellLocation: * getBaseStationId(*)>": {
+      },
+      "<android.telephony.cdma.CdmaCellLocation: * getNetworkId(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * getNetworkOperator(*)>": {
+      },
+      "<android.telephony.gsm.GsmCellLocation: * getCid(*)>": {
+      },
+      "<android.telephony.TelephonyManager: * getSimOperator(*)>": {
+      }
+    },
+    "APIMode": true
+  },
+  "获取蓝牙设备信息": {
+    "desc": {
+      "category": "camille",
+      "detail": "获取蓝牙设备信息",
+      "name": "获取蓝牙设备信息",
+      "complianceCategory": "ComplianceInfo"
+    },
+    "sink": {
+      "<android.bluetooth.BluetoothAdapter: * getName(*)>": {
+      },
+      "<android.bluetooth.BluetoothDevice: * getAddress(*)>": {
+      },
+      "<android.bluetooth.BluetoothDevice: * getName(*)>": {
+      }
+    },
+    "APIMode": true
+  },
+  "获取系统信息": {
+    "desc": {
+      "category": "camille",
+      "detail": "获取系统信息",
+      "name": "获取系统信息",
+      "complianceCategory": "ComplianceInfo"
+    },
+    "sink": {
+      "<android.app.admin.DevicePolicyManager: * getWifiMacAddress(*)>": {
+      },
+      "<android.os.Build: * getSerial(*)>": {
+      },
+      "<android.content.ClipboardManager: * getPrimaryClip(*)>": {
+      },
+      "<android.provider.Settings$Secure: * getString(*)>": {
+      }
+    },
+    "APIMode": true
+  },
+  "调用摄像头": {
+    "desc": {
+      "category": "camille",
+      "detail": "调用摄像头",
+      "name": "调用摄像头",
+      "complianceCategory": "ComplianceInfo"
+    },
+    "sink": {
+      "<android.hardware.Camera: * open(*)>": {
+      },
+      "<android.hardware.camera2.CameraManager: * openCamera(*)>": {
+      },
+      "<androidx.camera.core.ImageCapture: * takePicture(*)>": {
+      }
+    },
+    "APIMode": true
+  }
+}
