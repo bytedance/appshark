@@ -44,7 +44,9 @@ import soot.jimple.infoflow.android.axml.parsers.AXML20Parser
 import soot.jimple.infoflow.android.manifest.IAndroidApplication
 import soot.jimple.infoflow.android.manifest.ProcessManifest
 import soot.jimple.infoflow.android.manifest.binary.AbstractBinaryAndroidComponent
+import soot.jimple.infoflow.android.manifest.binary.BinaryAndroidApplication
 import soot.jimple.infoflow.android.resources.ARSCFileParser
+import soot.jimple.infoflow.android.resources.ARSCFileParser.StringResource
 import soot.jimple.infoflow.android.resources.LayoutFileParser
 import java.io.File
 import java.io.IOException
@@ -218,31 +220,37 @@ object AndroidUtils {
         }
     }
 
+    fun isWindows(): Boolean {
+        val osName = System.getProperty("os.name")
+        return osName != null && osName.startsWith("Windows")
+    }
+
     /**
      * 1. Parse APK meta information
      * 2. Convert dex to Java
      * 3. Address manifest bugs
      */
     private fun parseApkInternal(apkPath: String, jadxPath: String, outPath: String, apkNameToolPath: String) {
-        try {
-            val processBuilder = ProcessBuilder(
-                apkNameToolPath,
-                apkPath
-            )
-            Log.logInfo(processBuilder.command().toString())
-            val process = processBuilder.start()
-            process.waitFor()
-            val stream = process.inputStream
-            val out = ByteArray(128)
-            val ret = stream.read(out)
-            if (ret > 0) {
-                AppLabelName = String(out, StandardCharsets.UTF_8)
-                AppLabelName = AppLabelName.trim { it <= ' ' }
+        if (!isWindows()) {
+            try {
+                val processBuilder = ProcessBuilder(
+                    apkNameToolPath,
+                    apkPath
+                )
+                Log.logInfo(processBuilder.command().toString())
+                val process = processBuilder.start()
+                process.waitFor()
+                val stream = process.inputStream
+                val out = ByteArray(128)
+                val ret = stream.read(out)
+                if (ret > 0) {
+                    AppLabelName = String(out, StandardCharsets.UTF_8)
+                    AppLabelName = AppLabelName.trim { it <= ' ' }
+                }
+            } catch (e: Exception) {
+                Log.logErr("$apkPath -> $outPath")
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            Log.logErr("$apkPath -> $outPath")
-            e.printStackTrace()
-            exitProcess(29)
         }
         apkAbsPath = apkPath
         if (getConfig().javaSource == true) {
@@ -280,6 +288,7 @@ object AndroidUtils {
             }
             return
         }
+        getAppLabelNameIfNeeded(manifest)
         usePermissionSet = manifest.permissions
         permissionMap = getDefinedPermissions(manifest.manifest)
         Log.logDebug("use perm $usePermissionSet")
@@ -307,6 +316,24 @@ object AndroidUtils {
 
         this.manifestVulnerability?.checkDebugOrBackup(manifest.application)
         isApkParsed = true
+
+    }
+
+    private fun getAppLabelNameIfNeeded(manifest: ProcessManifest) {
+        //return if empty
+        if (AppLabelName != "") {
+            return
+        }
+        try {
+            val v = (manifest.application as BinaryAndroidApplication).aXmlNode.getAttribute("label").value as Int
+            println(v)
+            val r = resources!!.findResource(v) as StringResource
+            AppLabelName = r.value
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.logErr("getAppLabelNameIfNeeded error")
+            AppLabelName = "unknown"
+        }
     }
 
     fun getDefinedPermissions(manifestAxml: AXmlNode): Map<String, String> {
