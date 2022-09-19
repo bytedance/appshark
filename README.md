@@ -150,4 +150,8 @@ Below is an example of the `results.json`.
 
 AppShark is licensed under the [APACHE LICENSE, VERSION 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
+# Contact Us
+
+Lark ![](appshark-lark.png)
+
  
