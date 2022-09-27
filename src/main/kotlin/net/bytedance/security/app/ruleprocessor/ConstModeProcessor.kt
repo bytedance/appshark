@@ -73,7 +73,7 @@ abstract class ConstModeProcessor(ctx: PreAnalyzeContext) : TaintFlowRuleProcess
             val callerMethod = it.method
             val callerStmtSet = it.stmt
             val entrySet: MutableSet<SootMethod> = HashSet()
-            ctx.callGraph.queryTopEntry(false, callerMethod, 1, entrySet)
+            ctx.callGraph.queryTopEntry(false, callerMethod, rule.traceDepth, entrySet)
             if (entrySet.size > 1) {
                 entrySet.remove(callerMethod)
             }
