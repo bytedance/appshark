@@ -270,7 +270,7 @@ Since there is only one second-level rule in this example, we create a rule for 
         }
       }
 ```
-If a path satisfies the two rules `<java.lang.String: boolean contains(java.lang.CharSequence)>` and `<java.io.File: * init(java.lang.String)>`, then this path will be santized.
+If a path satisfies the two rules `<java.lang.String: boolean contains(java.lang.CharSequence)>` and `<java.io.File: * init(java.lang.String)>`, then this path will be sanitized.
 
 #### Meaning of specific rules
 Again, **Appshark analyzes the taint propagation relationship between variables, so source, sink, and sanitizer are described at the variable level.**
@@ -328,7 +328,7 @@ if(path.contains("root")){
 File file=new File(path);
 FileOutputStream fileOutputStream=new FileOutputStream(file);
 ```
-`s.contains("../")` meets the requirement check for p0, but not for TaintCheck. And `path.contains("root")` passes the requirement check for Taintcheck, but not for p0. So this propagation path is valid.
+`s.contains("../")` meets the requirement check for p0, but not for TaintCheck. And `path.contains("root")` passes the requirement check for TaintCheck, but not for p0. So this propagation path is valid.
 
 
 #### Sanitizer summary
@@ -376,7 +376,7 @@ Illustrate with the following example:
 }
 ```
 First, `shouldInterceptRequest` is a rule for a subclass of WebViewClient, because `android.webkit.WebViewClient` is an Android framework, we will not share the code of the framework directly.
-The source here is the `p1` of `shouldInterceptRequest`, which is the parameter of `WebResourceRequest`. If we override the method `shouldInterceptRequest`, then we will start from this method, find all its explicitly or implicitly called functions, and check whether there is a method containing sink. If so, we use the overridden `shouldInterceptRequest` method as the analysis entry.
+The source here is the `p1` of `shouldInterceptRequest`, which is the parameter of `WebResourceRequest`. If we override the method `shouldInterceptRequest`, then we will start from this method, find all it's explicitly or implicitly called functions, and check whether there is a method containing sink. If so, we use the overridden `shouldInterceptRequest` method as the analysis entry.
 
 There is a field `traceDepth` here, which refers to the number of method call layers tracked from `shouldInterceptRequest`.
 

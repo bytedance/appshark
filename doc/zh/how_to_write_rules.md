@@ -13,7 +13,7 @@
 # 如何为Appshark撰写规则
 
 
-使用Appshark进行数据流分析,最重要的就是明确告诉Appshark你关心的分析入口,source,sink以及santizer. 根据source的特殊性,将其分类为:
+使用Appshark进行数据流分析,最重要的就是明确告诉Appshark你关心的分析入口,source,sink以及sanitizer. 根据source的特殊性,将其分类为:
 
 - ConstStringMode 支持常量字符串作为source
 - ConstNumberMode 支持常量整数作为source
@@ -286,7 +286,7 @@ sanitizer分别包含了三个子key:
         }
       }
 ```
-如果某条路径同时满足对`<java.lang.String: boolean contains(java.lang.CharSequence)>`和`<java.io.File: * init(java.lang.String)>`这两个函数的限制,那么这条路径就会被santize掉.
+如果某条路径同时满足对`<java.lang.String: boolean contains(java.lang.CharSequence)>`和`<java.io.File: * init(java.lang.String)>`这两个函数的限制,那么这条路径就会被sanitize掉.
 
 #### 具体规则的含义
 再次强调,**appshark分析的是污点在变量之间的传递关系,所以无论是source,还是sink,还是sanitizer描述的具体粒度都是变量.**
@@ -345,7 +345,7 @@ if(path.contains("root")){
 File file=new File(path);
 FileOutputStream fileOutputStream=new FileOutputStream(file);
 ```
-这个例子中`s.contains("../")`满足了对p0的检验,但是没有满足TaintCheck的检验. 而`path.contains("root")`满足了对Taintcheck的检验,但是没有满足对p0的检验. 所以这条传播路径是有效的.
+这个例子中`s.contains("../")`满足了对p0的检验,但是没有满足TaintCheck的检验. 而`path.contains("root")`满足了对TaintCheck的检验,但是没有满足对p0的检验. 所以这条传播路径是有效的.
 
 
 #### sanitizer总结
