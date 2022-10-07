@@ -22,7 +22,7 @@ Appshark 是一个针对安卓的静态分析工具,它的设计目标是针对�
 ## 结构
 
 Appshark有apk文件处理,代码预处理, 用户自定义规则分析解析,指针以及数据流分析,漏洞查找, sanitizer以及报告生成等模块组成.
-完整的流程图见![appshark工作流程](appshark_flow_chart.jpg)
+完整的流程图见![appshark工作流程](appshark_flow_chart.png)
  
 
 ### apk文件预处理
