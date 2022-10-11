@@ -81,6 +81,16 @@ object MethodFinder {
         }
     }
 
+    private fun filterByClassName(className: String): Collection<SootClass> {
+        val results = ArrayList<SootClass>()
+        for (c in Scene.v().classes) {
+            if (isMatched(className, c.name)) {
+                results.add(c)
+            }
+        }
+        return results
+    }
+
     /**
      * @param methodSig  something like :<*: void onCreate(android.os.Bundle)>
      * @return  returns all matched methods
@@ -117,10 +127,11 @@ object MethodFinder {
             targetClassSet = Scene.v().classes
         } else {
             if (fd.className.indexOf("*") >= 0) {
-                throw Exception("invalid className $methodSig")
+                targetClassSet = filterByClassName(fd.className)
+            } else {
+                val sc = Scene.v().getSootClassUnsafe(fd.className, false) ?: return matchedMethodSet
+                targetClassSet = setOf(sc)
             }
-            val sc = Scene.v().getSootClassUnsafe(fd.className, false) ?: return matchedMethodSet
-            targetClassSet = setOf(sc)
         }
         val possibleMethodSigSet: MutableSet<SootMethod> = HashSet()
         for (sc in targetClassSet) {
