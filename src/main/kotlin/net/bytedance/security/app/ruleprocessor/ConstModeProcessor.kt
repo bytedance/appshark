@@ -32,6 +32,7 @@ import net.bytedance.security.app.ui.ConstExtractModeHtmlWriter
 import soot.SootMethod
 import soot.Value
 import soot.jimple.*
+import soot.jimple.internal.JReturnStmt
 import soot.jimple.internal.JimpleLocal
 
 abstract class ConstModeProcessor(ctx: PreAnalyzeContext) : TaintFlowRuleProcessor(ctx) {
@@ -42,24 +43,50 @@ abstract class ConstModeProcessor(ctx: PreAnalyzeContext) : TaintFlowRuleProcess
     ) {
 
         for ((methodSigRule, sinkContentObj) in sink) {
-            val methodSigSet = MethodFinder.checkAndParseMethodSig(methodSigRule)
+            val sinkMethodSet = MethodFinder.checkAndParseMethodSig(methodSigRule)
             if (sinkContentObj.TaintCheck == null) {
                 throw Exception("${rule.name} sink TaintCheck is null")
             }
 
             val taintArr = sinkContentObj.TaintCheck
             val taintParamTypeArr = sinkContentObj.TaintParamType
-            for (sinkMethodSig in methodSigSet) {
-                if (sinkContentObj.LibraryOnly == true && ctx.callGraph.isUserCode(sinkMethodSig)) {
+            for (sinkMethod in sinkMethodSet) {
+                if (sinkContentObj.LibraryOnly == true && ctx.callGraph.isUserCode(sinkMethod)) {
                     continue
                 }
 
-                val callSites = ctx.findInvokeCallSite(sinkMethodSig)
+                val callSites = ctx.findInvokeCallSite(sinkMethod)
                 calcConstValFlowEntries(rule, callSites, taintArr, taintParamTypeArr, analyzers)
+                /*
+                If the sink point is  return, the sink point should be a variable or constant at the position of the return.
+                 */
+                if (TaintRuleSourceSinkCollector.hasReturn(taintArr)) {
+                    if (!sinkMethod.hasActiveBody()) {
+                        continue
+                    }
+                    calcReturnSink(rule, sinkMethod, analyzers)
+                }
             }
         }
     }
 
+    private suspend fun calcReturnSink(
+        rule: TaintFlowRule,
+        sinkMethod: SootMethod,
+        analyzers: MutableList<TaintAnalyzer>
+    ) {
+        val analyzer = TaintAnalyzer(rule, sinkMethod)
+        for (stmt in sinkMethod.activeBody.units) {
+            if (stmt !is JReturnStmt) {
+                continue
+            }
+            val retOp = stmt.op
+            calcConstPtr(rule, retOp, sinkMethod, stmt, analyzer)
+        }
+        if (analyzer.data.pointerIndexMap.isNotEmpty()) {
+            analyzers.add(analyzer)
+        }
+    }
 
     private suspend fun calcConstValFlowEntries(
         rule: TaintFlowRule,

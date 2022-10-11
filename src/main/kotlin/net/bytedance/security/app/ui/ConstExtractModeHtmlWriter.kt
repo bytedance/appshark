@@ -54,9 +54,9 @@ class ConstExtractModeHtmlWriter(
 
     override suspend fun addVulnerabilityAndSaveResultToOutput() {
         val stringList: MutableList<String> = ArrayList()
-        val apiSig = stmt.invokeExpr.methodRef.signature
+//        val apiSig = stmt.invokeExpr.methodRef.signature
         stringList.add(method.signature)
-        stringList.add(apiSig)
+        stringList.add(stmt.toString())
         stringList.add(constStr)
         val tosUrl = saveContent(generateHtml(), htmlName)
         Log.logDebug("Write Vulnerability to $tosUrl")

@@ -132,6 +132,18 @@ class TaintRuleSourceSinkCollector(
                         ptrSet.add(ptr)
                     }
                 }
+            } else if (tp.position == TaintPosition.Return) {
+                //r$i0_1 = specialinvoke r0.<android.app.Service: int onStartCommand(android.content.Intent,int,int)>($r1, $i0, $i1);
+                if (stmt is JAssignStmt) {
+                    val leftExpr = stmt.leftOp
+                    if (leftExpr is JimpleLocal) {
+                        val ptr = addPtrToEntry(stmt, leftExpr, sinkMethodCaller)
+                        if (ptr != null) {
+                            ptrSet.add(ptr)
+                        }
+                    }
+                }
+
             } else if (tp.position == TaintPosition.AllArgument) {
                 for (arg in invokeExpr.args) {
                     if (!isValidType(paramTypeArr, arg.type)) {
@@ -154,7 +166,7 @@ class TaintRuleSourceSinkCollector(
                     }
                 }
             } else {
-                throw Exception("return cannot be sink position for rule {${rule.name}")
+                throw Exception("unknown sink position for rule {${rule.name}")
             }
         }
         return ptrSet
@@ -420,6 +432,15 @@ class TaintRuleSourceSinkCollector(
             }
             for (typeStr in paramTypeArr) {
                 if (typeStr == type.toString()) {
+                    return true
+                }
+            }
+            return false
+        }
+
+        fun hasReturn(taintCheckArr: List<String>): Boolean {
+            for (c in taintCheckArr) {
+                if (c == TaintPosition.RETURN) {
                     return true
                 }
             }
