@@ -21,6 +21,7 @@ import net.bytedance.security.app.Log.logDebug
 import net.bytedance.security.app.Log.logInfo
 import soot.*
 import soot.jimple.*
+import soot.jimple.internal.JimpleLocal
 import java.io.FileWriter
 import java.io.IOException
 import java.io.PrintWriter
@@ -192,6 +193,15 @@ object PLUtils {
 
             realMethodSet.addAll(methodSet)
             for (targetMethod in realMethodSet) {
+                //1.  ret
+                var ret: JimpleLocal? = null
+                if (targetMethod.returnType !is VoidType) {
+                    val index = body.localCount
+                    val localRet = Jimple.v().newLocal("v$index", targetMethod.returnType)
+                    body.locals.add(localRet)
+                    ret = localRet as JimpleLocal
+                }
+                //2. arguments
                 val args: MutableList<Value> = ArrayList()
                 for (i in 0 until targetMethod.parameterCount) {
                     val argType = targetMethod.getParameterType(i)
@@ -200,15 +210,19 @@ object PLUtils {
                     body.locals.add(localArg)
                     args.add(localArg)
                     if (argType is PrimType) {
-                        if (argType is FloatType) {
-                            val argAssignStmt = Jimple.v().newAssignStmt(localArg, FloatConstant.v(3f))
-                            units.add(argAssignStmt)
-                        } else if (argType is DoubleType) {
-                            val argAssignStmt = Jimple.v().newAssignStmt(localArg, DoubleConstant.v(4.0))
-                            units.add(argAssignStmt)
-                        } else {
-                            val argAssignStmt = Jimple.v().newAssignStmt(localArg, IntConstant.v(5))
-                            units.add(argAssignStmt)
+                        when (argType) {
+                            is FloatType -> {
+                                val argAssignStmt = Jimple.v().newAssignStmt(localArg, FloatConstant.v(3f))
+                                units.add(argAssignStmt)
+                            }
+                            is DoubleType -> {
+                                val argAssignStmt = Jimple.v().newAssignStmt(localArg, DoubleConstant.v(4.0))
+                                units.add(argAssignStmt)
+                            }
+                            else -> {
+                                val argAssignStmt = Jimple.v().newAssignStmt(localArg, IntConstant.v(5))
+                                units.add(argAssignStmt)
+                            }
                         }
                     } else {
                         if (argType is ArrayType) {
@@ -222,24 +236,23 @@ object PLUtils {
                         }
                     }
                 }
-                if (targetMethod.isStatic) {
-                    // virtualinvoke target.<targetClass: targetMethod>(p0,p1,p2...);
-                    val invokeStmt = Jimple.v().newInvokeStmt(
-                        Jimple.v().newStaticInvokeExpr(targetMethod.makeRef(), args)
-                    )
-                    units.add(invokeStmt)
+                //3. stmt
+                val invokeExpr = if (targetMethod.isStatic) {
+                    Jimple.v().newStaticInvokeExpr(targetMethod.makeRef(), args)
+
                 } else {
-                    // virtualinvoke target.<targetClass: targetMethod>(p0,p1,p2...);
-                    var invokeStmt: InvokeStmt
                     try {
-                        invokeStmt = Jimple.v()
-                            .newInvokeStmt(Jimple.v().newVirtualInvokeExpr(instant, targetMethod.makeRef(), args))
+                        Jimple.v().newVirtualInvokeExpr(instant, targetMethod.makeRef(), args)
                     } catch (ex: Exception) {
-                        invokeStmt = Jimple.v()
-                            .newInvokeStmt(Jimple.v().newInterfaceInvokeExpr(instant, targetMethod.makeRef(), args))
+                        Jimple.v().newInterfaceInvokeExpr(instant, targetMethod.makeRef(), args)
                     }
-                    units.add(invokeStmt)
                 }
+                val assignStmt = if (ret != null) {
+                    Jimple.v().newAssignStmt(ret, invokeExpr)
+                } else {
+                    Jimple.v().newInvokeStmt(invokeExpr)
+                }
+                units.add(assignStmt)
             }
             // insert "return"
             units.add(Jimple.v().newReturnVoidStmt())
