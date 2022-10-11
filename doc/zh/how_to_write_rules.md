@@ -149,10 +149,11 @@ android.content.Intent i=new android.content.Intent();
 这时候变量i将成为source点.
 
 ### 一般sink的指定
-目前sink点只能是函数的参数,可以是:
+目前sink点只能是函数的周边,可以是:
 - this指针 @this
 - 函数的某个参数 p0,p1,p2
 - 函数的所有参数 p*
+- 函数的返回值 return
 
 #### sink
 需要强调的是,**所有的sink都会在内部转换成具体的变量**.
@@ -169,6 +170,11 @@ sink的指定相对于source的指定要简单许多,种类也比较单一.
       "<java.io.FileOutputStream: * <init>(*)>": {
         "TaintCheck": [
           "p*","@this"
+        ]
+      },
+      "<android.app.*: int onStartCommand(*)>": {
+        "TaintCheck": [
+          "return"
         ]
       }
     }
