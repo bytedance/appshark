@@ -69,7 +69,7 @@ class SliceModeProcessor(ctx: PreAnalyzeContext) : DirectModeProcessor(ctx) {
                             rule.polymorphismBackTrace,
                             srcPtr.method,
                             sinkPtr.method,
-                            rule.traceDepth - 2
+                            rule.traceDepth - 1
                         ) ?: return@launch
                         val thisDepth = rule.traceDepth - result.depth
                         Pair(result.entryMethod, thisDepth)
