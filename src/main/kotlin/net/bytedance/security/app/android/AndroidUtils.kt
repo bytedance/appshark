@@ -57,8 +57,7 @@ import java.util.zip.ZipFile
 import kotlin.system.exitProcess
 
 interface ManifestVulnerability {
-    fun checkDebugOrBackup(app: IAndroidApplication)
-    fun checkProviderMisConfigPath(aXmlNode: AXmlNode, isExported: Boolean, xmlInfo: ComponentDescription)
+    fun check(manifest: ProcessManifest)
 }
 
 /**
@@ -314,7 +313,7 @@ object AndroidUtils {
         layoutFileParser!!.parseLayoutFileDirect(apkPath)
         parseAllComponents(manifest)
 
-        this.manifestVulnerability?.checkDebugOrBackup(manifest.application)
+        this.manifestVulnerability?.check(manifest)
         isApkParsed = true
 
     }
@@ -587,9 +586,6 @@ object AndroidUtils {
             unExportedCompoSet.add(sc)
             unExportComponents.add(sc)
             xmlInfo.exported = false
-        }
-        if (type == "Providers") {
-            this.manifestVulnerability?.checkProviderMisConfigPath(aXmlNode, isExportedCompo, xmlInfo)
         }
         if (!compoXmlMapByType.containsKey(compoKey)) {
             compoXmlMapByType[compoKey] = HashMap()
