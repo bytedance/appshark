@@ -72,3 +72,7 @@ appshark时间主要有以下三块组成:
 
 ## 7. 有不少隐私合规问题,比如超范围收集等,是否适合用appshark来解决?
 静态扫描确实不能覆盖很多隐私合规场景，尤其是过度，频繁,未经用户明确同意之类的问题。 但是有不少其他问题，比如有没有，存不存在这样的问题，静态是可以解决的。
+
+## 8. 出现OOM怎么办?
+当出现这样的字眼`java.lang.OutOfMemoryError: Java heap space` 时,建议增大appshark的运行内存. 可以通过` java -Xmx32g   -jar AppShark-0.1.2.jar config.json` 来增大内存.
+
