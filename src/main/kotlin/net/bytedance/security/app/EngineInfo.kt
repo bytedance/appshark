@@ -20,5 +20,5 @@ package net.bytedance.security.app
 
 object EngineInfo {
     //version info
-    const val Version = "0.1.1"
+    const val Version = "0.1.2
 }
