@@ -4,7 +4,7 @@
     "traceDepth": 14,
     "desc": {
       "name": "ContentProviderPathTraversal",
-      "category": "",
+      "category": "Provider",
       "wiki": "",
       "detail": "If the ContentProvider overwrites openFile but does not validate the Uri path, then an attacker may attempt to use ../ to access unexpected files",
       "possibility": "",
