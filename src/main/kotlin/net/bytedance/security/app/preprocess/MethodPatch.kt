@@ -65,10 +65,24 @@ object MethodPatch {
         return null
     }
 
-    private fun patchForStmt(stmt: Stmt, nextStmt: Stmt?, method: SootMethod, patchUnits: MutableList<Unit>) {
-        calcCallbackPatchUnits(stmt, patchUnits)
-        Reflection.tryInject(stmt, method, patchUnits)
-        Patch.patchFindviewByIdForWebview(stmt, nextStmt, method, patchUnits)
+    private fun patchForStmt(
+        stmt: Stmt,
+        nextStmt: Stmt?,
+        method: SootMethod,
+        patchUnits: ArrayList<Pair<Stmt, List<Unit>>>
+    ) {
+        var r = calcCallbackPatchUnits(stmt)
+        if (r.isNotEmpty()) {
+            patchUnits.add(Pair(stmt, r))
+        }
+        r = Reflection.tryInject(stmt, method)
+        if (r.isNotEmpty()) {
+            patchUnits.add(Pair(stmt, r))
+        }
+        r = Patch.patchFindviewByIdForWebview(stmt, nextStmt, method)
+        if (r.isNotEmpty() && nextStmt != null) {
+            patchUnits.add(Pair(nextStmt, r))
+        }
     }
 
     /**
@@ -77,70 +91,73 @@ object MethodPatch {
      *      call the handleMessage
      *  2. if callBackEnhance is true, call all the internal class's function member.
      */
-    private fun calcCallbackPatchUnits(stmt: Stmt, patchUnits: MutableList<Unit>) {
-        val invokeExpr = stmt.invokeExpr as? InstanceInvokeExpr ?: return
-        if (invokeExpr.methodRef.isConstructor) {
-            val base = invokeExpr.base
-            val declMethod =
-                try {
-                    Patch.resolveMethodException(invokeExpr)
-                } catch (ex: Exception) {
-                    Log.logInfo("calcCallbackPatchUnits: stmt=${stmt}")
-                    Log.logInfo("calcCallbackPatchUnits ex= ${ex.stackTraceToString()}")
-                    throw ex
+    private fun calcCallbackPatchUnits(stmt: Stmt): List<Unit> {
+        val patchUnits: MutableList<Unit> = ArrayList()
+        val invokeExpr = stmt.invokeExpr as? InstanceInvokeExpr ?: return patchUnits
+        if (!invokeExpr.methodRef.isConstructor) {
+            return patchUnits
+        }
+        val base = invokeExpr.base
+        val declMethod =
+            try {
+                Patch.resolveMethodException(invokeExpr)
+            } catch (ex: Exception) {
+                Log.logInfo("calcCallbackPatchUnits: stmt=${stmt}")
+                Log.logInfo("calcCallbackPatchUnits ex= ${ex.stackTraceToString()}")
+                throw ex
+            }
+        val declClass = declMethod.declaringClass
+        val baseCls = Scene.v().getSootClassUnsafe(base.type.toString(), false)
+        if (declClass == baseCls && EngineConfig.callbackConfig.getCallBackConfig().containsKey(baseCls)) {
+            for (subMethodSig in EngineConfig.callbackConfig.getCallBackConfig()[baseCls]!!) {
+                val sm = PLUtils.dispatchCall(baseCls, subMethodSig)
+                if (sm == null || !sm.isConcrete) {
+                    continue
                 }
-            val declClass = declMethod.declaringClass
-            val baseCls = Scene.v().getSootClassUnsafe(base.type.toString(), false)
-            if (declClass == baseCls && EngineConfig.callbackConfig.getCallBackConfig().containsKey(baseCls)) {
-                for (subMethodSig in EngineConfig.callbackConfig.getCallBackConfig()[baseCls]!!) {
-                    val sm = PLUtils.dispatchCall(baseCls, subMethodSig)
-                    if (sm == null || !sm.isConcrete) {
-                        continue
-                    }
-                    if (sm.declaringClass != declClass) {
-                        continue
-                    }
-                    val newUnit = createNewInvokeUnit(sm, base)
-                    if (newUnit != null) {
-                        patchUnits.add(newUnit)
-                    }
+                if (sm.declaringClass != declClass) {
+                    continue
                 }
-            } else if (callBackEnhance && baseCls.isInnerClass) {
-                val classInterfaces = baseCls.interfaces
-                val subMethodSet: MutableSet<String> = HashSet()
-                for (classInterface in classInterfaces) {
-                    if (EngineConfig.callbackConfig.enhanceIgnore.contains(classInterface.name)) {
-                        continue
-                    }
-                    for (method in classInterface.methods) {
-                        subMethodSet.add(method.subSignature)
-                    }
+                val newUnit = createNewInvokeUnit(sm, base)
+                if (newUnit != null) {
+                    patchUnits.add(newUnit)
                 }
-                if (baseCls.hasSuperclass()) {
-                    val superClass = baseCls.superclass
-                    if (superClass.name != "java.lang.Object") {
-                        for (superMethod in superClass.methods) {
-                            subMethodSet.add(superMethod.subSignature)
-                        }
-                    }
+            }
+        } else if (callBackEnhance && baseCls.isInnerClass) {
+            val classInterfaces = baseCls.interfaces
+            val subMethodSet: MutableSet<String> = HashSet()
+            for (classInterface in classInterfaces) {
+                if (EngineConfig.callbackConfig.enhanceIgnore.contains(classInterface.name)) {
+                    continue
                 }
-                if (subMethodSet.isEmpty()) {
-                    return
+                for (method in classInterface.methods) {
+                    subMethodSet.add(method.subSignature)
                 }
-                for (sm in baseCls.methods) {
-                    if (sm.isConstructor || sm.isStaticInitializer) {
-                        continue
-                    }
-                    if (!subMethodSet.contains(sm.subSignature)) {
-                        continue
-                    }
-                    val newUnit = createNewInvokeUnit(sm, base)
-                    if (newUnit != null) {
-                        patchUnits.add(newUnit)
+            }
+            if (baseCls.hasSuperclass()) {
+                val superClass = baseCls.superclass
+                if (superClass.name != "java.lang.Object") {
+                    for (superMethod in superClass.methods) {
+                        subMethodSet.add(superMethod.subSignature)
                     }
                 }
             }
+            if (subMethodSet.isEmpty()) {
+                return patchUnits
+            }
+            for (sm in baseCls.methods) {
+                if (sm.isConstructor || sm.isStaticInitializer) {
+                    continue
+                }
+                if (!subMethodSet.contains(sm.subSignature)) {
+                    continue
+                }
+                val newUnit = createNewInvokeUnit(sm, base)
+                if (newUnit != null) {
+                    patchUnits.add(newUnit)
+                }
+            }
         }
+        return patchUnits
     }
 
     private fun injectAll(
@@ -151,11 +168,11 @@ object MethodPatch {
         iterator: MutableListIterator<Unit>,
     ) {
         if (stmt.containsInvokeExpr()) {
-            val patchUnits: MutableList<Unit> = ArrayList()
+            val patchUnits: ArrayList<Pair<Stmt, List<Unit>>> = ArrayList()
             patchForStmt(stmt, nextStmt, method, patchUnits)
-            if (patchUnits.isNotEmpty()) {
-                methodUnits.insertAfter(patchUnits, stmt)
-                for (patchUnit in patchUnits) {
+            for (p in patchUnits) {
+                methodUnits.insertAfter(p.second, p.first)
+                for (patchUnit in p.second) {
                     iterator.add(patchUnit)
                     iterator.previous()
                 }

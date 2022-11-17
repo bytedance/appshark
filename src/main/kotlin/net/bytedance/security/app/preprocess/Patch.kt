@@ -60,33 +60,33 @@ object Patch {
     fun patchFindviewByIdForWebview(
         stmt: Stmt,
         nextStmt: Stmt?,
-        @Suppress("UNUSED_PARAMETER") method: SootMethod,
-        patchUnits: MutableList<Unit>
-    ) {
+        @Suppress("UNUSED_PARAMETER") method: SootMethod
+    ): List<Unit> {
         val locals = ArrayList<JimpleLocal>()
         val stmts = ArrayList<Stmt>()
+        val patchUnits: MutableList<Unit> = ArrayList()
         if (nextStmt == null) {
-            return
+            return patchUnits
         }
         if (!stmt.containsInvokeExpr()) {
-            return
+            return patchUnits
         }
         val invokeExpr = stmt.invokeExpr
         if (resolveMethodException(invokeExpr).signature.indexOf("android.view.View findViewById(int)>") < 0) {
-            return
+            return patchUnits
         }
 
-        val stmt2 = nextStmt as? JAssignStmt ?: return
+        val stmt2 = nextStmt as? JAssignStmt ?: return patchUnits
         if (stmt2.rightOp !is JCastExpr) {
-            return
+            return patchUnits
         }
         if (stmt2.leftOp !is JimpleLocal) {
-            return
+            return patchUnits
         }
         val leftExpr = stmt2.leftOp as JimpleLocal
         val right = stmt2.rightOp as JCastExpr
         if (right.castType.toString() != "android.webkit.WebView") {
-            return
+            return patchUnits
         }
         locals.add(leftExpr)
         stmts.add(stmt2)
@@ -97,6 +97,7 @@ object Patch {
             val assignStmt = Jimple.v().newAssignStmt(j, newExpr)
             patchUnits.add(assignStmt)
         }
+        return patchUnits
     }
 
     @Synchronized

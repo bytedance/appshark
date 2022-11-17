@@ -47,7 +47,8 @@ object Reflection {
     private const val INVOKE_METHOD_SIG =
         "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>"
 
-    fun tryInject(stmt: Stmt, caller: SootMethod, patchUnits: MutableList<Unit>) {
+    fun tryInject(stmt: Stmt, caller: SootMethod): List<Unit> {
+        val patchUnits: MutableList<Unit> = ArrayList()
         val invokeExpr = stmt.invokeExpr
         when (invokeExpr.methodRef.signature) {
             REFLECT_FOR_NAME -> {
@@ -60,6 +61,7 @@ object Reflection {
                 injectXXClass(stmt, caller, patchUnits)
             }
         }
+        return patchUnits
     }
 
 
