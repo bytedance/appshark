@@ -125,17 +125,7 @@ class SecurityRiskItem(
     var deobfApk: String? = null,
     var level: String? = null,
 )
-
-@Serializable
-data class SecurityVulnerabilityDetail(
-    var Sink: MutableList<String>?,
-    var Source: MutableList<String>?,
-    var position: String?,
-    var target: MutableList<String>?,
-    var url: String?,
-    var entryMethod: String?,
-    var others: MutableMap<String, JsonElement>?
-)
+ 
 
 @Serializable
 data class SecurityVulnerabilityItem(

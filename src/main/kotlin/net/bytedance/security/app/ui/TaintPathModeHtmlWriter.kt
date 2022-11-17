@@ -64,6 +64,8 @@ class TaintPathModeHtmlWriter(
     private val apiSearchStmtSet: MutableSet<Stmt> = HashSet()
     private var sourceStmtSet: MutableSet<Stmt> = HashSet()
     private var sinkStmtSet: MutableSet<Stmt> = HashSet()
+    private var sourceStmt: Stmt? = null
+    private var sinkStmt: Stmt? = null
 
     init {
         if (rule is DirectModeRule && rule.throughAPI != null) {
@@ -189,6 +191,7 @@ class TaintPathModeHtmlWriter(
                                     div {
                                         classes = setOf(classHighlight)
                                         +"$index:->[Source] $stmt"
+                                        sourceStmt = stmt
                                     }
                                 } else if (sinkStmtSet.contains(stmt)) {
                                     apiSearchStmtSet.add(stmt)
@@ -198,6 +201,7 @@ class TaintPathModeHtmlWriter(
                                     div {
                                         classes = setOf(classHighlight)
                                         +"$index:->[Sink] $stmt"
+                                        sinkStmt = stmt
                                     }
                                 } else if (stmtList.contains(stmt)) {
                                     apiSearchStmtSet.add(stmt)
@@ -230,6 +234,14 @@ class TaintPathModeHtmlWriter(
         }
     }
 
+    /**
+     * Be sure to call the function after generateHtml has been called
+     */
+    private fun getAssociatedSourceOrSinkStmt(ptr: PLPointer, isSource: Boolean): String {
+        if (isSource)
+            return sourceStmt?.toString() ?: ptr.toString()
+        return sinkStmt?.toString() ?: ptr.toString()
+    }
 
     override suspend fun addVulnerabilityAndSaveResultToOutput() {
 
@@ -237,7 +249,7 @@ class TaintPathModeHtmlWriter(
         analyzer.data.ptrStmtMapSrcSink[sourcePtr]?.let {
             sourceStmtSet = it
         }
-
+        analyzer.data.ptrStmtMapSrcSink
         val sinkPtr = result.curPath.last()
         analyzer.data.ptrStmtMapSrcSink[sinkPtr]?.let {
             sinkStmtSet = it
@@ -268,7 +280,7 @@ class TaintPathModeHtmlWriter(
                 TaintPathModeVulnerability(
                     result.curPath.map { it.signature() },
                     (sourcePtr as PLLocalPointer).method.signature,
-                    sourcePtr, sinkPtr,
+                    getAssociatedSourceOrSinkStmt(sourcePtr, true), getAssociatedSourceOrSinkStmt(sinkPtr, false),
                     throughAPISet, analyzer.entryMethod
                 )
             )
@@ -351,8 +363,8 @@ class TaintPathModeHtmlWriter(
 class TaintPathModeVulnerability(
     override val target: List<String>,
     override val position: String,
-    val source: PLPointer,
-    val sink: PLPointer,
+    val source: String,
+    val sink: String,
     val throughAPI: Set<String>,
     val entryMethod: SootMethod,
 ) :
@@ -363,8 +375,8 @@ class TaintPathModeVulnerability(
         val m: MutableMap<String, Any> = mutableMapOf(
             "target" to target.map { it },
             "position" to position,
-            "Source" to listOf(source.toString()),
-            "Sink" to listOf(sink.toString()),
+            "Source" to listOf(source),
+            "Sink" to listOf(sink),
             "entryMethod" to entryMethod.toString()
         )
         if (manifest != null) {

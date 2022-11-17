@@ -27,9 +27,7 @@ import soot.Scene
 import soot.SootField
 import soot.UnknownType
 import soot.Value
-import soot.jimple.Constant
-import soot.jimple.FieldRef
-import soot.jimple.Stmt
+import soot.jimple.*
 import soot.jimple.internal.JAssignStmt
 import soot.jimple.internal.JReturnStmt
 import soot.jimple.internal.JimpleLocal
@@ -294,6 +292,13 @@ class TaintFlowEdgeFinder(val rule: TaintFlowRule) {
 }
 
 fun Value.variableName(): String {
+    when (this) {
+        is JimpleLocal -> return name
+        is FieldRef -> return field.name
+        is StringConstant -> return value
+        is IntConstant -> return value.toString()
+        is LongConstant -> return value.toString()
+    }
     val s = this.toString()
     val i = s.indexOf(":")
     if (i < 0) {
