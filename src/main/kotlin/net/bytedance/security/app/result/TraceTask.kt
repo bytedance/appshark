@@ -23,6 +23,7 @@ import net.bytedance.security.app.android.AndroidUtils
 import net.bytedance.security.app.android.ComponentDescription
 import net.bytedance.security.app.getConfig
 import net.bytedance.security.app.ui.TaintPathModeVulnerability
+import net.bytedance.security.app.util.isFieldSignature
 import soot.Scene
 import soot.SootClass
 import soot.SootMethod
@@ -52,8 +53,12 @@ class TraceTask(
     /**
      *  add manifest for vulnerability
      */
-    fun addManifest(vulnerabilityItem: VulnerabilityItem, sourceMethodSig: String) {
-        val sourceMethod = Scene.v().getMethod(sourceMethodSig)
+    fun addManifest(vulnerabilityItem: VulnerabilityItem, sourceSig: String) {
+        //no need to process field's manifest
+        if (sourceSig.isFieldSignature()) {
+            return
+        }
+        val sourceMethod = Scene.v().getMethod(sourceSig)
         var componentJsonObj: ComponentDescription? = null
         var entryClassName: String? = null
         if (vulnerabilityItem.data !is TaintPathModeVulnerability) {
@@ -79,7 +84,7 @@ class TraceTask(
             }
             path.add(0, entryClassName)
             componentJsonObj2.trace = path
-            Log.logDebug("addTrace detailsJsonMap=$vulnerabilityItem,sourceMethodSig=$sourceMethodSig")
+            Log.logDebug("addTrace detailsJsonMap=$vulnerabilityItem,sourceMethodSig=$sourceSig")
             vulnerabilityItem.data.addManifest(componentJsonObj2)
             Log.logDebug("results $vulnerabilityItem\n")
         } else {

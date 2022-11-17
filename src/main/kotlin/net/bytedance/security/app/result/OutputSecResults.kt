@@ -121,8 +121,8 @@ object OutputSecResults {
             if (taintPath.isEmpty()) {
                 continue
             }
-            val sourceMethodSig = taintPath[0].split("->").toTypedArray()[0]
-            val pair = Pair(sourceMethodSig, vulnerabilityItem)
+            val sourceSig = taintPath[0].split("->").toTypedArray()[0]
+            val pair = Pair(sourceSig, vulnerabilityItem)
             manifestTaskQueue.addTask(pair)
         }
         manifestTaskQueue.addTaskFinished()
