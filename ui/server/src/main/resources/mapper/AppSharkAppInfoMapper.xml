@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blingsec.app_shark.mapper.AppSharkAppInfoMapper">
+  <resultMap id="BaseResultMap" type="com.blingsec.app_shark.pojo.entity.AppSharkAppInfo">
+    <!--@mbg.generated-->
+    <!--@Table app_shark_app_info-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="assignment_id" jdbcType="INTEGER" property="assignmentId" />
+    <result column="app_name" jdbcType="VARCHAR" property="appName" />
+    <result column="package_name" jdbcType="VARCHAR" property="packageName" />
+    <result column="min_sdk" jdbcType="INTEGER" property="minSdk" />
+    <result column="target_sdk" jdbcType="INTEGER" property="targetSdk" />
+    <result column="version_name" jdbcType="VARCHAR" property="versionName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, created_at, updated_at, assignment_id, app_name, package_name, min_sdk, target_sdk, 
+    version_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from app_shark_app_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from app_shark_app_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkAppInfo">
+    <!--@mbg.generated-->
+    insert into app_shark_app_info (id, created_at, updated_at, 
+      assignment_id, app_name, package_name, 
+      min_sdk, target_sdk, version_name
+      )
+    values (#{id,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{assignmentId,jdbcType=INTEGER}, #{appName,jdbcType=VARCHAR}, #{packageName,jdbcType=VARCHAR}, 
+      #{minSdk,jdbcType=INTEGER}, #{targetSdk,jdbcType=INTEGER}, #{versionName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkAppInfo">
+    <!--@mbg.generated-->
+    insert into app_shark_app_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+      <if test="assignmentId != null">
+        assignment_id,
+      </if>
+      <if test="appName != null">
+        app_name,
+      </if>
+      <if test="packageName != null">
+        package_name,
+      </if>
+      <if test="minSdk != null">
+        min_sdk,
+      </if>
+      <if test="targetSdk != null">
+        target_sdk,
+      </if>
+      <if test="versionName != null">
+        version_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="assignmentId != null">
+        #{assignmentId,jdbcType=INTEGER},
+      </if>
+      <if test="appName != null">
+        #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="packageName != null">
+        #{packageName,jdbcType=VARCHAR},
+      </if>
+      <if test="minSdk != null">
+        #{minSdk,jdbcType=INTEGER},
+      </if>
+      <if test="targetSdk != null">
+        #{targetSdk,jdbcType=INTEGER},
+      </if>
+      <if test="versionName != null">
+        #{versionName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkAppInfo">
+    <!--@mbg.generated-->
+    update app_shark_app_info
+    <set>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="assignmentId != null">
+        assignment_id = #{assignmentId,jdbcType=INTEGER},
+      </if>
+      <if test="appName != null">
+        app_name = #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="packageName != null">
+        package_name = #{packageName,jdbcType=VARCHAR},
+      </if>
+      <if test="minSdk != null">
+        min_sdk = #{minSdk,jdbcType=INTEGER},
+      </if>
+      <if test="targetSdk != null">
+        target_sdk = #{targetSdk,jdbcType=INTEGER},
+      </if>
+      <if test="versionName != null">
+        version_name = #{versionName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkAppInfo">
+    <!--@mbg.generated-->
+    update app_shark_app_info
+    set created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      assignment_id = #{assignmentId,jdbcType=INTEGER},
+      app_name = #{appName,jdbcType=VARCHAR},
+      package_name = #{packageName,jdbcType=VARCHAR},
+      min_sdk = #{minSdk,jdbcType=INTEGER},
+      target_sdk = #{targetSdk,jdbcType=INTEGER},
+      version_name = #{versionName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into app_shark_app_info
+    (id, created_at, updated_at, assignment_id, app_name, package_name, min_sdk, target_sdk, 
+      version_name)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=INTEGER}, #{item.createdAt,jdbcType=TIMESTAMP}, #{item.updatedAt,jdbcType=TIMESTAMP}, 
+        #{item.assignmentId,jdbcType=INTEGER}, #{item.appName,jdbcType=VARCHAR}, #{item.packageName,jdbcType=VARCHAR}, 
+        #{item.minSdk,jdbcType=INTEGER}, #{item.targetSdk,jdbcType=INTEGER}, #{item.versionName,jdbcType=VARCHAR}
+        )
+    </foreach>
+  </insert>
+</mapper>

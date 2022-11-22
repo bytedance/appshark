@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blingsec.app_shark.mapper.FileInfoDao">
+    <resultMap id="BaseResultMap" type="com.blingsec.app_shark.pojo.dto.FileInFo">
+        <id column="file_id" jdbcType="BIGINT" property="fileId"/>
+        <result column="file_name_old" jdbcType="VARCHAR" property="fileNameOld"/>
+        <result column="file_name_new" jdbcType="VARCHAR" property="fileNameNew"/>
+        <result column="file_type" jdbcType="VARCHAR" property="fileType"/>
+        <result column="file_storge_path" jdbcType="VARCHAR" property="fileStorgePath"/>
+        <result column="ctime" jdbcType="TIMESTAMP" property="ctime"/>
+        <result column="mtime" jdbcType="TIMESTAMP" property="mtime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        file_id
+        , file_name_old, file_name_new, file_type, file_storge_path, ctime, mtime
+    </sql>
+
+    <insert id="insertFileInfo" keyColumn="file_id" keyProperty="fileId"
+            parameterType="com.blingsec.app_shark.pojo.dto.FileInFo" useGeneratedKeys="true">
+        insert into file_info (file_name_old, file_name_new, file_type, file_storge_path, ctime, mtime)
+        values (#{fileNameOld,jdbcType=VARCHAR}, #{fileNameNew,jdbcType=VARCHAR}, #{fileType,jdbcType=VARCHAR},
+                #{fileStorgePath,jdbcType=VARCHAR}, #{ctime,jdbcType=TIMESTAMP}, #{mtime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <select id="findByIdIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from file_info
+        where file_id in
+        <foreach collection="list" item="element" index="index" open="(" separator="," close=")">
+            #{element}
+        </foreach>
+    </select>
+
+    <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from file_info
+        where file_id = #{fileId,jdbcType=BIGINT}
+    </select>
+</mapper>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blingsec.app_shark.mapper.AppSharkTraversalVulnerMapper">
+  <resultMap id="BaseResultMap" type="com.blingsec.app_shark.pojo.entity.AppSharkTraversalVulner">
+    <!--@mbg.generated-->
+    <!--@Table app_shark_traversal_vulner-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="assignment_id" jdbcType="INTEGER" property="assignmentId" />
+    <result column="traversal_info_id" jdbcType="INTEGER" property="traversalInfoId" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="entry_method" jdbcType="VARCHAR" property="entryMethod" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, created_at, updated_at, assignment_id, traversal_info_id, `position`, url, entry_method
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from app_shark_traversal_vulner
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from app_shark_traversal_vulner
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkTraversalVulner">
+    <!--@mbg.generated-->
+    insert into app_shark_traversal_vulner (id, created_at, updated_at, 
+      assignment_id, traversal_info_id, `position`, 
+      url, entry_method)
+    values (#{id,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{assignmentId,jdbcType=INTEGER}, #{traversalInfoId,jdbcType=INTEGER}, #{position,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{entryMethod,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkTraversalVulner"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <!--@mbg.generated-->
+    insert into app_shark_traversal_vulner
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+      <if test="assignmentId != null">
+        assignment_id,
+      </if>
+      <if test="traversalInfoId != null">
+        traversal_info_id,
+      </if>
+      <if test="position != null">
+        `position`,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="entryMethod != null">
+        entry_method,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="assignmentId != null">
+        #{assignmentId,jdbcType=INTEGER},
+      </if>
+      <if test="traversalInfoId != null">
+        #{traversalInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="position != null">
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="entryMethod != null">
+        #{entryMethod,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkTraversalVulner">
+    <!--@mbg.generated-->
+    update app_shark_traversal_vulner
+    <set>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="assignmentId != null">
+        assignment_id = #{assignmentId,jdbcType=INTEGER},
+      </if>
+      <if test="traversalInfoId != null">
+        traversal_info_id = #{traversalInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="position != null">
+        `position` = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="entryMethod != null">
+        entry_method = #{entryMethod,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkTraversalVulner">
+    <!--@mbg.generated-->
+    update app_shark_traversal_vulner
+    set created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      assignment_id = #{assignmentId,jdbcType=INTEGER},
+      traversal_info_id = #{traversalInfoId,jdbcType=INTEGER},
+      `position` = #{position,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      entry_method = #{entryMethod,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into app_shark_traversal_vulner
+    (id, created_at, updated_at, assignment_id, traversal_info_id, `position`, url, entry_method
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=INTEGER}, #{item.createdAt,jdbcType=TIMESTAMP}, #{item.updatedAt,jdbcType=TIMESTAMP}, 
+        #{item.assignmentId,jdbcType=INTEGER}, #{item.traversalInfoId,jdbcType=INTEGER}, 
+        #{item.position,jdbcType=VARCHAR}, #{item.url,jdbcType=VARCHAR}, #{item.entryMethod,jdbcType=VARCHAR}
+        )
+    </foreach>
+  </insert>
+</mapper>

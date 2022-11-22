@@ -1,0 +1,278 @@
+.b-m {
+  &t-5 {
+    margin-top: 5px;
+  }
+  &t-10 {
+    margin-top: 10px;
+  }
+  &t-15 {
+    margin-top: 15px;
+  }
+  &t-20 {
+    margin-top: 20px;
+  }
+  &t-30 {
+    margin-top: 30px;
+  }
+  &l-20 {
+    margin-left: 20px;
+  }
+  &l-30 {
+    margin-left: 30px;
+  }
+  &l-50 {
+    margin-left: 50px;
+  }
+  &l-60 {
+    margin-left: 60px;
+  }
+  &l-90 {
+    margin-left: 90px;
+  }
+  &r-10 {
+    margin-right: 10px;
+  }
+  &r-20 {
+    margin-right: 20px;
+  }
+  &r-30 {
+    margin-right: 30px;
+  }
+  &r-50 {
+    margin-right: 50px;
+  }
+  &b-5 {
+    margin-bottom: 5px;
+  }
+  &b-10 {
+    margin-bottom: 10px;
+  }
+  &b-20 {
+    margin-bottom: 20px;
+  }
+  &b-30 {
+    margin-bottom: 30px;
+  }
+  &l-10 {
+    margin-left: 10px;
+  }
+  &l-5 {
+    margin-left: 5px;
+  }
+}
+
+.b-p {
+  &a-10 {
+    padding: 10px;
+  }
+  &a-20 {
+    padding: 20px;
+  }
+  &b-10 {
+    padding-bottom: 10px;
+  }
+  &b-20 {
+    padding-bottom: 20px;
+  }
+  &l-10 {
+    padding-left: 10px;
+  }
+  &l-20 {
+    padding-left: 20px;
+  }
+  &t-10 {
+    padding-top: 10px;
+  }
+}
+
+.clearfix:before,
+.clearfix:after {
+  content: '';
+  display: table;
+  height: 0;
+  font-size: 0;
+  line-height: 0;
+  visibility: hidden;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  *zoom: 1;
+}
+
+.float- {
+  &l {
+    float: left;
+  }
+  &r {
+    float: right;
+  }
+}
+
+.f-ta {
+  &c {
+    text-align: center;
+  }
+  &l {
+    text-align: left;
+  }
+  &r {
+    text-align: right;
+  }
+}
+
+.b-d {
+  &i {
+    display: block;
+  }
+  &ib {
+    display: inline-block;
+  }
+}
+
+.fwb {
+  font-weight: bold;
+}
+
+.color-red {
+  color: red;
+}
+
+.color-green {
+  color: #9eb603;
+}
+
+.color-wathet {
+  color: #169bd5;
+}
+
+.font- {
+  &12 {
+    font-size: 12px;
+  }
+  &13 {
+    font-size: 13px;
+  }
+  &14 {
+    font-size: 14px;
+  }
+  &15 {
+    font-size: 15px !important;
+  }
+  &16 {
+    font-size: 16px;
+  }
+  &20 {
+    font-size: 20px;
+  }
+}
+
+.default-search::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.usernameSearch {
+  margin-bottom: 20px;
+  .search_left {
+    width: calc(100% - 250px);
+    .el-form-item {
+      width: 40%;
+      margin-right: 7%;
+      .el-select {
+        width: 100%;
+      }
+    }
+  }
+  .search_right {
+    min-width: 240px;
+    float: right;
+  }
+}
+
+.el-tooltip__popper {
+  max-width: 300px;
+}
+
+html {
+  width: 100%;
+}
+
+.circle {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 7px;
+}
+
+.testSearch {
+  margin-bottom: 20px;
+  .search_left {
+    width: 100%;
+    overflow: hidden;
+    .el-form-item {
+      width: 100%;
+      margin-right: 3%;
+      float: left;
+      .el-select {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-1 {
+  flex-grow: 1;
+}
+
+// 去掉文件上传过渡效果
+.el-upload-list__item {
+  transition: none !important;
+}
+
+// 让标签不接受鼠标事件
+.pointerNone {
+  pointer-events: none;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.selectColor {
+  color: #409eff;
+  border: 1px solid #409eff;
+}
+
+.el-table__body-wrapper {
+  overflow: auto !important;
+}
+
+.grey {
+  color: #aaaaaa !important;
+}
+
+.color-blue {
+  color: #409eff;
+}
+
+.overflowX {
+  overflow-x: auto;
+}
+
+.height100 {
+  height: 100%;
+}
+
+.el-table thead {
+  color: #4d535a !important;
+}
