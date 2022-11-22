@@ -30,14 +30,14 @@ the [gradle](https://gradle.org/) tool.
 $ ./gradlew build  -x test 
 ```
 
-After executing the above command, you will see an artifact file `AppShark-0.1.1-all.jar` in the directory `build/libs`.
+After executing the above command, you will see an artifact file `AppShark-0.1.2-all.jar` in the directory `build/libs`.
 
 ## Running AppShark
 
 Like the previous step, we assume that you are still in the root folder of the project. You can run the tool with
 
  ```shell
- $ java -jar build/libs/AppShark-0.1.1-all.jar  config/config.json5
+ $ java -jar build/libs/AppShark-0.1.2-all.jar  config/config.json5
  ```
 
 The `config.json5` has the following configuration contents.
