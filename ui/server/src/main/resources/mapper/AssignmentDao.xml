@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blingsec.app_shark.mapper.AssignmentDao">
+    <resultMap id="page" type="com.blingsec.app_shark.pojo.vo.AssignmentPageVo">
+        <result column="id" property="id"/>
+        <result column="guid" property="guid"/>
+        <result column="name" property="assignmentName"/>
+        <result column="process_status" property="processStatus"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="scan_time" property="scanTime"/>
+        <result column="rules" property="rules"/>
+        <result column="app_attach_id" property="appAttach.fileId"/>
+        <result column="file_name_old" property="appAttach.fileName"/>
+        <result column="file_storge_path" property="appAttach.fileUrl"/>
+        <result column="file_name_new" property="appAttach.fileNameNew"/>
+        <result column="analysis_status" property="analysisStatus"/>
+    </resultMap>
+    <resultMap id="detail" type="com.blingsec.app_shark.pojo.vo.AssignmentDetailVo">
+        <result column="id" property="id"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="guid" property="guid"/>
+        <result column="name" property="assignmentName"/>
+        <result column="description" property="assignmentDescription"/>
+        <result column="process_status" property="assignmentProcessStatus"/>
+        <result column="scan_time" property="scanTime"/>
+        <result column="rules" property="rules"/>
+        <result column="app_attach_id" property="appAttachId"/>
+        <result column="analysis_status" property="analysisStatus"/>
+        <result column="app_name" property="appSharkAppInfo.appName"/>
+        <result column="package_name" property="appSharkAppInfo.packageName"/>
+        <result column="min_sdk" property="appSharkAppInfo.minSdk"/>
+        <result column="target_sdk" property="appSharkAppInfo.targetSdk"/>
+        <result column="version_name" property="appSharkAppInfo.versionName"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.blingsec.app_shark.pojo.vo.AssignmentDetailVo">
+        insert into proj_task_assignment
+         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="guid != null">
+                guid,
+            </if>
+            <if test="assignmentName != null">
+                name,
+            </if>
+            <if test="createdAt != null">
+                created_at,
+            </if>
+            <if test="updatedAt != null">
+                updated_at,
+            </if>
+            <if test="assignmentDescription != null">
+                description,
+            </if>
+            <if test="rules != null">
+                rules,
+            </if>
+            <if test="largestAnalysis != null">
+                largest_analysis,
+            </if>
+            <if test="assignmentProcessStatus != null">
+                process_status,
+            </if>
+            <if test="appAttachId != null">
+                app_attach_id,
+            </if>
+            <if test="scanTime != null">
+                scan_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="guid != null">
+                #{guid},
+            </if>
+            <if test="assignmentName != null">
+                #{assignmentName},
+            </if>
+            <if test="createdAt != null">
+                #{createdAt},
+            </if>
+            <if test="updatedAt != null">
+                #{updatedAt},
+            </if>
+            <if test="assignmentDescription != null">
+                #{assignmentDescription},
+            </if>
+            <if test="rules != null">
+                #{rules},
+            </if>
+            <if test="largestAnalysis != null">
+                #{largestAnalysis},
+            </if>
+            <if test="assignmentProcessStatus != null">
+                #{assignmentProcessStatus},
+            </if>
+            <if test="appAttachId != null">
+                #{appAttachId},
+            </if>
+            <if test="scanTime != null">
+                #{scanTime},
+            </if>
+        </trim>
+    </insert>
+    <update id="deleteByIds">
+        UPDATE proj_task_assignment
+        SET deleted_flag = 1
+        WHERE id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.blingsec.app_shark.pojo.vo.AssignmentDetailVo">
+        update proj_task_assignment
+        <set>
+            <if test="guid != null and guid != ''">
+                guid = #{guid},
+            </if>
+            <if test="createdAt != null">
+                created_at = #{createdAt},
+            </if>
+            <if test="updatedAt != null">
+                updated_at = #{updatedAt},
+            </if>
+            <if test="deletedFlag != null">
+                deleted_flag = #{deletedFlag},
+            </if>
+            <if test="assignmentName != null and assignmentName != ''">
+                name = #{assignmentName},
+            </if>
+            <if test="assignmentDescription != null and assignmentDescription != ''">
+                description = #{assignmentDescription},
+            </if>
+            <if test="rules != null and rules != ''">
+                rules = #{rules},
+            </if>
+            <if test="largestAnalysis != null">
+                largest_analysis = #{largestAnalysis},
+            </if>
+            <if test="assignmentProcessStatus != null">
+                process_status = #{assignmentProcessStatus},
+            </if>
+            <if test="scanTime != null">
+                scan_time = #{scanTime},
+            </if>
+            <if test="appAttachId != null">
+                app_attach_id = #{appAttachId},
+            </if>
+            <if test="analysisStatus != null">
+                analysis_status = #{analysisStatus},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="countProcessStatus" resultType="int">
+        SELECT COUNT(id) FROM proj_task_assignment WHERE process_status = #{processStatus}
+    </select>
+    <select id="queryByPage" resultMap="page">
+        SELECT
+        pts.id,
+        pts.guid,
+        pts.created_at,
+        pts.name,
+        pts.rules,
+        pts.process_status,
+        pts.app_attach_id,
+        pts.scan_time,
+        pts.analysis_status,
+        fi.file_name_old,
+        fi.file_name_new,
+        fi.file_storge_path
+        FROM proj_task_assignment pts
+        LEFT JOIN file_info fi ON fi.file_id = pts.app_attach_id
+        <where>
+            <if test="assignmentName != null and assignmentName != ''">
+                and pts.name like concat('%', #{assignmentName}, '%')
+            </if>
+            <if test="assignmentProcessStatus != null">
+                and pts.process_status = #{assignmentProcessStatus}
+            </if>
+            <if test="startTime != null and endTime != null">
+                and pts.created_at &gt;= #{startTime,jdbcType=TIMESTAMP}
+                and pts.created_at &lt;= #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ids != null">
+                and pts.id in
+                <foreach collection="ids" item="id" separator="," open="(" close=")">
+                    #{id}
+                </foreach>
+            </if>
+            and pts.deleted_flag = 0
+        </where>
+        order by pts.created_at ASC
+    </select>
+    <select id="findById" resultMap="detail">
+        SELECT  pta.id,
+                pta.created_at,
+                pta.guid,
+                pta.name,
+                pta.description,
+                pta.rules,
+                pta.largest_analysis,
+                pta.process_status,
+                pta.app_attach_id,
+                pta.scan_time,
+                pta.analysis_status,
+                asai.app_name,
+                asai.package_name,
+                asai.min_sdk,
+                asai.target_sdk,
+                asai.version_name
+        FROM proj_task_assignment pta
+        LEFT JOIN app_shark_app_info asai ON pta.id = asai.assignment_id
+        WHERE pta.deleted_flag = 0 AND pta.id = #{id}
+    </select>
+    <update id="updateAssignmentByGuid">
+    update proj_task_assignment
+        <set>
+            <if test="pid != null">
+                pid = #{pid},
+            </if>
+            <if test="assignmentProcessStatus != null">
+                process_status = #{assignmentProcessStatus},
+            </if>
+        </set>
+        where guid = #{guid}
+    </update>
+    <insert id="insertResultJson" parameterType="com.blingsec.app_shark.pojo.vo.AssignmentDetailVo">
+        INSERT INTO proj_task_result_json
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                assignment_id,
+            </if>
+            <if test="resultJson != null">
+                result_json,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="resultJson != null">
+                #{resultJson},
+            </if>
+        </trim>
+    </insert>
+</mapper>

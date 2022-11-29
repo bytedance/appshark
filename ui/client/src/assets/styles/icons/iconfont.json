@@ -1,0 +1,44 @@
+{
+  "id": "2821657",
+  "name": "test",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "14303350",
+      "name": "批量导入",
+      "font_class": "piliangdaoru",
+      "unicode": "e74b",
+      "unicode_decimal": 59211
+    },
+    {
+      "icon_id": "2667525",
+      "name": "导出",
+      "font_class": "daochu",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "5269215",
+      "name": "导入",
+      "font_class": "daoru",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "12770900",
+      "name": "批量删除",
+      "font_class": "piliangshanchu",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "6447192",
+      "name": "批量导出",
+      "font_class": "piliangdaochu",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    }
+  ]
+}

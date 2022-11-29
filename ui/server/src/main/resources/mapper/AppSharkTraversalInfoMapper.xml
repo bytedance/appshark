@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blingsec.app_shark.mapper.AppSharkTraversalInfoMapper">
+  <resultMap id="BaseResultMap" type="com.blingsec.app_shark.pojo.entity.AppSharkTraversalInfo">
+    <!--@mbg.generated-->
+    <!--@Table app_shark_traversal_info-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="assignment_id" jdbcType="INTEGER" property="assignmentId" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
+    <result column="detail" jdbcType="VARCHAR" property="detail" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+  </resultMap>
+  <resultMap id="page" type="com.blingsec.app_shark.pojo.vo.AppSharkVulnerInfoVo">
+    <!--@mbg.generated-->
+    <!--@Table app_shark_traversal_info-->
+    <id column="vulnerId" jdbcType="INTEGER" property="appSharkTraversalVulner.id" />
+    <result column="assignmentId" jdbcType="INTEGER" property="appSharkTraversalVulner.traversalInfoId" />
+    <result column="traversalInfoId" jdbcType="INTEGER" property="appSharkTraversalVulner.assignmentId" />
+    <result column="position" jdbcType="VARCHAR" property="appSharkTraversalVulner.position" />
+    <result column="url" jdbcType="VARCHAR" property="appSharkTraversalVulner.url" />
+    <result column="entryMethod" jdbcType="VARCHAR" property="appSharkTraversalVulner.entryMethod" />
+    <result column="assignmentId" jdbcType="INTEGER" property="assignmentId" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
+    <result column="detail" jdbcType="VARCHAR" property="detail" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, created_at, updated_at, assignment_id, category, detail, `name`, model
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from app_shark_traversal_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from app_shark_traversal_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkTraversalInfo">
+    <!--@mbg.generated-->
+    insert into app_shark_traversal_info (id, created_at, updated_at, 
+      assignment_id, category, detail, 
+      `name`, model)
+    values (#{id,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{assignmentId,jdbcType=INTEGER}, #{category,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkTraversalInfo"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <!--@mbg.generated-->
+    insert into app_shark_traversal_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+      <if test="assignmentId != null">
+        assignment_id,
+      </if>
+      <if test="category != null">
+        category,
+      </if>
+      <if test="detail != null">
+        detail,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="assignmentId != null">
+        #{assignmentId,jdbcType=INTEGER},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkTraversalInfo">
+    <!--@mbg.generated-->
+    update app_shark_traversal_info
+    <set>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="assignmentId != null">
+        assignment_id = #{assignmentId,jdbcType=INTEGER},
+      </if>
+      <if test="category != null">
+        category = #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        detail = #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkTraversalInfo">
+    <!--@mbg.generated-->
+    update app_shark_traversal_info
+    set created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      assignment_id = #{assignmentId,jdbcType=INTEGER},
+      category = #{category,jdbcType=VARCHAR},
+      detail = #{detail,jdbcType=VARCHAR},
+      `name` = #{name,jdbcType=VARCHAR},
+      model = #{model,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into app_shark_traversal_info
+    (id, created_at, updated_at, assignment_id, category, detail, `name`, model)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=INTEGER}, #{item.createdAt,jdbcType=TIMESTAMP}, #{item.updatedAt,jdbcType=TIMESTAMP}, 
+        #{item.assignmentId,jdbcType=INTEGER}, #{item.category,jdbcType=VARCHAR}, #{item.detail,jdbcType=VARCHAR}, 
+        #{item.name,jdbcType=VARCHAR}, #{item.model,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <select id="queryVulnerByPage" resultMap="page">
+        SELECT
+            astv.id AS vulnerId,
+            astv.assignment_id AS assignmentId,
+            astv.traversal_info_id AS traversalInfoId,
+            astv.position AS position,
+            astv.url AS url,
+            astv.entry_method AS entryMethod,
+            asti.id AS traversalId,
+            asti.category AS category,
+            asti.detail AS detail,
+            asti.name AS name,
+            asti.model AS model
+        FROM app_shark_traversal_vulner astv
+        LEFT JOIN app_shark_traversal_info asti ON astv.traversal_info_id = asti.id
+        <where>
+            <if test="vulnerName != null and vulnerName != ''">
+                and asti.name like concat('%', #{vulnerName}, '%')
+            </if>
+            <if test="vulnerModel != null and vulnerModel != ''">
+                and asti.model = #{vulnerModel}
+            </if>
+            AND astv.assignment_id = #{assessmentId}
+        </where>
+   </select>
+</mapper>
