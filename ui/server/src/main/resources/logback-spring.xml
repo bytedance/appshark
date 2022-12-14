@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%date{yyyy-MM-dd HH:mm:ss}  | %highlight(%-5level) | %boldYellow(%thread) | %boldGreen(%logger) | %msg%n"/>
+    <property name="FILE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS}  %-5level %logger Line:%-3L - %msg%n"/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <appender-ref ref="STDOUT"/>
+    </appender>
+
+    <springProfile name="dev,test">
+        <logger name="io.netty" level="error"/>
+        <logger name="com.bling" level="debug"/>
+        <logger name="org.apache" level="warn"/>
+        <logger name="org.dbunit" level="warn"/>
+        <logger name="org.mybatis" level="warn"/>
+        <logger name="com.alibaba" level="warn"/>
+        <logger name="org.redisson" level="warn"/>
+        <logger name="com.netflix" level="error"/>
+        <logger name="io.lettuce.core" level="error"/>
+        <logger name="org.springframework" level="warn"/>
+        <logger name="org.hibernate.validator" level="error"/>
+        <logger name="org.reflections.Reflections" level="error"/>
+        <logger name="org.springframework.web.client.RestTemplate" level="warn"/>
+        <logger name="com.zaxxer.hikari.pool.HikariPool" level="warn"/>
+        <root level="debug">
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
+</configuration>
+

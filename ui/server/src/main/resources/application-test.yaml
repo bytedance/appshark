@@ -1,0 +1,44 @@
+spring:
+  #  数据库连接池配置信息系
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/app_shark?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: Abcd@123456_root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      # 连接池的配置信息
+      # 初始化大小，最小，最大
+      initial-size: 200
+      min-idle: 5
+      maxActive: 4096
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+  # redis 配置信息
+  redis:
+    host: 127.0.0.1
+    port: 6380
+    timeout: 5000ms
+  servlet:
+    multipart:
+      max-file-size: 5GB
+      max-request-size: 5GB
+      enabled: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+mybatis:
+  mapper-locations: classpath*:mapper/*Dao.xml,classpath*:mapper/*Mapper.xml
+  type-handlers-package: com.blingsec.app_shark.common.handlers
+  configuration:
+    map-underscore-to-camel-case: true

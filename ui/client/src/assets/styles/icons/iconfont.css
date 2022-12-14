@@ -1,0 +1,35 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 2821657 */
+  src: url('iconfont.woff2?t=1631934046044') format('woff2'),
+       url('iconfont.woff?t=1631934046044') format('woff'),
+       url('iconfont.ttf?t=1631934046044') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 12px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-piliangdaoru:before {
+  content: "\e74b";
+}
+
+.icon-daochu:before {
+  content: "\e61c";
+}
+
+.icon-daoru:before {
+  content: "\e621";
+}
+
+.icon-piliangshanchu:before {
+  content: "\e609";
+}
+
+.icon-piliangdaochu:before {
+  content: "\e649";
+}
+

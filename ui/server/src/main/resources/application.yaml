@@ -1,0 +1,7 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: app_shark
+  profiles:
+    active: @spring.profiles.active@

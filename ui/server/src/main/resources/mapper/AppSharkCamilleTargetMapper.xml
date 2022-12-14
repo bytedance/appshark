@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blingsec.app_shark.mapper.AppSharkCamilleTargetMapper">
+  <resultMap id="BaseResultMap" type="com.blingsec.app_shark.pojo.entity.AppSharkCamilleTarget">
+    <!--@mbg.generated-->
+    <!--@Table app_shark_camille_target-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="vulner_id" jdbcType="INTEGER" property="vulnerId" />
+    <result column="target" jdbcType="VARCHAR" property="target" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, vulner_id, target
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from app_shark_camille_target
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from app_shark_camille_target
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkCamilleTarget">
+    <!--@mbg.generated-->
+    insert into app_shark_camille_target (id, vulner_id, target
+      )
+    values (#{id,jdbcType=INTEGER}, #{vulnerId,jdbcType=INTEGER}, #{target,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkCamilleTarget">
+    <!--@mbg.generated-->
+    insert into app_shark_camille_target
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="vulnerId != null">
+        vulner_id,
+      </if>
+      <if test="target != null">
+        target,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="vulnerId != null">
+        #{vulnerId,jdbcType=INTEGER},
+      </if>
+      <if test="target != null">
+        #{target,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkCamilleTarget">
+    <!--@mbg.generated-->
+    update app_shark_camille_target
+    <set>
+      <if test="vulnerId != null">
+        vulner_id = #{vulnerId,jdbcType=INTEGER},
+      </if>
+      <if test="target != null">
+        target = #{target,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.blingsec.app_shark.pojo.entity.AppSharkCamilleTarget">
+    <!--@mbg.generated-->
+    update app_shark_camille_target
+    set vulner_id = #{vulnerId,jdbcType=INTEGER},
+      target = #{target,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into app_shark_camille_target
+    (id, vulner_id, target)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=INTEGER}, #{item.vulnerId,jdbcType=INTEGER}, #{item.target,jdbcType=VARCHAR}
+        )
+    </foreach>
+  </insert>
+  <select id="selectByVulnerId" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM app_shark_camille_target
+    WHERE vulner_id = #{id}
+   </select>
+</mapper>
