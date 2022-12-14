@@ -357,7 +357,7 @@ class Profiler {
                     maxMemoryUsage = memoryUsage.used
                 }
                 logInfo("memory usage=${memoryUsage}")
-                delay(1000)
+                delay(30000)
             }
         }
     }
