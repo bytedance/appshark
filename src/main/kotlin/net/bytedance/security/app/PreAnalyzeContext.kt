@@ -112,10 +112,10 @@ open class PreAnalyzeContext {
 //        val constStrPatternInRules = MethodFieldConstCacheVisitor.parseAllConstStrPatternInRules(ruleDir, ruleList)
         cam.addMethodVisitor {
             //1. ssa Make sure SSA is at the first
-            MethodSSAVisitor()
+            MethodVisitorStatistics(MethodSSAVisitor())
         }.addMethodVisitor {
             //2. The callback must be handled after the SSA, otherwise the function doesn't have body
-            MethodCallbackVisitor(callBackEnhance)
+            MethodVisitorStatistics(MethodCallbackVisitor(callBackEnhance))
         }.addMethodVisitor {
             //3.  MethodFieldConstCacheVisitor must be handled after ssa, because there are dependencies
             MethodFieldConstCacheVisitor(
