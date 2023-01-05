@@ -11,3 +11,4 @@ build/*
 flowdroidAndSoot.src/*
 out/
 .vscode/
+bin/*

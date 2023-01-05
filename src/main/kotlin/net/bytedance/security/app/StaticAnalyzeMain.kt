@@ -54,7 +54,7 @@ object StaticAnalyzeMain {
         profiler.parseApk.end()
 
         profiler.preProcessor.start()
-        val rules = v3.loadRules(argumentConfig.rules.split(","))
+        val rules = v3.loadRules(argumentConfig.rules)
         logInfo("rules loaded")
         val ctx = v3.createContext(rules)
         profiler.preProcessor.end()

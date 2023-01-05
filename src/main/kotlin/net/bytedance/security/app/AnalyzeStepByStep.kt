@@ -30,14 +30,22 @@ import soot.Scene
 import soot.SootClass
 import soot.options.Options
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
+import kotlin.io.path.pathString
+import kotlin.streams.toList
 
 class AnalyzeStepByStep {
     suspend fun loadRules(
-        ruleList: List<String>,
+        ruleList: String,
     ): Rules {
-        val rulePathList = ruleList.map {
-            "${getConfig().rulePath}/$it"
-        }.toList()
+        val rulePathList = if (ruleList.isNotEmpty())
+            ruleList.split(",").map { "${getConfig().rulePath}/$it" }.toList()
+        else
+            withContext(Dispatchers.IO) {
+                Files.walk(Paths.get(getConfig().rulePath),1)
+            }.filter { it.pathString.endsWith(".json") }.map { it.pathString }
+                .toList()
         val rules = Rules(rulePathList, RuleFactory())
         rules.loadRules()
         return rules
