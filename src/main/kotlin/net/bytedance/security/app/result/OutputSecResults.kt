@@ -56,7 +56,7 @@ object OutputSecResults {
     private var BasicInfo = BasicInfo()
 
     private var DeepLinkInfo: MutableMap<String, MutableSet<String>> = HashMap()
-    private var AppInfo = AppInfo()
+    var AppInfo = AppInfo()
 
 
     var APIList: MutableList<HttpAPI> = ArrayList()
@@ -66,6 +66,9 @@ object OutputSecResults {
     var JSList: MutableList<String> = ArrayList()
     private var vulnerabilityItems = HashSet<VulnerabilityItem>()
     fun init() {
+        AppInfo.appsharkTakeTime = profiler.totalRange.takes
+        AppInfo.classCount = profiler.ProcessMethodStatistics.availableClasses
+        AppInfo.methodCount = profiler.ProcessMethodStatistics.availableMethods
         Results.AppInfo = AppInfo
         Results.DeepLinkInfo = DeepLinkInfo
         Results.HTTP_API = APIList
@@ -176,6 +179,7 @@ object OutputSecResults {
      */
     suspend fun processResult(ctx: PreAnalyzeContext) {
         try {
+            Results.Profile = profiler.finishAndSaveProfilerResult()
             init()
             insertPerm()
             addManifest(ctx)
@@ -186,7 +190,6 @@ object OutputSecResults {
             val outputPath = getConfig().outPath + "/results.json"
             val profileOutputPath = getConfig().outPath + "/profile.json"
             profiler.processResult(Results)
-            Results.Profile = profiler.finishAndSaveProfilerResult()
             val s = Json.encodeToPrettyString(Results)
             PLUtils.writeFile(outputPath, s)
             PLUtils.writeFile(profileOutputPath, profiler.toString())
