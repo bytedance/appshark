@@ -44,20 +44,20 @@ The `config.json5` has the following configuration contents.
 
 ```JSON
 {
-  "apkPath": "/Users/apks/app1.apk",
-  "out": "out",
-  "rules": "unZipSlip.json",
-  "maxPointerAnalyzeTime": 600
+  "apkPath": "/Users/apks/app1.apk"
 } 
 ```
 
-Each JSON field is explained below.
+Each JSON has these basic field.
 
 - apkPath: the path of the apk file to analyze
 - out: the path of the output directory
-- rules: the path(s) of the rule file(s), can be more than 1 rules
+- rules: specifies the rules, split by `,`. Default is all *.json files in the $rulePath directory
+- rulePath: specifies the rule's parent directory, default is ./config/rules
 - maxPointerAnalyzeTime: the timeout duration in seconds set for the analysis started from an entry point
 - debugRule: specify the rule name that enables logging for debugging
+
+For more config field, please visit `net.bytedance.security.app.ArgumentConfig`
 
 If you provide a configuration JSON file which sets the output path as `out` in the project root directory, you will
 find the result file `out/results.json` after running the analysis.

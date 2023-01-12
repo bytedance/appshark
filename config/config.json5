@@ -2,9 +2,11 @@
   //apk to anlayze
   "apkPath": "/Users/aaa/Downloads/app.apk",
   //result output directory
-  "out": "out",
-  "rules": "unZipSlip.json",
-  "maxPointerAnalyzeTime": 600,
+//  "out": "out",
+  //specifies the rules, default is all *.json files in the $rulePath directory
+//  "rules": "unZipSlip.json",
+  //specifies the rule's parent directory, default is ./config/rules
+//  "rulePath": "config/rules"
   //print more info about this rule
-  "debugRule": "unZipSlip"
+//  "debugRule": "unZipSlip"
 }
