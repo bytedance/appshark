@@ -33,9 +33,9 @@ import soot.SootMethod
  *   Integer constants are converted to string
  */
 class TaintCheckSanitizer(
-    private val taints: Set<PLLocalPointer>,
-    private val notTaints: Set<PLLocalPointer>,
-    private val constStrings: Map<PLLocalPointer, List<String>>,
+    val taints: Set<PLLocalPointer>,
+    val notTaints: Set<PLLocalPointer>,
+    val constStrings: Map<PLLocalPointer, List<String>>,
     val rule: TaintFlowRule,
 ) : ISanitizer {
     override fun matched(ctx: SanitizeContext): Boolean {
