@@ -261,16 +261,19 @@ class TaintPathModeHtmlWriter(
         val tosUrl = saveContent(generateHtml(), htmlName)
         Log.logDebug("Write vulnerability  taint mode to $tosUrl")
 
-        val throughAPISet: MutableSet<String> = HashSet()
-        for (throughStmt in apiSearchStmtSet) {
-            if (throughStmt.containsInvokeExpr()) {
-                val invokeExpr = throughStmt.invokeExpr
-                if (isMatchThroughAPI(
-                        invokeExpr.methodRef.signature,
-                        invokeExpr.methodRef.name
-                    )
-                ) {
-                    throughAPISet.add(invokeExpr.methodRef.signature)
+        var throughAPISet: MutableSet<String>? = null
+        if (ruleThroughAPISet.isNotEmpty()) {
+            throughAPISet = HashSet()
+            for (throughStmt in apiSearchStmtSet) {
+                if (throughStmt.containsInvokeExpr()) {
+                    val invokeExpr = throughStmt.invokeExpr
+                    if (isMatchThroughAPI(
+                            invokeExpr.methodRef.signature,
+                            invokeExpr.methodRef.name
+                        )
+                    ) {
+                        throughAPISet.add(invokeExpr.methodRef.signature)
+                    }
                 }
             }
         }
@@ -365,7 +368,7 @@ class TaintPathModeVulnerability(
     override val position: String,
     val source: String,
     val sink: String,
-    val throughAPI: Set<String>,
+    private val throughAPI: Set<String>?,
     val entryMethod: SootMethod,
 ) :
     IVulnerability {
@@ -385,8 +388,8 @@ class TaintPathModeVulnerability(
         if (otherComponents.isNotEmpty()) {
             m["OtherComponents"] = otherComponents
         }
-        if (throughAPI.isNotEmpty()) {
-            m["throughAPI"] = throughAPI
+        throughAPI?.let {
+            m["throughAPI"] = it
         }
         return m
     }
