@@ -12,3 +12,4 @@ flowdroidAndSoot.src/*
 out/
 .vscode/
 bin/*
+*.iml

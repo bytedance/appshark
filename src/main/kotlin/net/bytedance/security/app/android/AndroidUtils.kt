@@ -502,6 +502,10 @@ object AndroidUtils {
 
 
     fun parseResAXml(fileName: String): AXmlNode? {
+        return parseResAXmlHandler(fileName)?.document?.rootNode
+    }
+
+    fun parseResAXmlHandler(fileName: String): AXmlHandler? {
         val apkF = File(apkAbsPath!!)
         if (!apkF.exists()) {
             Log.logDebug("file '$apkAbsPath' does not exist!")
@@ -515,8 +519,7 @@ object AndroidUtils {
                     val entryName = entry.name
                     if (entryName == fileName) {
                         archive.getInputStream(entry).use { inputStream ->
-                            val handler = AXmlHandler(inputStream, AXML20Parser())
-                            return handler.document.rootNode
+                            return AXmlHandler(inputStream, AXML20Parser())
                         }
                     }
                 }
