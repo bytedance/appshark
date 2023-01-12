@@ -33,30 +33,26 @@ import soot.SootMethod
  *   Integer constants are converted to string
  */
 class TaintCheckSanitizer(
-    val taints: Set<PLLocalPointer>,
-    val notTaints: Set<PLLocalPointer>,
-    val constStrings: Map<PLLocalPointer, List<String>>,
+    private val taints: Set<PLLocalPointer>,
+    private val notTaints: Set<PLLocalPointer>,
+    private val constStrings: Map<PLLocalPointer, List<String>>,
     val rule: TaintFlowRule,
 ) : ISanitizer {
     override fun matched(ctx: SanitizeContext): Boolean {
         assert(checkAllPtrIsInOneMethod())
         val allTaints = ctx.ctx.collectPropagation(ctx.src!!, rule.primTypeAsTaint)
-        var taintedPass = taints.isEmpty()
-        for (p in taints) {
-            if (allTaints.contains(p)) {
-                taintedPass = true
-                break
-            }
-        }
+        //taints check make sure all this.taints are tainted
+        val taintedPass = if (taints.isEmpty()) {
+            true
+        } else taints.all { allTaints.contains(it) }
         if (!taintedPass) {
             return false
         }
-        var notTaintedPass = notTaints.isEmpty()
-        for (p in notTaints) {
-            if (allTaints.contains(p)) {
-                notTaintedPass = false
-                break
-            }
+        //notTaints check make sure none of this.notTaints are tainted
+        val notTaintedPass = if (notTaints.isEmpty()) {
+            true
+        } else notTaints.all {
+            !allTaints.contains(it)
         }
         if (!notTaintedPass) {
             return false
