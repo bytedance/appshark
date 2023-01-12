@@ -77,7 +77,10 @@ class AppInfo(
     var target_sdk: Int? = null,
     var versionCode: Int? = null,
     var versionName: String? = null,
-    var otherInfo: MutableMap<String, String>? = null
+    var otherInfo: MutableMap<String, String>? = null,
+    var classCount: Int = 0,
+    var methodCount: Int = 0,
+    var appsharkTakeTime: Long = 0,
 )
 
 @Serializable
@@ -125,12 +128,14 @@ class SecurityRiskItem(
     var deobfApk: String? = null,
     var level: String? = null,
 )
- 
+
 
 @Serializable
 data class SecurityVulnerabilityItem(
     var details: Map<String, @Serializable(with = AnySerializer::class) Any>? = null,
     var hash: String? = null,
+    @SerialName("old_hash")
+    var oldHash: String? = null,
     var possibility: String? = null
 )
 
@@ -151,14 +156,17 @@ object AnySerializer : KSerializer<Any> {
             }
             JsonObject(mapContents)
         }
+
         is List<*> -> {
             val arrayContents = value.map { listEntry -> serializeAny(listEntry) }
             JsonArray(arrayContents)
         }
+
         is Set<*> -> {
             val arrayContents = value.map { listEntry -> serializeAny(listEntry) }
             JsonArray(arrayContents)
         }
+
         is Number -> JsonPrimitive(value)
         is Boolean -> JsonPrimitive(value)
         is String -> JsonPrimitive(value)
@@ -194,9 +202,11 @@ object AnySerializer : KSerializer<Any> {
         is JsonObject -> {
             element.mapValues { deserializeJsonElement(it.value) }
         }
+
         is JsonArray -> {
             element.map { deserializeJsonElement(it) }
         }
+
         is JsonPrimitive -> element.toString()
     }
 }
