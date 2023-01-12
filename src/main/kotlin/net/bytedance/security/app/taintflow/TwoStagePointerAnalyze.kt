@@ -172,6 +172,7 @@ class TwoStagePointerAnalyze(
                         stmt, method, callSite, localRecvPtr, rightExpr, line, curTraceDepth
                     )
                 }
+
                 is JDynamicInvokeExpr -> {
                     val callSite = createCallSite(method, line)
                     val localCallRecv = leftExpr as JimpleLocal
@@ -180,6 +181,7 @@ class TwoStagePointerAnalyze(
                         stmt, method, callSite, localRecvPtr, rightExpr, line, curTraceDepth
                     )
                 }
+
                 is InstanceInvokeExpr -> {
                     val callSite = createCallSite(method, line)
                     val recvOp = leftExpr as JimpleLocal
@@ -187,6 +189,7 @@ class TwoStagePointerAnalyze(
                     val basePtr = instanceInvoke(stmt, method, callSite, localRecvPtr, rightExpr, line, curTraceDepth)
                     basePtr?.let { addToFixPointAlgoCache(it, method, stmt) }
                 }
+
                 is AbstractBinopExpr -> {
                     // a = 3 + 4
                     // a = b + c
@@ -194,20 +197,24 @@ class TwoStagePointerAnalyze(
                     // a = 3 + b
                     st.binaryOp(leftExpr as JimpleLocal, rightExpr, method)
                 }
+
                 is UnopExpr -> {
                     // $i1 = lengthof $r1
                     // $i1 = neg $i0
                     st.unaryOp(leftExpr as JimpleLocal, rightExpr, method)
                 }
+
                 is JCastExpr -> {
                     // a = (A)b
                     // a = (int)4
                     st.castExpr(leftExpr as JimpleLocal, rightExpr, method)
                 }
+
                 is JArrayRef -> {
                     // 'a = b[2]' as load
                     st.loadArray(leftExpr as JimpleLocal, rightExpr, method)
                 }
+
                 is JimpleLocal -> {
                     val rightPtr = pt.allocLocal(method, rightExpr.name, rightExpr.getType())
                     when (leftExpr) {
@@ -216,6 +223,7 @@ class TwoStagePointerAnalyze(
                             val basePtr = st.storeInstanceLocal(leftExpr, rightPtr, method)
                             addToFixPointAlgoCache(basePtr, method, stmt)
                         }
+
                         is StaticFieldRef -> {
                             // A.b = c
                             val leftPtr = pt.allocStaticField(leftExpr.field)
@@ -229,45 +237,54 @@ class TwoStagePointerAnalyze(
                             }
                             ctx.addPtrEdge(rightPtr, leftPtr)
                         }
+
                         is JimpleLocal -> {
                             // a = c
                             val leftPtr = pt.allocLocal(method, leftExpr.name, leftExpr.getType())
                             ctx.addPtrEdge(rightPtr, leftPtr)
                         }
+
                         else -> { // JArrayRef
                             // arr[1] = c
                             st.storeArrayLocal(leftExpr as JArrayRef, rightPtr, method)
                         }
                     }
                 }
+
                 is JInstanceFieldRef -> {
                     // a = c.b
                     val basePtr = st.loadLocalInstance(leftExpr as JimpleLocal, rightExpr, method)
                     addToFixPointAlgoCache(basePtr, method, stmt)
                 }
+
                 is StaticFieldRef -> {
                     // a = A.b
                     st.assignStaticField(leftExpr as JimpleLocal, rightExpr, method)
                 }
+
                 is AnyNewExpr -> {
                     // a = new A()
                     st.newInstant(leftExpr as JimpleLocal, rightExpr, method, line)
                 }
+
                 is Constant -> { // StringConstant,NullConstant,ClassConstant,NumericConstant
                     when (leftExpr) {
                         is JInstanceFieldRef -> {
                             // a.b = "33"
                             st.storeInstanceConst(leftExpr, rightExpr, method)
                         }
+
                         is JArrayRef -> {
                             // arr[2] = "test" as store
                             st.storeArrayConst(leftExpr, rightExpr, method)
                         }
+
                         is StaticFieldRef, is JimpleLocal -> {
                             // a = "str"
                             // A.a = "str"
                             st.storeLocalOrStaticFieldConst(leftExpr, rightExpr, method)
                         }
+
                         else -> {
                             throw Exception("unknown stmt=$stmt")
                         }
@@ -852,7 +869,18 @@ class TwoStagePointerAnalyze(
 
         private fun isContextPtr(ptr: PLPointer): Boolean {
             val type = ptr.ptrType
-            return type.toString() == "android.content.Context"
+//            return type.toString() == "android.content.Context"
+            var clz = Scene.v().getSootClassUnsafe(type.toString())
+            while (clz != null) {
+                if (clz.name == "android.content.Context") {
+                    return true
+                }
+                if (clz.name == "java.lang.Object") {
+                    return false
+                }
+                clz = clz.superclass
+            }
+            return false
         }
     }
 
