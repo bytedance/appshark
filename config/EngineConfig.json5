@@ -1377,6 +1377,24 @@
           ]
         }
       },
+      "next": {
+        "@this->ret": {
+          "I": [
+            "@this"
+          ],
+          "O": [
+            "ret"
+          ]
+        },
+        "@this.data->ret": {
+          "I": [
+            "@this.data"
+          ],
+          "O": [
+            "ret"
+          ]
+        }
+      },
       "entrySet": {
         "@this->ret": {
           "I": [
