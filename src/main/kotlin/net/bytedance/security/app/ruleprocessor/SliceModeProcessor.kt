@@ -71,8 +71,12 @@ class SliceModeProcessor(ctx: PreAnalyzeContext) : DirectModeProcessor(ctx) {
                             sinkPtr.method,
                             rule.traceDepth - 1
                         ) ?: return@launch
-                        val thisDepth = rule.traceDepth - result.depth
-                        Pair(result.entryMethod, thisDepth)
+                        /*
+                         val thisDepth = rule.traceDepth - result.depth + 10
+                         use thisDepth may lead to a lot of false negative,
+                        The depth from traceMethod to source and sink can be very shallow, resulting in missing analysis of some key functions
+                         */
+                        Pair(result.entryMethod, rule.traceDepth)
                     } else {
                         if (!callstacks.contains(sinkPtr.method)) {
                             return@launch
