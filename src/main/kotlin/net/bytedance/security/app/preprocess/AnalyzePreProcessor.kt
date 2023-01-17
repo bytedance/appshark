@@ -124,9 +124,13 @@ class AnalyzePreProcessor(private val parallelCount: Int, val ctx: PreAnalyzeCon
         task1.join()
         val scope = CoroutineScope(Dispatchers.Default)
         val jobs = ArrayList<Job>()
+        val handler = CoroutineExceptionHandler() { _, exception ->
+            exception.printStackTrace()
+            Log.logFatal("methodsVisitor collect got $exception")
+        }
         for (v in methodsVisitor) {
             val job =
-                scope.launch(CoroutineName("${this.javaClass.simpleName}-collect-${v.javaClass.simpleName}")) {
+                scope.launch(handler) {
                     v[0].collect(v)
                 }
             jobs.add(job)
