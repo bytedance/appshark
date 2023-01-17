@@ -43,5 +43,7 @@ interface IRule {
 
     //name of rule
     val name: String
-
+    fun isCompliance(): Boolean {
+        return desc.category == "ComplianceInfo"
+    }
 }

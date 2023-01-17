@@ -22,6 +22,7 @@ package net.bytedance.security.app.result.model
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -29,6 +30,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
 import net.bytedance.security.app.android.ComponentDescription
 import net.bytedance.security.app.android.ToMapSerializeHelper
+import net.bytedance.security.app.rules.IRule
 import kotlin.reflect.full.memberProperties
 
 
@@ -136,7 +138,9 @@ data class SecurityVulnerabilityItem(
     var hash: String? = null,
     @SerialName("old_hash")
     var oldHash: String? = null,
-    var possibility: String? = null
+    var possibility: String? = null,
+    @Transient
+    var rule: IRule? = null
 )
 
 object AnySerializer : KSerializer<Any> {

@@ -64,7 +64,7 @@ object OutputSecResults {
     var JsBridgeList: MutableList<JsBridgeAPI> = ArrayList()
 
     var JSList: MutableList<String> = ArrayList()
-    private var vulnerabilityItems = HashSet<VulnerabilityItem>()
+    private var vulnerabilityItems = ArrayList<VulnerabilityItem>()
     fun init() {
         AppInfo.appsharkTakeTime = profiler.totalRange.takes
         AppInfo.classCount = profiler.ProcessMethodStatistics.availableClasses
@@ -133,23 +133,30 @@ object OutputSecResults {
     }
 
     /**
-     * 1. Two different rules, may generate the same source and sink, such as IntentRedirection1 IntentRedirection2,
-     *  one is DirectMode,the other is SliceMode
+     * if vulnerability's hash are the  same, they are the same vulnerability
+     * for one rule, different entry method may generate the same source and sink
      */
-    private fun removeDup() {
-
+    private fun removeDup(): List<SecurityVulnerabilityItem> {
+        val map = HashMap<String, SecurityVulnerabilityItem>()
+        for (vulnerabilityItem in this.vulnerabilityItems) {
+            val item = vulnerabilityItem.toSecurityVulnerabilityItem()
+            val hash = item.hash!!
+            map[hash] = item
+        }
+        return map.values.toList()
     }
 
     /**
      * group the results by the category
      */
-    private fun groupResult() {
-        for (vulnerabilityItem in this.vulnerabilityItems) {
-            val ruleDesc = vulnerabilityItem.rule.desc
+    private fun groupResult(securityVulnerabilityItems: List<SecurityVulnerabilityItem>) {
+        for (vulnerabilityItem in securityVulnerabilityItems) {
+            val rule = vulnerabilityItem.rule!!
+            val ruleDesc = rule.desc
             val category: String
-            val subCategory: String = vulnerabilityItem.rule.desc.name
+            val subCategory: String = ruleDesc.name
             val m: MutableMap<String, MutableMap<String, SecurityRiskItem>>
-            if (vulnerabilityItem.isCompliance()) {
+            if (rule.isCompliance()) {
                 category = ruleDesc.complianceCategory ?: "unknown"
                 m = Results.ComplianceInfo
             } else {
@@ -170,7 +177,7 @@ object OutputSecResults {
                     ruleDesc.level
                 )
             }
-            item.vulnerabilityItemMutableList.add(vulnerabilityItem.toSecurityVulnerabilityItem())
+            item.vulnerabilityItemMutableList.add(vulnerabilityItem)
         }
     }
 
@@ -183,8 +190,7 @@ object OutputSecResults {
             init()
             insertPerm()
             addManifest(ctx)
-            removeDup()
-            groupResult()
+            groupResult(removeDup())
             val jsonName =
                 "results_" + AndroidUtils.PackageName + "_" + java.lang.Long.toHexString(System.nanoTime() + (Math.random() * 100).toLong())
             val outputPath = getConfig().outPath + "/results.json"
@@ -207,7 +213,7 @@ object OutputSecResults {
         this.vulnerabilityItems.add(vulnerabilityItem)
     }
 
-    fun vulnerabilityItems(): Set<VulnerabilityItem> {
+    fun vulnerabilityItems(): List<VulnerabilityItem> {
         return this.vulnerabilityItems
     }
 
