@@ -83,7 +83,8 @@ object MethodFinder {
 
     private fun filterByClassName(className: String): Collection<SootClass> {
         val results = ArrayList<SootClass>()
-        for (c in Scene.v().classes) {
+        //to avoid java.util.ConcurrentModificationException
+        for (c in Scene.v().classes.snapshotIterator()) {
             if (isMatched(className, c.name)) {
                 results.add(c)
             }
@@ -124,7 +125,17 @@ object MethodFinder {
         }
         val targetClassSet: Collection<SootClass>
         if (fd.className == "*") {
-            targetClassSet = Scene.v().classes
+            /*
+            todo is there any better way to fix this problem?
+Caused by: java.util.ConcurrentModificationException
+	at soot.util.HashChain$LinkIterator.hasNext(HashChain.java:582)
+	at net.bytedance.security.app.MethodFinder.checkAndParseMethodSigInternal(MethodFinder.kt:137)
+	at net.bytedance.security.app.MethodFinder.checkAndParseMethodSig(MethodFinder.kt:187)
+	at net.bytedance.security.app.sanitizer.TaintCheckSanitizerParser.createMethodSanitizer(TaintCheckSanitizerParser.kt:52)
+	at net.bytedance.security.app.sanitizer.SanitizerFactory.createSanitizers(SanitizerFactory.kt:63)
+	at net.bytedance.security.app.pathfinder.TaintPathFinder.checkSanitizeRules(TaintPathFinder.kt:310)
+             */
+            targetClassSet = Scene.v().classes.toList()
         } else {
             if (fd.className.indexOf("*") >= 0) {
                 targetClassSet = filterByClassName(fd.className)
