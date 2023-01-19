@@ -183,7 +183,8 @@ class MethodFieldConstCacheVisitor(
         val m = try {
             ref.resolve()
         } catch (ex: Exception) {
-            throw RuntimeException("resolve method exception,method:${ref.signature}")
+            ex.printStackTrace()
+            throw RuntimeException("resolve method exception,method:${ref.signature},ex=$ex")
         }
         if (m == null) {
             Log.logInfo("resolve method error,method:${ref.signature}")
