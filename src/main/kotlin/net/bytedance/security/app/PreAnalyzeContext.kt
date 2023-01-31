@@ -173,7 +173,7 @@ open class PreAnalyzeContext {
 
     fun findInstantCallSiteWithSubclass(className: String): Set<CallSite> {
         val s = HashSet<CallSite>()
-        for (sc in Scene.v().classes) {
+        for (sc in PLUtils.classes) {
             if (sc.name == className || sc.hasSuperclass() && className == sc.superclass.name) {
                 s.addAll(findInstantCallSite(sc))
             }

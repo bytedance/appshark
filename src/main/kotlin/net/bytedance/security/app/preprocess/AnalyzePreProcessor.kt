@@ -19,10 +19,10 @@ package net.bytedance.security.app.preprocess
 
 import kotlinx.coroutines.*
 import net.bytedance.security.app.Log
+import net.bytedance.security.app.PLUtils
 import net.bytedance.security.app.PreAnalyzeContext
 import net.bytedance.security.app.engineconfig.isLibraryClass
 import net.bytedance.security.app.util.TaskQueue
-import soot.Scene
 import soot.SootClass
 import soot.SootMethod
 
@@ -77,7 +77,7 @@ class AnalyzePreProcessor(private val parallelCount: Int, val ctx: PreAnalyzeCon
 
         try {
             // Copy it to avoid class changes during traversal
-            val classList: List<SootClass> = ArrayList(Scene.v().classes)
+            val classList: List<SootClass> = PLUtils.classes
             for (cls in classList) {
                 if (isLibraryClass(cls.name)) {
                     continue
@@ -105,7 +105,7 @@ class AnalyzePreProcessor(private val parallelCount: Int, val ctx: PreAnalyzeCon
 
         val task1 = methodTasks.runTask()
         try {
-            val classList: List<SootClass> = ArrayList(Scene.v().classes)
+            val classList: List<SootClass> = PLUtils.classes
             for (cls in classList) {
                 if (isLibraryClass(cls.name)) {
                     continue

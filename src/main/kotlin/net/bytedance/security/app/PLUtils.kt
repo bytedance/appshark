@@ -49,9 +49,17 @@ object PLUtils {
     //entry method for whole program analyze
     const val CUSTOM_CLASS_ENTRY = "<$CUSTOM_CLASS: void main()>"
     const val CUSTOM_METHOD = "Main_Entry_"
+    var classes = listOf<SootClass>()
 
     fun constStrSig(constant: String): String {
         return CONST_STR + constant
+    }
+
+    /**
+     * fix ConcurrentModificationException error for  Scene.v().classes
+     */
+    fun updateSootClasses() {
+        classes = Scene.v().classes.toList()
     }
 
     fun constSig(constant: Constant): String {
@@ -215,10 +223,12 @@ object PLUtils {
                                 val argAssignStmt = Jimple.v().newAssignStmt(localArg, FloatConstant.v(3f))
                                 units.add(argAssignStmt)
                             }
+
                             is DoubleType -> {
                                 val argAssignStmt = Jimple.v().newAssignStmt(localArg, DoubleConstant.v(4.0))
                                 units.add(argAssignStmt)
                             }
+
                             else -> {
                                 val argAssignStmt = Jimple.v().newAssignStmt(localArg, IntConstant.v(5))
                                 units.add(argAssignStmt)
@@ -349,7 +359,7 @@ object PLUtils {
 
     fun findMatchedChildClasses(targetSet: Set<String>): MutableSet<SootClass> {
         val findMatchedClasses: MutableSet<SootClass> = HashSet()
-        for (sc in Scene.v().classes) {
+        for (sc in classes) {
             if (sc.hasSuperclass() && targetSet.contains(sc.superclass.name)) {
                 findMatchedClasses.add(sc)
                 continue

@@ -17,6 +17,7 @@
 
 package test
 
+import net.bytedance.security.app.PLUtils
 import org.junit.jupiter.api.Assertions
 import soot.Scene
 import soot.options.Options
@@ -100,5 +101,6 @@ object SootHelper {
         Options.v().set_exclude(listOf("java.*", "org.*", "sun.*", "android.*"))
         Options.v().set_no_bodies_for_excluded(true)
         Scene.v().loadNecessaryClasses()
+        PLUtils.updateSootClasses()
     }
 }

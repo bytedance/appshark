@@ -43,7 +43,7 @@ class AnalyzeStepByStep {
             ruleList.split(",").map { "${getConfig().rulePath}/$it" }.toList()
         else
             withContext(Dispatchers.IO) {
-                Files.walk(Paths.get(getConfig().rulePath),1)
+                Files.walk(Paths.get(getConfig().rulePath), 1)
             }.filter { it.pathString.endsWith(".json") }.map { it.pathString }
                 .toList()
         val rules = Rules(rulePathList, RuleFactory())
@@ -173,6 +173,7 @@ class AnalyzeStepByStep {
         logInfo("loadNecessaryClasses")
         try {
             Scene.v().loadNecessaryClasses() // may take dozens of seconds
+            PLUtils.updateSootClasses()
         } catch (ex: Exception) {
             Log.logErr("loadNecessaryClasses error: ${ex.message}")
             throw ex
