@@ -414,6 +414,7 @@ SliceMode和DirectMode的区别是它的分析入口不是固定的,而是根据
 意思是从`source`点往下搜索`traceDepth`层,从`sink`点往上搜索搜索`traceDepth`层,找到它们最近交汇的函数作为分析入口.
 
 
+
 ### ConstStringMode
 它之所以特殊,因为app中的常量字符串太多可能非常多,所以其分析的入口不受`traceDepth`的约束,它分析的入口就是指定的常量字符串所在的函数.
 比如:
@@ -507,3 +508,62 @@ APIMode和前面的几种mode都不一样,他并不是一个数据流分析的�
 ```
 
 这个规则会在整个app中检测,是否存在android.bluetooth.BluetoothAdapter.getName等三个函数的调用,并给出具体的调用位置.
+
+
+## 适用于DirectMode和SliceMode的一些高级规则
+
+
+### PrimTypeAsTaint
+指针分析完成后,在查找从source到sink的传播链路时,默认是不会将基本类型作为污点传播的,比如:
+```java
+int a=Source.length();
+```
+如果默认规则,认为a不会被source污染,而如果PrimTypeAsTaint为true,则认为a会被source污染.
+
+### PolymorphismBackTrace
+在查找source和sink的汇聚点作为分析入口时,默认是不考虑多态的. 如果需要考虑多态,那么需要将这个选项设置为true.
+举例来说:
+```java 
+ static abstract class A {
+        protected Activity activity;
+        protected Intent intent;
+
+        public abstract void setResult();
+
+        A(Intent intent, Activity activity) {
+            this.intent = intent;
+            this.activity = activity;
+        }
+}
+
+class B extends A {
+ B(Intent intent, Activity activity) {
+  super(intent, activity);
+ }
+
+ @Override
+ public void setResult() {
+  this.activity.setResult(PointerIconCompat.TYPE_CONTEXT_MENU, this.intent);
+ }
+}
+
+
+class C extends A {
+ C(Intent intent, Activity activity) {
+  super(intent, activity);
+ }
+
+ @Override
+ public void setResult() {
+ }
+}
+
+public void f(){
+ A b = new B(getIntent(), this);
+ b.setResult();
+}
+```
+
+如果source是getIntent的返回值,sink是Activity.setResult. 当使用PolymorphismBackTrace的默认值,即false的时候,那么f并不会被认为是一个漏洞,因为在B.setResult中,没有使用到source,但是如果将PolymorphismBackTrace设置为true,那么f就会被认为是一个漏洞,因为在B.setResult中,使用到了source,而B.setResult是在A.setResult中被调用的,而A.setResult是在B的构造函数中被调用的,而B的构造函数是在f中被调用的,所以f就会被认为间接调用了`Activity.setResult`. 只有当PolymorphismBackTrace为true的时候,appshark才会认为f间接调用了Activity.setResult,从而将f作为分析入口.
+
+
