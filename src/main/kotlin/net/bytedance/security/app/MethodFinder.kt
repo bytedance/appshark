@@ -18,11 +18,13 @@
 package net.bytedance.security.app
 
 import net.bytedance.security.app.preprocess.MethodFieldConstCacheVisitor
-import net.bytedance.security.app.util.methodSignatureDestruction
+import net.bytedance.security.app.util.newFieldSignature
+import net.bytedance.security.app.util.newFunctionSignature
 import net.bytedance.security.app.util.profiler
 import net.bytedance.security.app.util.subSignature
 import soot.Scene
 import soot.SootClass
+import soot.SootField
 import soot.SootMethod
 
 /**
@@ -102,7 +104,7 @@ object MethodFinder {
     @Synchronized
     private fun checkAndParseMethodSigInternal(methodSig: String): Set<SootMethod> {
         val matchedMethodSet: MutableSet<SootMethod> = HashSet()
-        val fd = methodSignatureDestruction(methodSig)
+        val fd = newFunctionSignature(methodSig)
         if (!fd.className.contains("*") && !fd.functionName.contains("*") && !fd.args.contains("*") && !fd.returnType.contains(
                 "*"
             )
@@ -123,17 +125,7 @@ object MethodFinder {
 
             return matchedMethodSet
         }
-        val targetClassSet: Collection<SootClass>
-        if (fd.className == "*") {
-            targetClassSet = PLUtils.classes
-        } else {
-            if (fd.className.indexOf("*") >= 0) {
-                targetClassSet = filterByClassName(fd.className)
-            } else {
-                val sc = Scene.v().getSootClassUnsafe(fd.className, false) ?: return matchedMethodSet
-                targetClassSet = setOf(sc)
-            }
-        }
+        val targetClassSet = getClassesByName(fd.className)
         val possibleMethodSigSet: MutableSet<SootMethod> = HashSet()
         for (sc in targetClassSet) {
             var methods: List<SootMethod>
@@ -176,23 +168,84 @@ object MethodFinder {
     /**
      * cache for checkAndParseMethodSigInternal
      */
-    private var MethodSigMatchMapCache: MutableMap<String, Set<SootMethod>> = HashMap()
-
+    private var MethodSignatureCache: MutableMap<String, Set<SootMethod>> = HashMap()
+    private var FieldSignatureCache: MutableMap<String, Set<SootField>> = HashMap()
 
     @Synchronized
     fun checkAndParseMethodSig(methodSig: String): Set<SootMethod> {
-        if (MethodSigMatchMapCache.containsKey(methodSig)) {
-            return MethodSigMatchMapCache[methodSig]!!
+        if (MethodSignatureCache.containsKey(methodSig)) {
+            return MethodSignatureCache[methodSig]!!
         }
         val start = System.currentTimeMillis()
         val s = checkAndParseMethodSigInternal(methodSig)
         profiler.checkAndParseMethodSigInternalTake(System.currentTimeMillis() - start)
-        MethodSigMatchMapCache[methodSig] = s
+        MethodSignatureCache[methodSig] = s
         return s
     }
 
     @Synchronized
     fun clearCache() {
-        MethodSigMatchMapCache.clear()
+        MethodSignatureCache.clear()
+        FieldSignatureCache.clear()
+    }
+
+    /**
+     * find fields by filed pattern like:
+     * <android.provider.VoicemailContract*: android.net.Uri *>
+     */
+    @Synchronized
+    fun checkAndParseFieldSignature(fieldSignature: String): Set<SootField> {
+        if (FieldSignatureCache.containsKey(fieldSignature)) {
+            return FieldSignatureCache[fieldSignature]!!
+        }
+        val start = System.currentTimeMillis()
+        val s = checkAndParseFieldSignatureInternal(fieldSignature)
+        profiler.checkAndParseMethodSigInternalTake(System.currentTimeMillis() - start)
+
+        FieldSignatureCache[fieldSignature] = s
+        return s
+    }
+
+    @Synchronized
+    private fun checkAndParseFieldSignatureInternal(fieldSignature: String): Set<SootField> {
+        val matchedFieldSet: MutableSet<SootField> = HashSet()
+        val fd = newFieldSignature(fieldSignature)
+        //1. If it does not contain a *, it is an exact match.
+        if (!fd.className.contains("*") && !fd.fieldName.contains("*") && !fd.fieldType.contains("*")) {
+            val sc = Scene.v().getSootClassUnsafe(fd.className, false)
+            val sf = Scene.v().grabField(fieldSignature)
+            if (sc != null && sf != null) {
+                matchedFieldSet.add(sf)
+            }
+            return matchedFieldSet
+        }
+        //2. If it contains *, pattern matching is required
+        val targetClassSet = getClassesByName(fd.className)
+
+        //2.2 field by field, you don't have to worry about subclasses like method
+        for (cls in targetClassSet) {
+            for (sf in cls.fields) {
+                if (isMatched(fd.fieldName, sf.name) && isMatched(fd.fieldType, sf.type.toString())) {
+                    matchedFieldSet.add(sf)
+                }
+            }
+        }
+        return matchedFieldSet
+    }
+
+    /**
+     * pattern matching based on class name
+     */
+    private fun getClassesByName(className: String): Collection<SootClass> {
+        return if (className == "*") {
+            PLUtils.classes
+        } else {
+            if (className.indexOf("*") >= 0) {
+                return filterByClassName(className)
+            } else {
+                val sc = Scene.v().getSootClassUnsafe(className, false) ?: return setOf()
+                return setOf(sc)
+            }
+        }
     }
 }

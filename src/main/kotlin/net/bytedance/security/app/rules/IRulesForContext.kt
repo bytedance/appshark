@@ -34,7 +34,7 @@ new instance in rules
 
 interface IRuleField {
     /*
-     fields in rules
+     fields in rules,should not contain *
      */
     fun fields(): Set<String>
 }

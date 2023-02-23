@@ -118,4 +118,39 @@ internal class MethodFinderTest {
         )
 
     }
+
+    @Test
+    fun checkAndParseFieldSignature() {
+        var sig = "<*: * field1>"
+        var fields = MethodFinder.checkAndParseFieldSignature(sig)
+        assertEquals(
+            fields.map { it.signature }.toSortedSet().toList(), listOf(
+                "<net.bytedance.security.app.preprocess.testdata.Base: java.lang.Object field1>",
+                "<net.bytedance.security.app.preprocess.testdata.Sub: java.lang.Object field1>",
+                "<net.bytedance.security.app.preprocess.testdata.Sub2: java.lang.Object field1>"
+            ).toSortedSet().toList()
+        )
+        sig = "<net.bytedance.security.app.preprocess.testdata.Sub: java.lang.String *>"
+        fields = MethodFinder.checkAndParseFieldSignature(sig)
+        assertEquals(
+            fields.map { it.signature }.toSortedSet().toList(), listOf(
+                "<net.bytedance.security.app.preprocess.testdata.Sub: java.lang.String s>",
+                "<net.bytedance.security.app.preprocess.testdata.Sub: java.lang.String SubField1>"
+            ).toSortedSet().toList()
+        )
+        sig = "<net.bytedance.security.app.preprocess.testdata.Sub: java.lang.String s>"
+        fields = MethodFinder.checkAndParseFieldSignature(sig)
+        assertEquals(
+            fields.map { it.signature }.toSortedSet().toList(), listOf(
+                "<net.bytedance.security.app.preprocess.testdata.Sub: java.lang.String s>"
+            ).toSortedSet().toList()
+        )
+        sig = "<net.bytedance.security.app.preprocess.testdata.Sub: * s>"
+        fields = MethodFinder.checkAndParseFieldSignature(sig)
+        assertEquals(
+            fields.map { it.signature }.toSortedSet().toList(), listOf(
+                "<net.bytedance.security.app.preprocess.testdata.Sub: java.lang.String s>"
+            ).toSortedSet().toList()
+        )
+    }
 }

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test
 internal class HelperKtTest {
     @Test
     fun testMethodSignatureDestruction() {
-        val fd = methodSignatureDestruction(
+        val fd = newFunctionSignature(
             "<net.bytedance.security.app.bvaa.ComponentRisk.IntentBridge: void IntentBridge2(java.lang.String,android.content.Class$1)>",
         )
         assertEquals(fd.className, "net.bytedance.security.app.bvaa.ComponentRisk.IntentBridge")
@@ -32,7 +32,7 @@ internal class HelperKtTest {
         assertEquals(fd.args, listOf("java.lang.String", "android.content.Class\$1"))
         assertEquals(fd.subSignature(), "void IntentBridge2(java.lang.String,android.content.Class\$1)")
 
-        val fd2 = methodSignatureDestruction("<java.io.File: * <init>(*)>")
+        val fd2 = newFunctionSignature("<java.io.File: * <init>(*)>")
         assertEquals(fd2.returnType, "*")
         assertEquals(fd2.functionName, "<init>")
         assertEquals(fd2.args, listOf("*"))
@@ -49,5 +49,14 @@ internal class HelperKtTest {
         assertEquals(getMethodSigFromStr("xx<aa>xx"), "<aa>")
         assertEquals(getMethodSigFromStr("bbb"), "bbb")
         assertEquals(getMethodSigFromStr("bbb>xx<a"), "bbb>xx<a")
+    }
+
+    @Test
+    fun newFieldSignature() {
+        val fd =
+            net.bytedance.security.app.util.newFieldSignature("<android.provider.VoicemailContract*: android.net.Uri *>")
+        assertEquals(fd.className, "android.provider.VoicemailContract*")
+        assertEquals(fd.fieldType, "android.net.Uri")
+        assertEquals(fd.fieldName, "*")
     }
 }

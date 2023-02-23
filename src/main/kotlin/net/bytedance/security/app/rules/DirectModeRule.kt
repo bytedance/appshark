@@ -97,10 +97,10 @@ open class DirectModeRule(name: String, ruleData: RuleData) : TaintFlowRule(name
     }
 
     override fun fields(): Set<String> {
-        val results = source?.StaticField?.toMutableSet() ?: HashSet()
+        val fieldPatternResults = source?.StaticField?.toMutableSet() ?: HashSet()
         source?.Field?.let {
             for (field in it) {
-                results.add(field)
+                fieldPatternResults.add(field)
             }
         }
         if (sanitize != null) {
@@ -108,9 +108,15 @@ open class DirectModeRule(name: String, ruleData: RuleData) : TaintFlowRule(name
             for (m in values) {
                 for ((key, _) in m) {
                     if (key.isFieldSignature()) {
-                        results.add(key)
+                        fieldPatternResults.add(key)
                     }
                 }
+            }
+        }
+        val results = HashSet<String>()
+        fieldPatternResults.forEach { fieldPattern ->
+            MethodFinder.checkAndParseFieldSignature(fieldPattern).forEach { field ->
+                results.add(field.signature)
             }
         }
         return results

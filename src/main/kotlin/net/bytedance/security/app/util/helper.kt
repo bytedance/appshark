@@ -41,77 +41,105 @@ fun FunctionSignature.subSignature(): String {
     return s
 }
 
-private enum class ParseState {
+private enum class MethodSignatureParseState {
     Class, ReturnType, Argument, FunctionName
 }
+
 
 /**
  * @param methodSig for example: <net.bytedance.security.app.bvaa.ComponentRisk.IntentBridge: void IntentBridge2()>
  *     @return FunctionSignature
  */
-fun methodSignatureDestruction(methodSig: String): FunctionSignature {
+fun newFunctionSignature(methodSig: String): FunctionSignature {
     if (!(methodSig.startsWith("<") && methodSig.endsWith(">") && methodSig.contains(": "))) {
         Log.logFatal("Format Error $methodSig")
     }
     var s = ""
     val fd = FunctionSignature("", "", "", ArrayList())
-    var state = ParseState.Class
+    var state = MethodSignatureParseState.Class
     // "<net.bytedance.security.app.bvaa.ComponentRisk.IntentBridge: void IntentBridge2(java.lang.Int,java.lang.String)>
     for (i in 1 until methodSig.length - 1) {
         when (val c = methodSig[i]) {
-            ':' -> if (state != ParseState.Class) {
+            ':' -> if (state != MethodSignatureParseState.Class) {
                 exitProcess(-2)
             } else {
                 // state = ParseState.Space
             }
+
             ' ' -> {
                 when (state) {
-                    ParseState.Class -> {
+                    MethodSignatureParseState.Class -> {
                         fd.className = s
-                        state = ParseState.ReturnType
+                        state = MethodSignatureParseState.ReturnType
                         s = ""
                     }
-                    ParseState.ReturnType -> {
+
+                    MethodSignatureParseState.ReturnType -> {
                         fd.returnType = s
                         s = ""
-                        state = ParseState.FunctionName
+                        state = MethodSignatureParseState.FunctionName
                     }
+
                     else -> exitProcess(-7)
                 }
             }
+
             ',' -> {
                 when (state) {
-                    ParseState.Argument -> {
+                    MethodSignatureParseState.Argument -> {
                         fd.args.add(s)
                         s = ""
                     }
+
                     else -> exitProcess(-8)
                 }
             }
+
             '(' -> {
                 when (state) {
-                    ParseState.FunctionName -> {
+                    MethodSignatureParseState.FunctionName -> {
                         fd.functionName = s
                         s = ""
-                        state = ParseState.Argument
+                        state = MethodSignatureParseState.Argument
                     }
+
                     else -> exitProcess(-9)
                 }
             }
+
             ')' -> {
                 when (state) {
-                    ParseState.Argument -> {
+                    MethodSignatureParseState.Argument -> {
                         fd.args.add(s)
                         s = ""
                     }
+
                     else -> exitProcess(-10)
                 }
             }
+
             else -> s += c
         }
     }
 
     return fd
+}
+
+class FieldSignature(
+    var className: String,
+    var fieldType: String,
+    var fieldName: String,
+)
+
+fun newFieldSignature(fieldSig: String): FieldSignature {
+    if (!(fieldSig.startsWith("<") && fieldSig.endsWith(">") && fieldSig.contains(": "))) {
+        Log.logFatal("Format Error $fieldSig")
+    }
+    val ss = fieldSig.split(" ")
+    if (ss.size != 3) {
+        Log.logFatal("Format Error $fieldSig")
+    }
+    return FieldSignature(ss[0].substring(1, ss[0].length - 1), ss[1], ss[2].substring(0, ss[2].length - 1))
 }
 
 /**

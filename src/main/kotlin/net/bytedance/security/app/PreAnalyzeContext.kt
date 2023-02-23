@@ -186,8 +186,12 @@ open class PreAnalyzeContext {
      * field load callsites
      */
     fun findFieldCallSite(field: String): Set<CallSite> {
-        val f = Scene.v().grabField(field) ?: return emptySet()
-        return findFieldCallSite(f)
+        val fields = MethodFinder.checkAndParseFieldSignature(field)
+        val results = HashSet<CallSite>()
+        for (f in fields) {
+            results.addAll(findFieldCallSite(f))
+        }
+        return results
     }
 
     /**

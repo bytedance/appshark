@@ -4,6 +4,7 @@ package net.bytedance.security.app.preprocess.testdata;
 public class Sub extends Base {
     public static String s = "static_field_const_str";
     public String SubField1 = "SubField1";
+    public Object field1 = null;
 
     public Object methodImplementedInSub() {
         String s1 = s;
