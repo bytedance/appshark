@@ -13,7 +13,7 @@
     },
     "source": {
       "Field": [
-        "<android.os.Build: java.lang.String SERIAL>"
+        "<android.os.Build: * SERIAL>"
       ]
     },
     "sink": {
