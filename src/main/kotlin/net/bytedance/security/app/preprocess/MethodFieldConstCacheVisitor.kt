@@ -184,7 +184,9 @@ class MethodFieldConstCacheVisitor(
             ref.resolve()
         } catch (ex: Exception) {
             ex.printStackTrace()
-            throw RuntimeException("resolve method exception,method:${ref.signature},ex=$ex")
+            //ignore this error, todo how to handle this error?
+            return
+//            throw RuntimeException("resolve method exception,method:${ref.signature},ex=$ex")
         }
         if (m == null) {
             Log.logInfo("resolve method error,method:${ref.signature}")
