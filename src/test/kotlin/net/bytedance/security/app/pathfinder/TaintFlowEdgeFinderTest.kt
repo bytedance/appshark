@@ -70,7 +70,7 @@ internal class TaintFlowEdgeFinderTest {
             return tsp
         } catch (ex: Exception) {
             val path = System.getProperty("user.dir")
-            throw Exception("Failed to load ZipSlip, please check the path: $path")
+            throw Exception("Failed to load ZipSlip, please check the path: $path, ex=$ex")
         }
 
     }
@@ -147,6 +147,59 @@ internal class TaintFlowEdgeFinderTest {
         Assertions.assertEquals(srcPtr.signature(), path.first().signature())
         Assertions.assertEquals(sinkPtr.signature(), path.last().signature())
         assertPathValid(path)
+    }
+
+    @Test
+    fun testMergeTaintPath() {
+        //this case depends on the version of the Java compiler, only JDK 11.0.12 tests passed and JDK 1.8 tests failed
+        PLUtils.dumpClass("net.bytedance.security.app.pathfinder.testdata.ZipSlip")
+        val tsp = getZipSlipContext()
+        val m1 = Scene.v().getMethod("<net.bytedance.security.app.pathfinder.testdata.ZipSlip: void f()>")
+        val m2 = Scene.v().getMethod("<net.bytedance.security.app.pathfinder.testdata.ZipSlip: void <init>()>")
+        val m3 = Scene.v()
+            .getMethod("<net.bytedance.security.app.pathfinder.testdata.ZipSlip: void UnZipFolder(java.lang.String,java.lang.String)>")
+        val m4 = Scene.v()
+            .getMethod("<net.bytedance.security.app.pathfinder.testdata.ZipSlip: void UnZipFolderFix1(java.lang.String,java.lang.String)>")
+        val src = tsp.ctx.pt.allocLocal(m3, "\$r3", UnknownType.v())
+        val node0 = tsp.ctx.pt.allocLocal(m3, "\$r10", UnknownType.v())
+        val node1 = tsp.ctx.pt.allocLocal(m3, "\$r13", UnknownType.v())
+        // test path has @data
+        val obj = tsp.ctx.pt.allocObject(UnknownType.v(), m4, null, 11);
+        val field = tsp.ctx.pt.allocObjectField(obj, PLUtils.DATA_FIELD, UnknownType.v())
+        val sink = tsp.ctx.pt.allocLocal(m2, "\$r0", UnknownType.v())
+        val path = listOf<PLPointer>(src, node0, node1, field, sink)
+        println("path=$path")
+        testpath(path)
+    }
+
+    fun testpath(path: List<PLPointer>) {
+        val edges = ArrayList<Path>()
+        for (i in 0 until path.size - 1) {
+            val edge = TaintFlowEdgeFinder.getPossibleEdge(path[i], path[i + 1])
+            edges.add(Path(path[i], path[i + 1], edge))
+        }
+
+        val edgesWithRange = TaintPathModeHtmlWriter.getTaintEdges(path)
+        println("path len=${path.size}")
+        edgesWithRange.forEach {
+            println("${it.first.method.name}======> ${it.second}")
+//            assertTrue(it.isValid(), "path=${it}")
+        }
+        val methods = ArrayList<SootMethod>()
+        val stmts = ArrayList<List<Stmt>>()
+        val edgesInMethod = ArrayList<List<PLPointer>>()
+        TaintPathModeHtmlWriter.mergeTaintPath(methods, stmts, edgesInMethod, path)
+        methods.forEachIndexed { index, sootMethod ->
+            println("index=$index, method=${sootMethod.name}")
+            stmts[index].forEach {
+                println("$it")
+            }
+            Assertions.assertEquals(stmts[index].size, HashSet(stmts[index]).size)
+            edgesInMethod[index].forEach {
+                println("$it")
+            }
+            Assertions.assertEquals(edgesInMethod[index].size, HashSet(edgesInMethod[index]).size)
+        }
     }
 
     @Test

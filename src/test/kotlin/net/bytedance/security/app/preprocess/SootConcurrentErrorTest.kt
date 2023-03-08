@@ -17,13 +17,14 @@
 
 package net.bytedance.security.app.preprocess
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import net.bytedance.security.app.PreAnalyzeContext
 import org.junit.jupiter.api.Test
 import soot.Scene
 import soot.jimple.Stmt
 import test.SootHelper
 import test.TestHelper
+import java.io.IOException
 import kotlin.concurrent.thread
 
 class SootConcurrentErrorTest {
@@ -39,6 +40,31 @@ class SootConcurrentErrorTest {
             MethodSSAVisitor()
         }
         runBlocking { cam.run() }
+    }
+
+    @Test
+    fun testlaunch() {
+        runBlocking {
+            val handler = CoroutineExceptionHandler { _, exception ->
+                println("CoroutineExceptionHandler got $exception")
+            }
+            val job = GlobalScope.launch(handler) {
+                val inner = launch { // all this stack of coroutines will get cancelled
+                    launch {
+                        launch {
+                            throw IOException() // the original exception
+                        }
+                    }
+                }
+                try {
+                    inner.join()
+                } catch (e: CancellationException) {
+                    println("Rethrowing CancellationException with original cause")
+                    throw e // cancellation exception is rethrown, yet the original IOException gets to the handler
+                }
+            }
+            job.join()
+        }
     }
 
     @Test
