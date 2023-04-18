@@ -202,13 +202,28 @@ object Reflection {
                 }
                 val nameVal = invokeExpr.getArg(0)
                 val argArrVal = invokeExpr.getArg(1)
-                if (nameVal !is StringConstant) {
-                    continue
-                }
                 if (argArrVal !is JimpleLocal) {
                     continue
                 }
-                val methodName = nameVal.value
+                var methodName = nameVal.toString().replace("\"", "")
+
+                if (nameVal is JimpleLocal) {
+                    val right: Value? = getRightValue(entryMethod.signature, nameVal.toString())
+                    if (right is JInstanceFieldRef) {
+                        val field = right.field.toString()
+                        val classInit = field.split(":".toRegex()).dropLastWhile { it.isEmpty() }
+                            .toTypedArray()[0] + ": void <init>()>"
+                        methodName = getRightValue(classInit, right.toString()).toString().replace("\"", "")
+                    }
+                    if (right is StaticFieldRef) {
+                        val classClinit = right.toString().split(":".toRegex()).dropLastWhile { it.isEmpty() }
+                            .toTypedArray()[0] + ": void <clinit>()>"
+                        methodName = getRightValue(classClinit, right.toString()).toString().replace("\"", "")
+                    }
+                }
+                else if (nameVal !is StringConstant){
+                    continue
+                }
                 var methodArgs: List<Value>? = null
                 if (arrayMap.containsKey(argArrVal)) {
                     methodArgs = arrayMap[argArrVal]
@@ -242,34 +257,6 @@ object Reflection {
         return null
     }
 
-    /*
-
-        r1 = newarray (java.lang.Class)[5];
-
-        r1[0] = class "Ljava/lang/String;";
-
-        r1[1] = class "Ljava/lang/String;";
-
-        r1[2] = class "Ljava/lang/String;";
-
-        r1[3] = class "Landroid/app/PendingIntent;";
-
-        r1[4] = class "Landroid/app/PendingIntent;";
-m
-        $r3 = virtualinvoke $r2.<java.lang.Class: java.lang.reflect.Method getMethod(java.lang.String,java.lang.Class[])>("sendTextMessage", r1);
-
-        $r4 = newarray (java.lang.Object)[5];
-
-        $r4[0] = "13966668888";
-
-        $r4[1] = "110";
-
-        $r4[2] = "hello world!";
-
-        $r4[3] = null;
-
-        $r4[4] = null;
-    */
     private fun arrayAnalyze(entryMethod: SootMethod): Map<JimpleLocal, MutableList<Value>> {
         val arrayMap: MutableMap<JimpleLocal, MutableList<Value>> = HashMap()
         for (unit in entryMethod.activeBody.units) {
