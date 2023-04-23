@@ -153,7 +153,48 @@ object PLUtils {
         return entryMethod(subClass, methodsToCall, false)
     }
 
+    /**
+     * Find the nearest implementation of the overrideMethod in sc
+     * set sc as Class C.
+     * class A{
+     * void f();
+     * void g();
+     * void h():
+     * }
+     * class B:A{
+     * @overide
+     * void f();
+     * }
+     * class C:A{
+     * void g();
+     * }
+     * if overrideMethod is f,then return B.f
+     * if overrideMethod is g,then return C.g
+     * if overrideMethod is h,then return A.h
+     * if overrideMethod is x, then return x
+     */
+    fun getNearestOverrideMethod(sc: SootClass, overrideMethod: SootMethod): SootMethod {
+        var sc2: SootClass? = sc
+        while (sc2 != null) {
+            for (m in sc2.methods) {
+                if (m.subSignature == overrideMethod.subSignature) {
+                    return m
+                }
+            }
+            if (sc2.hasSuperclass())
+                sc2 = sc2.superclass
+            else
+                sc2 = null
+        }
+        return overrideMethod
+    }
 
+    /**
+     * Create a new virtual function in CUSTOM_CLASS for sc that calls the functions in methodSet
+     * @param sc: Virtual functions call some of the functions in this class
+     * @param methodSet: method implemented in sc or super of sc
+     * @param preventDuplication: make sure the virtual method unique or not
+     */
     @Synchronized
     fun entryMethod(sc: SootClass, methodSet: List<SootMethod>, preventDuplication: Boolean = true): SootMethod {
         val className = CUSTOM_CLASS
@@ -200,7 +241,8 @@ object PLUtils {
             }
 
             realMethodSet.addAll(methodSet)
-            for (targetMethod in realMethodSet) {
+            for (overrideMethod in realMethodSet) {
+                val targetMethod = getNearestOverrideMethod(sc, overrideMethod)
                 //1.  ret
                 var ret: JimpleLocal? = null
                 if (targetMethod.returnType !is VoidType) {

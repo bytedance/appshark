@@ -100,6 +100,12 @@ open class PreAnalyzeContext {
         profiler.initProcessMethodStatistics(getMethodCounter(), getClassCounter(), this)
     }
 
+    fun buildCustomClassCallGraph(rules: IRulesForContext) {
+        val cam = createClassAndMethodHandler(this)
+        addClassAndMethodVisitor(cam, rules, false)
+        cam.buildCustomClassCallGraph()
+    }
+
     private fun createClassAndMethodHandler(ctx: PreAnalyzeContext): AnalyzePreProcessor {
         return AnalyzePreProcessor(getConfig().maxThread, ctx)
     }

@@ -71,6 +71,8 @@ object StaticAnalyzeMain {
             profiler.fragments.end()
         }
         AndroidUtils.initLifeCycle()
+        //build call graph of CUSTOM_CLASS
+        ctx.buildCustomClassCallGraph(rules)
         val analyzers = v3.parseRules(ctx, rules)
         v3.solve(ctx, analyzers)
         profiler.stopMemoryProfile()

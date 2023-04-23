@@ -23,6 +23,7 @@ import net.bytedance.security.app.PLUtils
 import net.bytedance.security.app.PreAnalyzeContext
 import net.bytedance.security.app.engineconfig.isLibraryClass
 import net.bytedance.security.app.util.TaskQueue
+import soot.Scene
 import soot.SootClass
 import soot.SootMethod
 
@@ -136,5 +137,25 @@ class AnalyzePreProcessor(private val parallelCount: Int, val ctx: PreAnalyzeCon
             jobs.add(job)
         }
         jobs.joinAll()
+    }
+
+    /**
+     * Make sure that this function runs   after `run` and in the main thread,
+     * or you may have concurrent data access problems.
+     */
+    @Synchronized
+    fun buildCustomClassCallGraph() {
+        val clz = Scene.v().getSootClass(PLUtils.CUSTOM_CLASS)
+        for (classVisitor in classesVisitor) {
+            classVisitor.visitClass(clz)
+        }
+        for (methodVisitor in methodsVisitor) {
+            for (m in clz.methods) {
+                methodVisitor[0].visitMethod(m)
+            }
+        }
+        for (methodVisitor in methodsVisitor) {
+            methodVisitor[0].collect(methodVisitor)
+        }
     }
 }
