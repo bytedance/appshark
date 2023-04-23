@@ -45,7 +45,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
-
 @Serializable(with = TimeRangeSerializer::class)
 open class TimeRange(var startTime: Long = 0) {
     var takes: Long = -1
@@ -156,11 +155,13 @@ class Profiler {
 
     var stage = ""
 
-
     suspend fun finishAndSaveProfilerResult(stage: String = ""): String {
-        totalRange.end()
-        this.stage = stage
-        val s = this.toString()
+        //
+        val s = synchronized(this) {
+            totalRange.end()
+            this.stage = stage
+            this.toString()
+        }
         val tosUrl = DefaultVulnerabilitySaver.getVulnerabilitySaver()
             .saveVulnerability(s.toByteArray(Charsets.UTF_8), "profiler.json")
         logErr("stage=$stage Write profiler json to $tosUrl")
