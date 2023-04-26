@@ -145,7 +145,10 @@ object Log {
         buffer.append(":")
         buffer.append(str)
         val color = getLevelColor(level)
-        println("$color$time:$str")
+        if (level < ERROR)
+            println("$color$time:$str")
+        else
+            System.err.println("$color$time:$str")
 //        println(buffer.toString())
         buffer.append("\n")
         doLog()

@@ -44,6 +44,7 @@ import java.lang.management.MemoryUsage
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.concurrent.thread
 
 @Serializable(with = TimeRangeSerializer::class)
 open class TimeRange(var startTime: Long = 0) {
@@ -312,16 +313,19 @@ class Profiler {
         this.vulnerabilitiesCount.total = n
     }
 
-    suspend fun startProfilerTaskInternal(isStopped: AtomicBoolean) {
+    fun startProfilerTaskInternal(isStopped: AtomicBoolean) {
         var count = 0
         while (!isStopped.get()) {
             try {
                 var s = 0
-                while (s < 600 && !isStopped.get()) {
-                    delay(1000)
+                //save profiler every 2 minutes
+                while (s < 120 && !isStopped.get()) {
+                    Thread.sleep(1000)
                     s += 1
                 }
-                profiler.finishAndSaveProfilerResult("ProfilerTask count=$count")
+                runBlocking {
+                    profiler.finishAndSaveProfilerResult("ProfilerTask count=$count")
+                }
                 count += 1
             } catch (ex: Exception) {
                 ex.printStackTrace()
@@ -332,9 +336,9 @@ class Profiler {
     @Transient
     private val isStopped = AtomicBoolean(false)
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun startProfilerTask() {
-        GlobalScope.launch(CoroutineName("profilerTask")) {
+        //threads are used to ensure that tasks are executed on time without delay.
+        thread {
             startProfilerTaskInternal(isStopped)
         }
     }
