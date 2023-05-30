@@ -52,7 +52,7 @@ class WholeProcessAnalyzeWrapper(
         tsp.doPointerAnalyze()
         val q = TaskQueue<TaintAnalyzer>("WholeProcessPathFinder", getConfig().maxThread) { analyzer, _ ->
             val finder = TaintPathFinder(ctx, tsp.ctx, analyzer.rule, analyzer)
-            finder.analyze()
+            finder.findPath()
         }
         val job = q.runTask()
         for (analyzer in analyzers) {

@@ -66,7 +66,7 @@ internal class TaintPathFinderTest {
         OutputSecResults.testClearVulnerabilityItems()
         val finder = createTwoStagePointerAnalyzerFromRule("unzipslip.json")
         runBlocking {
-            finder.analyze()
+            finder.findPath()
         }
         Assertions.assertEquals(2, OutputSecResults.vulnerabilityItems().size)
         runBlocking {
@@ -79,7 +79,7 @@ internal class TaintPathFinderTest {
         OutputSecResults.testClearVulnerabilityItems()
         val finder = createTwoStagePointerAnalyzerFromRule("unzipslipFromConstString.json")
         runBlocking {
-            finder.analyze()
+            finder.findPath()
         }
         Assertions.assertEquals(1, OutputSecResults.vulnerabilityItems().size)
     }
@@ -89,7 +89,7 @@ internal class TaintPathFinderTest {
         OutputSecResults.testClearVulnerabilityItems()
         val finder = createTwoStagePointerAnalyzerFromRule("another_example.json")
         runBlocking {
-            finder.analyze()
+            finder.findPath()
         }
         Assertions.assertEquals(1, OutputSecResults.vulnerabilityItems().size)
     }

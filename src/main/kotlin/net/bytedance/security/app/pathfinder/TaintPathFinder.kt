@@ -54,23 +54,23 @@ class TaintPathFinder(
     val analyzer: TaintAnalyzer,
 ) {
     //todo Remember that PLPointer in Analyzer and Sanitizer are different from PLPointer in PointFactory
-    suspend fun analyze() {
+    suspend fun findPath() {
         Log.logDebug(String.format("start analyze pointers %s", rule.name))
         if (rule is ConstStringModeRule || rule is ConstNumberModeRule) {
-            constAnalyze()
+            findConstPath()
         } else {
-            taintAnalyze()
+            findTaintPath()
         }
     }
 
     /**
      *ConstNumberMode and ConstStringMode  don't support sanitizer
      */
-    private suspend fun constAnalyze() {
+    private suspend fun findConstPath() {
         runConstAnalyze(analyzer)
     }
 
-    private suspend fun taintAnalyze() {
+    private suspend fun findTaintPath() {
         runTaintAnalyze(analyzer)
     }
 

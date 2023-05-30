@@ -32,13 +32,14 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
 import kotlinx.serialization.serializer
 import net.bytedance.security.app.Log.logErr
-import net.bytedance.security.app.Log.logInfo
 import net.bytedance.security.app.PreAnalyzeContext
 import net.bytedance.security.app.result.Results
 import net.bytedance.security.app.result.model.AppInfo
 import net.bytedance.security.app.taintflow.AnalyzeContext
 import net.bytedance.security.app.taintflow.TaintAnalyzer
 import net.bytedance.security.app.web.DefaultVulnerabilitySaver
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.lang.management.ManagementFactory
 import java.lang.management.MemoryUsage
 import java.text.SimpleDateFormat
@@ -353,16 +354,15 @@ class Profiler {
     val memoryTaskQuit = AtomicBoolean(false)
     fun startMemoryProfile() {
         startProfilerTask()
-        @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch(CoroutineName("memoryProfile")) {
+        thread {
             while (!memoryTaskQuit.get()) {
                 val bean = ManagementFactory.getMemoryMXBean()
                 val memoryUsage: MemoryUsage = bean.heapMemoryUsage
                 if (maxMemoryUsage < memoryUsage.used) {
                     maxMemoryUsage = memoryUsage.used
                 }
-                logInfo("memory usage=${memoryUsage}")
-                delay(30000)
+                logErr("memory usage=${memoryUsage}")
+                Thread.sleep(30000)
             }
         }
     }

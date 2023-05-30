@@ -62,20 +62,12 @@ class SliceAnalyzeWrapper(
         return m
     }
 
-    suspend fun createPathFinderQueue(): TaskQueue<TaintPathFinder> {
-        val q = TaskQueue<TaintPathFinder>("TaintPathFinder", getConfig().maxThread) { finder, _ ->
-            finder.analyze()
-            profiler.stopTaintPathCalc(finder.analyzer.entryMethod.signature)
-        }
-        return q
-    }
 
     suspend fun run() {
         val defaultPointerPropagationRule = DefaultPointerPropagationRule(EngineConfig.PointerPropagationConfig)
         val defaultVariableFlowRule = DefaultVariableFlowRule(EngineConfig.variableFlowConfig)
         val allTask = groupAnalyzers()
         val finishedTask = AtomicInteger(0)
-        val finderQueue = createPathFinderQueue()
         val analyzeTimeInSeconds =
             getConfig().maxPointerAnalyzeTime * 1000.toLong() / 3 * 2
         val q = TaskQueue<AnalyzersAndDepth>("SliceAnalyzeWrapper", getConfig().maxThread) { ad, _ ->
@@ -102,12 +94,12 @@ class SliceAnalyzeWrapper(
             profiler.startTaintPathCalc(ad.analyzers.first().entryMethod.signature)
             for (analyzer in ad.analyzers) {
                 val finder = TaintPathFinder(ctx, tsp.ctx, analyzer.rule, analyzer)
-                finderQueue.addTask(finder)
+                finder.findPath()
+                profiler.stopTaintPathCalc(finder.analyzer.entryMethod.signature)
             }
             val n = finishedTask.addAndGet(1)
             logInfo("${this.javaClass.simpleName} finished $n/${allTask.size}")
         }
-        val finderQueueJob = finderQueue.runTask()
 
         val job = q.runTask()
         for ((_, ads) in allTask) {
@@ -115,8 +107,5 @@ class SliceAnalyzeWrapper(
         }
         q.addTaskFinished()
         job.join()
-
-        finderQueue.addTaskFinished()
-        finderQueueJob.join()
     }
 }
