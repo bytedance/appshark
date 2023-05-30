@@ -32,7 +32,7 @@ import soot.UnknownType
 import test.SootHelper
 import test.TestHelper
 
-internal class ConextInsensitiveTest {
+internal class ContextInsensitiveTest {
     init {
         val ctx = PreAnalyzeContext()
         val cam = AnalyzePreProcessor(10, ctx)
