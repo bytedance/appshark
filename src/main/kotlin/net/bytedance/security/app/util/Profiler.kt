@@ -20,7 +20,7 @@
 package net.bytedance.security.app.util
 
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -38,8 +38,6 @@ import net.bytedance.security.app.result.model.AppInfo
 import net.bytedance.security.app.taintflow.AnalyzeContext
 import net.bytedance.security.app.taintflow.TaintAnalyzer
 import net.bytedance.security.app.web.DefaultVulnerabilitySaver
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.lang.management.ManagementFactory
 import java.lang.management.MemoryUsage
 import java.text.SimpleDateFormat
@@ -126,6 +124,11 @@ class Profiler {
     var totalRange = TimeRange(System.currentTimeMillis())
     val fragments: TimeRange = TimeRange()
 
+    @Transient
+    var memoryProfilerThread: Thread? = null
+
+    @Transient
+    var analyzerProfilerThread: Thread? = null
     fun init() {
         totalRange.start()
     }
@@ -328,6 +331,8 @@ class Profiler {
                     profiler.finishAndSaveProfilerResult("ProfilerTask count=$count")
                 }
                 count += 1
+            } catch (ex: InterruptedException) {
+                //ignore
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
@@ -339,7 +344,7 @@ class Profiler {
 
     private fun startProfilerTask() {
         //threads are used to ensure that tasks are executed on time without delay.
-        thread {
+        analyzerProfilerThread = thread {
             startProfilerTaskInternal(isStopped)
         }
     }
@@ -354,15 +359,19 @@ class Profiler {
     val memoryTaskQuit = AtomicBoolean(false)
     fun startMemoryProfile() {
         startProfilerTask()
-        thread {
-            while (!memoryTaskQuit.get()) {
-                val bean = ManagementFactory.getMemoryMXBean()
-                val memoryUsage: MemoryUsage = bean.heapMemoryUsage
-                if (maxMemoryUsage < memoryUsage.used) {
-                    maxMemoryUsage = memoryUsage.used
+        memoryProfilerThread = thread {
+            try {
+                while (!memoryTaskQuit.get()) {
+                    val bean = ManagementFactory.getMemoryMXBean()
+                    val memoryUsage: MemoryUsage = bean.heapMemoryUsage
+                    if (maxMemoryUsage < memoryUsage.used) {
+                        maxMemoryUsage = memoryUsage.used
+                    }
+                    logErr("memory usage=${memoryUsage}")
+                    Thread.sleep(30000)
                 }
-                logErr("memory usage=${memoryUsage}")
-                Thread.sleep(30000)
+            } catch (ex: InterruptedException) {
+                //ignore
             }
         }
     }
@@ -370,6 +379,10 @@ class Profiler {
     fun stopMemoryProfile() {
         memoryTaskQuit.set(true)
         stopProfilerTask()
+        analyzerProfilerThread?.interrupt()
+        memoryProfilerThread?.interrupt()
+        analyzerProfilerThread?.join()
+        memoryProfilerThread?.join()
     }
 
     @Serializable
