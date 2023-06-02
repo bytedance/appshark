@@ -609,11 +609,12 @@ class TwoStagePointerAnalyze(
                 }
             }
         }
-        //if there is pointerPropagationRule use pointerPropagationRule
+        //pointer flow rule
         pointerPropagationRule.flow(calleeMethod)?.let {
             orh.addEdgeByRule(stmt, it, basePtr2, baseDataPtrs, recvPtr, argPtrs, true)
 
-        } ?: //if there is no pointerPropagationRule, then use taintFlowRule
+        }
+        //taint flow rule and pointer flow rule are independent relationships
         taintFlowRule.flow(caller, calleeMethod).let {
             orh.addEdgeByRule(stmt, it, basePtr2, baseDataPtrs, recvPtr, argPtrs, false)
         }
