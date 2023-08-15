@@ -32,6 +32,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import soot.RefType
 import soot.Scene
+import soot.SootMethod
 import soot.jimple.LongConstant
 import soot.jimple.NullConstant
 import soot.jimple.StringConstant
@@ -72,7 +73,7 @@ internal class SanitizerFactoryTest {
             val s0 = sanitizers[0]
             assertTrue(s0 is ConstStringCheckSanitizer)
             println("sanitizers=${(s0 as ConstStringCheckSanitizer).constStrings}")
-            assertTrue(sanitizersResult(sanitizers, getUnzipFolderSrc()))
+            assertTrue(sanitizersZipslipResult(sanitizers, getUnzipFolderSrc()))
         }
     }
 
@@ -88,8 +89,22 @@ internal class SanitizerFactoryTest {
         return PLLocalPointer(m, "\$r3", RefType.v("java.lang.String"))
     }
 
-    fun sanitizersResult(sanitizers: List<ISanitizer>, src: PLLocalPointer): Boolean {
+    fun sanitizersZipslipResult(sanitizers: List<ISanitizer>, src: PLLocalPointer): Boolean {
         val entry = Scene.v().getMethod("<net.bytedance.security.app.sanitizer.testdata.ZipSlip: void f()>")
+        return sanitizersResult(sanitizers, src, entry)
+    }
+
+    fun sanitizersPendingIntentResult(
+        sanitizers: List<ISanitizer>,
+        src: PLLocalPointer,
+        functionName: String
+    ): Boolean {
+        val entry = Scene.v()
+            .getMethod("<net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable: void $functionName()>")
+        return sanitizersResult(sanitizers, src, entry)
+    }
+
+    fun sanitizersResult(sanitizers: List<ISanitizer>, src: PLLocalPointer, entry: SootMethod): Boolean {
         val tsp = TwoStagePointerAnalyzeTest.createDefaultTwoStagePointerAnalyze(entry)
         runBlocking {
             tsp.doPointerAnalyze()
@@ -127,7 +142,7 @@ internal class SanitizerFactoryTest {
             assertTrue(taints.size == 1)
             assertTrue(taints.first().method.name == "UnZipFolder")
             println("sanitizers=${taints}")
-            assertFalse(sanitizersResult(sanitizers, getUnZipFolderFix1Src()))
+            assertFalse(sanitizersZipslipResult(sanitizers, getUnZipFolderFix1Src()))
         }
     }
 
@@ -158,8 +173,8 @@ internal class SanitizerFactoryTest {
             assertTrue(tcs.notTaints.isEmpty())
             assertTrue(tcs.constStrings.isEmpty())
 
-            assertFalse(sanitizersResult(sanitizers, getUnzipFolderSrc()))
-            assertTrue(sanitizersResult(sanitizers, getUnZipFolderFix1Src()))
+            assertFalse(sanitizersZipslipResult(sanitizers, getUnzipFolderSrc()))
+            assertTrue(sanitizersZipslipResult(sanitizers, getUnZipFolderFix1Src()))
         }
     }
 
@@ -184,8 +199,8 @@ internal class SanitizerFactoryTest {
             assertTrue(s0 is MethodCheckSanitizer)
             val mc = s0 as MethodCheckSanitizer
             assertEquals(mc.methods.size, 1)
-            assertTrue(sanitizersResult(sanitizers, getUnzipFolderSrc()))
-            assertTrue(sanitizersResult(sanitizers, getUnZipFolderFix1Src()))
+            assertTrue(sanitizersZipslipResult(sanitizers, getUnzipFolderSrc()))
+            assertTrue(sanitizersZipslipResult(sanitizers, getUnZipFolderFix1Src()))
         }
     }
 
@@ -225,6 +240,148 @@ internal class SanitizerFactoryTest {
         for (s in samples) {
             val r = TaintCheckSanitizer.isSanitizeStrMatch(s.pattern, s.target)
             assertEquals(s.result, r, s.pattern + "," + s.target)
+        }
+    }
+
+    @Test
+    fun testPendingIntentMutableService() {
+        val rules = Rules(
+            listOf(
+                "${TestHelper.getTestClassSourceFileDirectory(this.javaClass.name)}/testdata/pendingIntentMutableService.json"
+            ), RuleFactory()
+        )
+        runBlocking {
+            rules.loadRules()
+        }
+        val taintedRule = rules.allRules[0] as DirectModeRule
+        runBlocking {
+            val ctx = createContext(rules)
+//            PLUtils.dumpClass("net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable")
+            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            assertEquals(sanitizers.size, 1)
+            val s0 = sanitizers[0]
+            assertTrue(s0 is SanitizeOrRules)
+            val so = s0 as SanitizeOrRules
+//            assertTrue((s0 as ConstStringCheckSanitizer).consts.size == 1)
+            assertEquals(so.rules.size, 0)
+
+        }
+    }
+
+    @Test
+    fun testPendingIntentMutableProvider() {
+        val rules = Rules(
+            listOf(
+                "${TestHelper.getTestClassSourceFileDirectory(this.javaClass.name)}/testdata/pendingIntentMutableProvider.json"
+            ), RuleFactory()
+        )
+        runBlocking {
+            rules.loadRules()
+        }
+        val entryFunction = "f3"
+        val taintedRule = rules.allRules[0] as DirectModeRule
+        runBlocking {
+            val ctx = createContext(rules)
+//            PLUtils.dumpClass("net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable")
+            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            assertEquals(sanitizers.size, 1)
+            val s0 = sanitizers[0]
+            assertTrue(s0 is SanitizeOrRules)
+            val so = s0 as SanitizeOrRules
+//            assertTrue((s0 as ConstStringCheckSanitizer).consts.size == 1)
+            assertEquals(so.rules.size, 1)
+            val tcs = so.rules[0] as TaintCheckSanitizer
+            assertEquals(tcs.taints.size, 1)
+            assertEquals(tcs.taints.first().method.name, entryFunction)
+            assertTrue(tcs.notTaints.isEmpty())
+            assertTrue(tcs.taints.isNotEmpty())
+            assertTrue(tcs.constStrings.isEmpty())
+
+            assertFalse(
+                sanitizersPendingIntentResult(
+                    sanitizers,
+                    createPendingIntentMutableVar("\$r0", entryFunction),
+                    entryFunction
+                )
+            )
+            assertTrue(
+                sanitizersPendingIntentResult(
+                    sanitizers,
+                    createPendingIntentMutableVar("\$r1", entryFunction),
+                    entryFunction
+                )
+            )
+        }
+    }
+
+    fun createPendingIntentMutableVar(varName: String, functionName: String): PLLocalPointer {
+        val m = Scene.v()
+            .getMethod("<net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable: void $functionName()>")
+        return PLLocalPointer(m, varName, RefType.v("java.lang.String"))
+    }
+
+    @Test
+    fun testPendingIntentMutableBroadcast() {
+        val rules = Rules(
+            listOf(
+                "${TestHelper.getTestClassSourceFileDirectory(this.javaClass.name)}/testdata/pendingIntentMutableBroadcast.json"
+            ), RuleFactory()
+        )
+        runBlocking {
+            rules.loadRules()
+        }
+        val entryFunction = "f4"
+        val taintedRule = rules.allRules[0] as DirectModeRule
+        runBlocking {
+            val ctx = createContext(rules)
+//            PLUtils.dumpClass("net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable")
+            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            assertEquals(sanitizers.size, 1)
+            val s0 = sanitizers[0]
+            assertTrue(s0 is SanitizeOrRules)
+            val so = s0 as SanitizeOrRules
+//            assertTrue((s0 as ConstStringCheckSanitizer).consts.size == 1)
+            assertEquals(so.rules.size, 1)
+            val tcs = so.rules[0] as TaintCheckSanitizer
+            assertEquals(tcs.taints.size, 1)
+            assertEquals(tcs.taints.first().method.name, entryFunction)
+            assertTrue(tcs.notTaints.isEmpty())
+            assertTrue(tcs.taints.isNotEmpty())
+            assertTrue(tcs.constStrings.isEmpty())
+
+
+            assertTrue(
+                sanitizersPendingIntentResult(
+                    sanitizers,
+                    createPendingIntentMutableVar("\$r0", entryFunction),
+                    entryFunction
+                )
+            )
+        }
+    }
+
+    @Test
+    fun testPendingIntentMutableActivity() {
+        val rules = Rules(
+            listOf(
+                "${TestHelper.getTestClassSourceFileDirectory(this.javaClass.name)}/testdata/pendingIntentMutableActivity.json"
+            ), RuleFactory()
+        )
+        runBlocking {
+            rules.loadRules()
+        }
+        val entryFunction = "f1"
+        val taintedRule = rules.allRules[0] as DirectModeRule
+        runBlocking {
+            val ctx = createContext(rules)
+//            PLUtils.dumpClass("net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable")
+            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            assertEquals(sanitizers.size, 1)
+            val s0 = sanitizers[0]
+            assertTrue(s0 is SanitizeOrRules)
+            val so = s0 as SanitizeOrRules
+//            assertTrue((s0 as ConstStringCheckSanitizer).consts.size == 1)
+            assertEquals(so.rules.size, 0)
         }
     }
 }

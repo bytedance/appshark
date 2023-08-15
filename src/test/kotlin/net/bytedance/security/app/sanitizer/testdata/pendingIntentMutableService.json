@@ -1,0 +1,42 @@
+{
+  "PendingIntentMutable": {
+    "SliceMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "PendingIntentMutable",
+      "category": "PendingIntent",
+      "detail": "When a malicious application received the vulnerable PendingIntent, the malicious application can modify the content of the original intent and the intent will be send under the context of the vulnerable application.",
+      "wiki": "",
+      "possibility": "4",
+      "model": "middle"
+    },
+    "source": {
+      "NewInstance": [
+        "net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable$Intent"
+      ]
+    },
+    "sanitize": {
+      "immutable": {
+        "<net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable$PendingIntent: net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable$PendingIntent getService(*)>": {
+          "p3": [
+            "67108864:&"
+          ],
+          "TaintCheck": [
+            "p2"
+          ]
+        }
+      }
+    },
+    "sink": {
+      "<net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable$PendingIntent: net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable$PendingIntent getService(*)>": {
+        "TaintCheck": [
+          "p2"
+        ],
+        "TaintParamType": [
+          "android.content.Intent",
+          "android.content.Intent[]"
+        ]
+      }
+    }
+  }
+}

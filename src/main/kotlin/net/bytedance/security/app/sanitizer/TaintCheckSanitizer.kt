@@ -74,10 +74,7 @@ class TaintCheckSanitizer(
                 }
             }
         }
-        if (!constPass) {
-            return false
-        }
-        return true
+        return constPass
     }
 
     fun checkAllPtrIsInOneMethod(): Boolean {

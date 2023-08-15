@@ -69,6 +69,9 @@ class TaintCheckSanitizerParser(
             val taintCheckPtrSet = calcSanitizePtrSet(taintArray, invokeExpr, callerMethod)
             if (taintCheckPtrSet.isNotEmpty()) {
                 taintPtrSet.addAll(taintCheckPtrSet)
+            } else {
+                //we expect this arg must be tainted,but it's empty, it means that it must not be tainted.
+                continue
             }
             val cleanArray = sinkBody.NotTaint
             val cleanCheckPtrSet = calcSanitizePtrSet(cleanArray, invokeExpr, callerMethod)
@@ -223,15 +226,19 @@ fun Constant.getStringValue(): String {
         is StringConstant -> {
             return value
         }
+
         is IntConstant -> {
             return value.toString()
         }
+
         is NullConstant -> {
             return "null"
         }
+
         is LongConstant -> {
             return value.toString()
         }
+
         else -> {
 //        throw IllegalArgumentException("unsupported constant type: ${this.javaClass.name}")
         }
