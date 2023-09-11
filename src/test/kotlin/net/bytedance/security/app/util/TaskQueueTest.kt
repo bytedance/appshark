@@ -47,6 +47,28 @@ internal class TaskQueueTest {
 
     }
 
+    suspend fun throwOutOfMemoryError() {
+        throw OutOfMemoryError()
+    }
+
+//    @Test
+//    fun runOutOfMemory() {
+//        val q = TaskQueue<Long>("test", 7) { task, _ ->
+//            delay(100)
+//            throwOutOfMemoryError()
+////            println("process $task,$index")
+//        }
+//        runBlocking {
+//            val job = q.runTask()
+//            var sum = 0
+//            for (i in 1 until 1000) {
+//                sum += i
+//                q.addTask(i.toLong())
+//            }
+//            q.addTaskFinished()
+//            job.join()
+//        }
+//    }
 
     @Test
     fun testCancel() {

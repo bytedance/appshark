@@ -21,6 +21,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import net.bytedance.security.app.Log
 import java.util.*
+import kotlin.system.exitProcess
 
 /**
  * A simple multithreaded task wrapper
@@ -56,7 +57,13 @@ class TaskQueue<TaskData>(
         val scope = CoroutineScope(Dispatchers.Default)
         val jobs = ArrayList<Job>()
         for (i in 0 until numberThreads) {
-            val job = scope.launch(CoroutineName("$name-$i")) {
+            val handler = CoroutineExceptionHandler { _, exception ->
+                if (exception is OutOfMemoryError) {
+                    exitProcess(37)
+                }
+                throw exception
+            }
+            val job = scope.launch(CoroutineName("$name-$i") + handler) {
                 for (taskData in queue) {
                     action(taskData, i)
                 }
