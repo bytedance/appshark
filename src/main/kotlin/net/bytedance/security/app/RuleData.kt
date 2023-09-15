@@ -91,7 +91,8 @@ data class RuleData(
     val printCG: Boolean? = null,
     val IntentSerialTaintsAll: Boolean? = null,
 
-    val sanitize: Map<String, LinkedHashMap<String, JsonElement>>? = null,
+    var sanitizer: Map<String, LinkedHashMap<String, JsonElement>>? = null, // new rules
+    var sanitize: Map<String, LinkedHashMap<String, JsonElement>>? = null,  // old rules
 
     val ManifestCheckMode: Boolean? = null,
     val APIMode: Boolean? = null,
