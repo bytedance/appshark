@@ -56,9 +56,6 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import kotlin.system.exitProcess
 
-interface ManifestVulnerability {
-    fun check(manifest: ProcessManifest)
-}
 
 /**
  * for convenience to recognize a particular structure during serialization
@@ -126,6 +123,7 @@ object ComponentDescriptionDataSerializer : KSerializer<ComponentDescription> {
     }
 }
 
+
 object AndroidUtils {
     var apkAbsPath: String? = null
     var JavaSourceDir: String? = null
@@ -164,28 +162,24 @@ object AndroidUtils {
     var GlobalCompoXmlMap: MutableMap<String, ComponentDescription> = HashMap()
     var layoutFileParser: LayoutFileParser? = null
 
-    /**
-     *  user-defined permission
-     */
+    // user-defined permission
     var permissionMap: Map<String, String> = HashMap()
-
-
     var usePermissionSet: Set<String> = HashSet()
 
+    // App info
     var PackageName: String = ""
-
     var ApplicationName: String = ""
-
     var AppLabelName: String = ""
-
     var VersionName: String = ""
-
     var VersionCode = 0
-
     var MinSdk = 0
-
     var TargetSdk = 0
-    private var manifestVulnerability: ManifestVulnerability? = null
+
+    // Manifest risk
+    var debuggable: Boolean? = null
+    var allowBackup: Boolean? = null
+    var usesCleartextTraffic: Boolean? = null
+
     private fun dexToJava(apkPath: String, outPath: String) {
         JavaSourceDir = outPath + PLUtils.JAVA_SRC
         val thread = Runtime.getRuntime().availableProcessors() / 2
@@ -287,6 +281,7 @@ object AndroidUtils {
             }
             return
         }
+
         getAppLabelNameIfNeeded(manifest)
         usePermissionSet = manifest.permissions
         permissionMap = getDefinedPermissions(manifest.manifest)
@@ -313,9 +308,14 @@ object AndroidUtils {
         layoutFileParser!!.parseLayoutFileDirect(apkPath)
         parseAllComponents(manifest)
 
-        this.manifestVulnerability?.check(manifest)
-        isApkParsed = true
+        debuggable = manifest.application.isDebuggable      // 默认false
+        allowBackup = manifest.application.isAllowBackup    // 默认true
+        usesCleartextTraffic = manifest.application.isUsesCleartextTraffic ?: (TargetSdk < 28)  // API28以下默认true，否则默认false
+        Log.logDebug("debuggable $debuggable")
+        Log.logDebug("allowBackup $allowBackup")
+        Log.logDebug("usesCleartextTraffic $usesCleartextTraffic")
 
+        isApkParsed = true
     }
 
     private fun getAppLabelNameIfNeeded(manifest: ProcessManifest) {
@@ -323,15 +323,15 @@ object AndroidUtils {
         if (AppLabelName != "") {
             return
         }
-        try {
+        AppLabelName = try {
             val v = (manifest.application as BinaryAndroidApplication).aXmlNode.getAttribute("label").value as Int
             println(v)
             val r = resources!!.findResource(v) as StringResource
-            AppLabelName = r.value
+            r.value
         } catch (e: Exception) {
             e.printStackTrace()
             Log.logErr("getAppLabelNameIfNeeded error")
-            AppLabelName = "unknown"
+            "unknown"
         }
     }
 
@@ -624,9 +624,5 @@ object AndroidUtils {
         val key = "res/layout/$name.xml"
         val fragments = layoutFileParser!!.fragments
         return fragments[key]
-    }
-
-    fun setManifestVulnerability(manifestVulnerability: ManifestVulnerability) {
-        this.manifestVulnerability = manifestVulnerability
     }
 }
