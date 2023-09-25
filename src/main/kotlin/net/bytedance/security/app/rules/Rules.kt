@@ -36,6 +36,10 @@ class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForC
             val rules = Json.parseToJsonElement(jsonStr)
             for ((ruleName, ruleBody) in rules.jsonObject) {
                 val ruleData: RuleData = Json.decodeFromJsonElement(ruleBody)
+                if (ruleData.sanitizer != null) {   // Compatible with old and new rules
+                    ruleData.sanitize = ruleData.sanitizer
+                    ruleData.sanitizer = null
+                }
                 val rule = factory.create(ruleName, ruleData)
                 allRules.add(rule)
             }
