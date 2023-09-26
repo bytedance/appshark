@@ -22,7 +22,7 @@
         ]
       }
     },
-    "sanitize": {
+    "sanitizer": {
       "rule2": {
         "ConstString": [
           "..*"

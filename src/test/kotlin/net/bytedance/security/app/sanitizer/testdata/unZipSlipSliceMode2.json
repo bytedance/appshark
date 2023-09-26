@@ -19,7 +19,7 @@
         ]
       }
     },
-    "sanitize": {
+    "sanitizer": {
       "rule1": {
         "<java.io.File: java.lang.String getCanonicalPath()>": {
           "TaintCheck":["@this"]
