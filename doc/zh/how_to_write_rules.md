@@ -216,7 +216,7 @@ zip slip漏洞的原理可以参考[Directory traversal attack](https://en.wikip
         "<java.util.zip.ZipEntry: java.lang.String getName()>"
       ]
     },
-    "sanitize": {
+    "sanitizer": {
       "getCanonicalPath": {
         "<java.io.File: java.lang.String getCanonicalPath()>": {
           "TaintCheck": [

@@ -17,7 +17,7 @@
         "android.content.Intent"
       ]
     },
-    "sanitize": {
+    "sanitizer": {
       "setClassNameString": {
         "<android.content.Intent: android.content.Intent setClassName(java.lang.String,java.lang.String)>": {
           "TaintCheck": [

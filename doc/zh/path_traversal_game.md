@@ -9,9 +9,7 @@
 - [8.报告格式](result.md)
 - [9.常见问题](faq.md)
 
-
 # appshark深入教程
- 
 
 以一个path traversal的游戏贯穿本教程,让大家体会一下如何发现漏洞,修复漏洞以及如何用appshark发现问题.
 
@@ -195,7 +193,7 @@ public class VulProvider2 extends ContentProvider {
 因此添加sanitizer如下:
 ```json
 {
-  "sanitize": {
+  "sanitizer": {
     "getLastPathSegment": {
       "<android.net.Uri: java.lang.String getLastPathSegment()>": {
         "TaintCheck": [
@@ -266,7 +264,7 @@ public class VulProvider3 extends ContentProvider {
 我们不难想到就是下面的sanitizer:
 ```json
 {
-    "sanitize": {
+    "sanitizer": {
  
       "containsDotdot": {
         "<java.lang.String: boolean contains(java.lang.CharSequence)>": {
@@ -421,7 +419,7 @@ public class VulProvider5 extends ContentProvider {
         ]
       }
     },
-    "sanitize": {
+    "sanitizer": {
       "getCanonicalFile": {
         "<java.io.File: java.io.File getCanonicalFile()>": {
           "TaintCheck": [
@@ -469,4 +467,3 @@ appshark是一个实用的基于指针分析的静态分析工具,虽然可以�
 在appshark擅长的领域发挥出它的价值, 也为自己的日常工作带来帮助.
 
 另外,这里有完整的[appshark规则的撰写手册](how_to_write_rules.md)
-

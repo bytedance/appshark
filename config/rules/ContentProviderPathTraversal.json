@@ -24,7 +24,7 @@
         ]
       }
     },
-    "sanitize": {
+    "sanitizer": {
       "getCanonicalFile": {
         "<java.io.File: java.io.File getCanonicalFile()>": {
           "TaintCheck": [
