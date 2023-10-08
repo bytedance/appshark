@@ -1,5 +1,14 @@
 #!/usr/bin/env sh
 
+if [ "$(uname)" = "Darwin" ]; then
+  if ! command -v gtimeout > /dev/null 2>&1
+  then
+    echo "Please install gtimeout and try again: \"brew install coreutils\""
+    exit 0
+  fi
+  alias timeout=gtimeout
+fi
+
 jadx=$1
 apk=$2
 output=$3

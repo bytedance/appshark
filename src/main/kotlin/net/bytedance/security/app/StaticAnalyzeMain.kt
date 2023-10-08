@@ -35,7 +35,7 @@ object StaticAnalyzeMain {
     suspend fun startAnalyze(argumentConfig: ArgumentConfig) {
         val apkPath = argumentConfig.apkPath
         val v3 = AnalyzeStepByStep()
-        val jadxPath = "${argumentConfig.configPath}/tools/jadx/bin/jadx"
+        val jadxPath = "${argumentConfig.configPath}/tools/jadx/bin/"
         val apkNameTool = "${argumentConfig.configPath}/tools/ApkName.sh"
 
         logInfo("started...")
