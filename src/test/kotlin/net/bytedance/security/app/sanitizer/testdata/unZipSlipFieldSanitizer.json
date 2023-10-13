@@ -22,7 +22,7 @@
         ]
       }
     },
-    "sanitize": {
+    "sanitizer": {
       "rule2": {
         "<net.bytedance.security.app.sanitizer.testdata.ZipSlip: java.lang.String instanceField>": {
           "TaintCheck": [

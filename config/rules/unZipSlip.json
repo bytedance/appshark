@@ -17,7 +17,7 @@
         "<java.util.zip.ZipEntry: java.lang.String getName()>"
       ]
     },
-    "sanitize": {
+    "sanitizer": {
       "rule1": {
         "<java.io.File: java.lang.String getCanonicalPath()>": {
           "TaintCheck": [

@@ -22,7 +22,7 @@
         ]
       }
     },
-    "sanitize": {
+    "sanitizer": {
       "containsDotDot": {
         "<soot.dummy.InvokeDynamic: java.lang.String makeConcatWithConstants(java.lang.String,java.lang.String,java.lang.String,java.lang.String)>": {
         }

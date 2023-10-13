@@ -15,7 +15,7 @@
         "net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable$Intent"
       ]
     },
-    "sanitize": {
+    "sanitizer": {
       "immutable": {
         "<net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable$PendingIntent: net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable$PendingIntent getService(*)>": {
           "p3": [
