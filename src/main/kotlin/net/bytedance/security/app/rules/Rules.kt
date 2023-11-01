@@ -98,9 +98,10 @@ class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForC
     }
 
     fun parseSdkVersion(input: String): List<Int> {
+        val MIN_SDK_VERSION = 9     // Android 2.3
         val MAX_SDK_VERSION = 50
         if (input.isBlank() || input.trim() == ":") {
-            return (1..MAX_SDK_VERSION).toList()
+            return (MIN_SDK_VERSION..MAX_SDK_VERSION).toList()
         }
         return input.split(Regex("[,\\s]+")).flatMap { part ->
             when {
@@ -114,7 +115,7 @@ class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForC
                             (splitPart[0].toIntOrNull() ?: return@flatMap listOf())..MAX_SDK_VERSION
                         }
                         !hasStart -> {
-                            (1..(splitPart[1].toIntOrNull() ?: return@flatMap listOf())).toList()
+                            (MIN_SDK_VERSION..(splitPart[1].toIntOrNull() ?: return@flatMap listOf())).toList()
                         }
                         else -> {
                             val start = splitPart[0].toIntOrNull() ?: return@flatMap listOf()
