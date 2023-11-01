@@ -40,7 +40,7 @@ class AnalyzeStepByStep {
         ruleList: String,
     ): Rules {
         val rulePathList = if (ruleList.isNotEmpty())
-            ruleList.split(",").map { "${getConfig().rulePath}/$it" }.toList()
+            ruleList.split(",").map { "${getConfig().rulePath}/${it.trim()}" }.toList()
         else
             withContext(Dispatchers.IO) {
                 Files.walk(Paths.get(getConfig().rulePath), 1)
