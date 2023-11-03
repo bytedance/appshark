@@ -86,6 +86,13 @@ class AppInfo(
 )
 
 @Serializable
+class ManifestRisk(
+    var debuggable: Boolean? = null,
+    var allowBackup: Boolean? = null,
+    var usesCleartextTraffic: Boolean? = null,
+)
+
+@Serializable
 data class ComponentsInfo(
     var exportedActivities: MutableList<String>,
     var exportedProviders: MutableList<String>,
