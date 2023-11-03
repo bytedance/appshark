@@ -376,6 +376,8 @@ object AndroidUtils {
                             1 -> protection = PLUtils.LevelDanger
                             2 -> protection = PLUtils.LevelSig
                             3 -> protection = PLUtils.LevelSigOrSys
+                            4 -> protection = PLUtils.LevelInternal
+                            18 -> protection = PLUtils.LevelSigAndPri
                         }
                         tmpPermissionMap[permission] = protection
                     } else {
