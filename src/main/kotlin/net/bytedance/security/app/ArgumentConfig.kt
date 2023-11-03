@@ -34,7 +34,17 @@ class ArgumentConfig(
     /**
      * If you have OOM problems, try lowering this value, such as 1, to save memory
      */
-    var maxThread: Int = 2, //  Runtime.getRuntime().availableProcessors(),
+    var maxThread: Int? = null, //  Runtime.getRuntime().availableProcessors(),
+    /**
+     * max preprocess thread, it's valid only if maxThread is null
+     */
+    private var maxPreprocessorThread: Int = 2,
+    /**
+     * max pointer analyze thread, it's valid only inf maxThread is null
+     * If you have OOM problems, try lowering this value
+     */
+    private var maxPointerAnalyzeThread: Int = 2,
+
     @SerialName("out") var outPath: String = "out",
     var rulePath: String = "",
     var rules: String = "",
@@ -54,6 +64,14 @@ class ArgumentConfig(
     //if exists, use it to replace Package in EngineConfig.json5
     var libraryPackage: List<String>? = null,
 ) {
+    fun getMaxPreprocessorThread(): Int {
+        return this.maxThread ?: this.maxPreprocessorThread
+    }
+
+    fun getMaxPointerAnalyzeThread(): Int {
+        return this.maxThread ?: this.maxPointerAnalyzeThread
+    }
+
     companion object {
         val defaultConfig: ArgumentConfig
 

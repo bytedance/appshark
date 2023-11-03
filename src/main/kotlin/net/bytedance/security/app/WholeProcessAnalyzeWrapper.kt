@@ -50,7 +50,10 @@ class WholeProcessAnalyzeWrapper(
             analyzeTimeInSeconds
         )
         tsp.doPointerAnalyze()
-        val q = TaskQueue<TaintAnalyzer>("WholeProcessPathFinder", getConfig().maxThread) { analyzer, _ ->
+        val q = TaskQueue<TaintAnalyzer>(
+            "WholeProcessPathFinder",
+            getConfig().getMaxPointerAnalyzeThread()
+        ) { analyzer, _ ->
             val finder = TaintPathFinder(ctx, tsp.ctx, analyzer.rule, analyzer)
             finder.findPath()
         }

@@ -107,7 +107,7 @@ open class PreAnalyzeContext {
     }
 
     private fun createClassAndMethodHandler(ctx: PreAnalyzeContext): AnalyzePreProcessor {
-        return AnalyzePreProcessor(getConfig().maxThread, ctx)
+        return AnalyzePreProcessor(getConfig().getMaxPreprocessorThread(), ctx)
     }
 
     protected open fun addClassAndMethodVisitor(
