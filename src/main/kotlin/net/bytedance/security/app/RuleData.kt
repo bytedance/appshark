@@ -124,13 +124,14 @@ data class RuleData(
 
     val ConstNumberMode: Boolean? = null,
     val targetNumberArr: List<Int>? = null,
+
+    val targetSdk: String = "",
 )
 
 val defaultSourceReturn = SourceReturn()
 
 @Serializable
 data class SourceReturn(
-
     val EntryInvoke: Boolean = false, val LibraryOnly: Boolean? = false
 )
 

@@ -30,7 +30,7 @@ import java.nio.file.Paths
 class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForContext {
     val allRules: MutableList<IRule> = ArrayList()
 
-    suspend fun loadRules() {
+    suspend fun loadRules(targetSdk: Int? = null) {
         rulePaths.forEach {
             val jsonStr = loadConfigOrQuit(it)
             val rules = Json.parseToJsonElement(jsonStr)
@@ -40,8 +40,12 @@ class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForC
                     ruleData.sanitize = ruleData.sanitizer
                     ruleData.sanitizer = null
                 }
-                val rule = factory.create(ruleName, ruleData)
-                allRules.add(rule)
+                if (targetSdk == null || targetSdk in parseSdkVersion(ruleData.targetSdk)) {
+                    val rule = factory.create(ruleName, ruleData)
+                    allRules.add(rule)
+                } else {
+                    Log.logDebug("ignore rule: $ruleName")
+                }
             }
         }
     }
@@ -88,6 +92,39 @@ class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForC
                 }
 
             return jsonStr
+        }
+    }
+
+    fun parseSdkVersion(input: String): List<Int> {
+        val MIN_SDK_VERSION = 9     // Android 2.3
+        val MAX_SDK_VERSION = 50    // for future
+
+        if (input.isBlank() || input.trim() == ":") {
+            return (MIN_SDK_VERSION..MAX_SDK_VERSION).toList()
+        }
+        return input.split(Regex("[,\\s]+")).flatMap { part ->
+            when {
+                part.contains(":") -> {
+                    val splitPart = part.split(":")
+                    val hasStart = splitPart[0].isNotEmpty()
+                    val hasEnd = splitPart[1].isNotEmpty()
+                    when {
+                        !hasStart && !hasEnd -> listOf()
+                        !hasEnd -> {
+                            (splitPart[0].toIntOrNull() ?: return@flatMap listOf())..MAX_SDK_VERSION
+                        }
+                        !hasStart -> {
+                            (MIN_SDK_VERSION..(splitPart[1].toIntOrNull() ?: return@flatMap listOf())).toList()
+                        }
+                        else -> {
+                            val start = splitPart[0].toIntOrNull() ?: return@flatMap listOf()
+                            val end = splitPart[1].toIntOrNull() ?: return@flatMap listOf()
+                            (start..end).toList()
+                        }
+                    }
+                }
+                else -> listOf(part.toIntOrNull() ?: return@flatMap listOf())
+            }
         }
     }
 }
