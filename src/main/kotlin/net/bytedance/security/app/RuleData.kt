@@ -91,7 +91,8 @@ data class RuleData(
     val printCG: Boolean? = null,
     val IntentSerialTaintsAll: Boolean? = null,
 
-    val sanitize: Map<String, LinkedHashMap<String, JsonElement>>? = null,
+    var sanitizer: Map<String, LinkedHashMap<String, JsonElement>>? = null, // new rules
+    var sanitize: Map<String, LinkedHashMap<String, JsonElement>>? = null,  // old rules
 
     val ManifestCheckMode: Boolean? = null,
     val APIMode: Boolean? = null,
@@ -123,13 +124,14 @@ data class RuleData(
 
     val ConstNumberMode: Boolean? = null,
     val targetNumberArr: List<Int>? = null,
+
+    val targetSdk: String = "",
 )
 
 val defaultSourceReturn = SourceReturn()
 
 @Serializable
 data class SourceReturn(
-
     val EntryInvoke: Boolean = false, val LibraryOnly: Boolean? = false
 )
 

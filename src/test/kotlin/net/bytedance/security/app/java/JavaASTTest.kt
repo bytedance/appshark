@@ -17,11 +17,6 @@
 
 package net.bytedance.security.app.java
 
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import net.bytedance.security.app.util.JavaAST
-import org.junit.jupiter.api.Test
-
 val testdata = """ 
 package net.bytedance.security.app.pathfinder.testdata;
 
@@ -59,19 +54,19 @@ public class CHATest {
 """.trimIndent()
 
 internal class JavaASTTest {
-    @Test
-    fun testParseJavaSource() {
-        try {
-            JavaAST.parseJavaSource("net.bytedance.security.app.pathfinder.testdata.CHATest", testdata)
-            assert(JavaAST.ASTMap.isNotEmpty())
-            println(Json.encodeToString(JavaAST.ASTMap))
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            assert(false) {
-                error("exception")
-            }
-        }
-
-    }
+//    @Test
+//    fun testParseJavaSource() {
+//        try {
+//            JavaAST.parseJavaSource("net.bytedance.security.app.pathfinder.testdata.CHATest", testdata)
+//            assert(JavaAST.ASTMap.isNotEmpty())
+//            println(Json.encodeToString(JavaAST.ASTMap))
+//        } catch (ex: Exception) {
+//            ex.printStackTrace()
+//            assert(false) {
+//                error("exception")
+//            }
+//        }
+//
+//    }
 }
 

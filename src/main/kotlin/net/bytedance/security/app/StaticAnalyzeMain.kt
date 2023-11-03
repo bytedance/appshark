@@ -35,7 +35,7 @@ object StaticAnalyzeMain {
     suspend fun startAnalyze(argumentConfig: ArgumentConfig) {
         val apkPath = argumentConfig.apkPath
         val v3 = AnalyzeStepByStep()
-        val jadxPath = "${argumentConfig.configPath}/tools/jadx/bin/jadx"
+        val jadxPath = "${argumentConfig.configPath}/tools/jadx/bin/"
         val apkNameTool = "${argumentConfig.configPath}/tools/ApkName.sh"
 
         logInfo("started...")
@@ -54,7 +54,7 @@ object StaticAnalyzeMain {
         profiler.parseApk.end()
 
         profiler.preProcessor.start()
-        val rules = v3.loadRules(argumentConfig.rules)
+        val rules = v3.loadRules(argumentConfig.rules, AndroidUtils.TargetSdk)
         logInfo("rules loaded")
         val ctx = v3.createContext(rules)
         profiler.preProcessor.end()

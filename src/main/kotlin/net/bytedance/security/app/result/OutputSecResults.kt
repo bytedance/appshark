@@ -119,7 +119,7 @@ object OutputSecResults {
 
     private suspend fun addManifest(ctx: PreAnalyzeContext) {
         val manifestTaskQueue =
-            TaskQueue<Pair<String, VulnerabilityItem>>("manifest", getConfig().maxThread) { task, _ ->
+            TaskQueue<Pair<String, VulnerabilityItem>>("manifest", getConfig().getMaxPreprocessorThread()) { task, _ ->
                 val t = TraceTask(ctx)
                 t.addManifest(task.second, task.first)
             }

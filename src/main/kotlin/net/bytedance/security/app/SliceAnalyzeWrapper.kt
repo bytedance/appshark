@@ -70,7 +70,7 @@ class SliceAnalyzeWrapper(
         val finishedTask = AtomicInteger(0)
         val analyzeTimeInSeconds =
             getConfig().maxPointerAnalyzeTime * 1000.toLong() / 3 * 2
-        val q = TaskQueue<AnalyzersAndDepth>("SliceAnalyzeWrapper", getConfig().maxThread) { ad, _ ->
+        val q = TaskQueue<AnalyzersAndDepth>("SliceAnalyzeWrapper", getConfig().getMaxPointerAnalyzeThread()) { ad, _ ->
             val vfr = if (ad.rule.taintTweak != null) {
                 TaintTweakTaintFlowRule(ad.rule.taintTweak, defaultVariableFlowRule)
             } else {

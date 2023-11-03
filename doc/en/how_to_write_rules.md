@@ -196,7 +196,7 @@ First, give the complete rule:
         "<java.util.zip.ZipEntry: java.lang.String getName()>"
       ]
     },
-    "sanitize": {
+    "sanitizer": {
       "getCanonicalPath": {
         "<java.io.File: java.lang.String getCanonicalPath()>": {
           "TaintCheck": [

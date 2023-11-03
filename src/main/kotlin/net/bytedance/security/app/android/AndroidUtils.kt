@@ -129,7 +129,6 @@ object AndroidUtils {
     var JavaSourceDir: String? = null
 
     var dexToJavaProcess: Process? = null
-    var jadxAbsPath: String? = null
     var resources: ARSCFileParser? = null
     var isApkParsed = false //
 
@@ -180,15 +179,24 @@ object AndroidUtils {
     var allowBackup: Boolean? = null
     var usesCleartextTraffic: Boolean? = null
 
-    private fun dexToJava(apkPath: String, outPath: String) {
+    private fun dexToJava(apkPath: String, outPath: String, jadxPath: String) {
         JavaSourceDir = outPath + PLUtils.JAVA_SRC
         val thread = Runtime.getRuntime().availableProcessors() / 2
         try {
             val start = System.currentTimeMillis()
             Log.logInfo("==========>Start dex to Java")
+            val wapperFile: String
+            val jadxFile: String
+            if (isWindows()) {
+                wapperFile = File(jadxPath, "wapper.bat").path
+                jadxFile = File(jadxPath, "jadx.bat").path
+            } else {
+                wapperFile = File(jadxPath, "wapper.sh").path
+                jadxFile = File(jadxPath, "jadx").path
+            }
             val processBuilder = ProcessBuilder(
-                "$jadxAbsPath.sh",
-                jadxAbsPath,
+                wapperFile,
+                jadxFile,
                 apkPath,
                 JavaSourceDir, thread.toString()
             )
@@ -203,7 +211,6 @@ object AndroidUtils {
         }
         Log.logInfo("write Java Source to $JavaSourceDir")
     }
-
 
     fun parseApk(apkPath: String, jadxPath: String, outPath: String, apkNameToolPath: String) {
         try {
@@ -248,8 +255,7 @@ object AndroidUtils {
         apkAbsPath = apkPath
         if (getConfig().javaSource == true) {
             Log.logDebug("Dex to java code")
-            jadxAbsPath = jadxPath
-            dexToJava(apkPath, outPath)
+            dexToJava(apkPath, outPath, jadxPath)
         }
 
         val targetAPK = File(apkAbsPath!!)
@@ -369,6 +375,8 @@ object AndroidUtils {
                             1 -> protection = PLUtils.LevelDanger
                             2 -> protection = PLUtils.LevelSig
                             3 -> protection = PLUtils.LevelSigOrSys
+                            4 -> protection = PLUtils.LevelInternal
+                            18 -> protection = PLUtils.LevelSigAndPri
                         }
                         tmpPermissionMap[permission] = protection
                     } else {

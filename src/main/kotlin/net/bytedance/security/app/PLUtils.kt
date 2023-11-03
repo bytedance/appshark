@@ -28,10 +28,12 @@ import java.io.PrintWriter
 import java.util.concurrent.atomic.AtomicInteger
 
 object PLUtils {
-    const val LevelNormal = "normal"
-    const val LevelDanger = "dangerous"
-    const val LevelSig = "signature"
-    const val LevelSigOrSys = "signatureOrSystem"
+    const val LevelNormal = "normal"                // 0x0
+    const val LevelDanger = "dangerous"             // 0x1
+    const val LevelSig = "signature"                // 0x2
+    const val LevelSigOrSys = "signatureOrSystem"   // 0x3
+    const val LevelInternal = "internal"            // 0x4
+    const val LevelSigAndPri = "signature|privileged"   // 0x2+0x10
 
     var JAVA_SRC = "/java/"
 
