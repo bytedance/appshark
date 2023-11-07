@@ -31,6 +31,7 @@ class ArgumentConfig(
     //max pointer analysis time in second for each entry point
     var maxPointerAnalyzeTime: Int = 600,
     var javaSource: Boolean? = false,
+    var jimpleSource: Boolean? = false,
     /**
      * If you have OOM problems, try lowering this value, such as 1, to save memory
      */
@@ -82,6 +83,7 @@ class ArgumentConfig(
                 outPath = "$wd/out",
                 rules = "",
                 javaSource = false,
+                jimpleSource = false,
                 maxPointerAnalyzeTime = 600,
                 maxThread = 4,
                 manifestTrace = 3,

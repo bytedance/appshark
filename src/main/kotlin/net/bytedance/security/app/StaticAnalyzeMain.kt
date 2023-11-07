@@ -44,7 +44,7 @@ object StaticAnalyzeMain {
             AnalyzeStepByStep.TYPE.APK,
             apkPath,
             "${argumentConfig.configPath}/tools/platforms",
-            argumentConfig.outPath
+            "${argumentConfig.outPath}/soot"
         )
         logInfo("soot init done")
         PLUtils.createCustomClass()

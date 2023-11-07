@@ -34,6 +34,7 @@ import soot.RefType
 import soot.Scene
 import soot.SootClass
 import soot.SootMethod
+import soot.PackManager
 import soot.jimple.Constant
 import soot.jimple.InstanceInvokeExpr
 import soot.jimple.Stmt
@@ -256,6 +257,10 @@ object AndroidUtils {
         if (getConfig().javaSource == true) {
             Log.logDebug("Dex to java code")
             dexToJava(apkPath, outPath, jadxPath)
+        }
+        if (getConfig().jimpleSource == true) {
+            Log.logDebug("Dex to jimple code")
+            PackManager.v().writeOutput();
         }
 
         val targetAPK = File(apkAbsPath!!)

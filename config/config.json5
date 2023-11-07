@@ -17,6 +17,9 @@
   //output log level
   //  "logLevel": 0,
 
+  //output jimple code for debug
+  //  "jimpleSource": true,
+
   //display the decompiled java code in the results
   //  "javaSource": true,
 }
