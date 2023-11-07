@@ -45,7 +45,13 @@ abstract class TaintFlowRule(name: String, ruleData: RuleData) : AbstractRule(na
     }
 
     fun isThisRuleNeedLog(): Boolean {
-        return getConfig().debugRule == this.name
+        val config = getConfig()
+        val ruleNameList = when (config.debugRule) {
+            "" -> emptyList()
+            "all" -> config.rules.split(",").map { it.trim() }
+            else -> config.debugRule.split(",").map { it.trim() }
+        }
+        return ruleNameList.contains("${this.name}.json")
     }
 
     fun isThroughEnable(): Boolean {

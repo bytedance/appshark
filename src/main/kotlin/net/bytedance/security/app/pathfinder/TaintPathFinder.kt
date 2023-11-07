@@ -41,6 +41,8 @@ import soot.jimple.IntConstant
 import soot.jimple.LongConstant
 import soot.jimple.NumericConstant
 import soot.jimple.StringConstant
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.*
 
 /**
@@ -149,10 +151,7 @@ class TaintPathFinder(
         if (constNumberModeRule.targetNumberArr == null) {
             return true
         }
-        if (constNumberModeRule.targetNumberArr.contains(constNumber.toInt())) {
-            return true
-        }
-        return false
+        return constNumberModeRule.targetNumberArr.contains(constNumber.toInt())
     }
 
     /**
@@ -264,32 +263,35 @@ class TaintPathFinder(
     ) {
         if (isThisSolverNeedLog()) {
             val sb = StringBuilder()
+            val outPath = "${getConfig().outPath}/log/${this.rule.name}"
+            Files.createDirectories(Paths.get(outPath))
+
             val sinkTaintedSet = HashSet<PLPointer>()
             for (sink in sinkPtrSet) {
                 sinkTaintedSet.addAll(analyzeContext.collectReversePropagation(sink, rule.primTypeAsTaint))
             }
             sb.append("sinkPtrSet=${sinkPtrSet.toSortedSet()}, taint sinkNodeSet: ${sinkTaintedSet.toSortedSet()}\n")
-            PLUtils.writeFile(getConfig().outPath + "/sink.log", sb.toString())
+            PLUtils.writeFile("$outPath/sink.log", sb.toString())
             sb.clear()
-            sb.append("\n\n\n\n\n\nsrcPtr=${srcPtr}, taint sourceNodeSet:\n")
+
+            sb.append("srcPtr=${srcPtr}, taint sourceNodeSet:\n")
             val srcTaintedSet = analyzeContext.collectPropagation(srcPtr, rule.primTypeAsTaint)
             sb.append("\n\nsrcTaintedSet=${srcTaintedSet.toSortedSet()}")
-            PLUtils.writeFile(getConfig().outPath + "/source.log", sb.toString())
+            PLUtils.writeFile("$outPath/source.log", sb.toString())
             sb.clear()
+
             PLUtils.writeFile(
-                getConfig().outPath + "/ptrToSet.log",
-                analyzeContext.pointerToObjectSet.toSortedMap().toFormatedString()
-            )
+                "$outPath/ptrToSet.log",
+                analyzeContext.pointerToObjectSet.toSortedMap().toFormatedString())
             PLUtils.writeFile(
-                getConfig().outPath + "/taintPtrFlowGraph.log",
-                analyzeContext.variableFlowGraph.toSortedMap().toFormatedString()
-            )
+                "$outPath/taintPtrFlowGraph.log",
+                analyzeContext.variableFlowGraph.toSortedMap().toFormatedString())
             PLUtils.writeFile(
-                getConfig().outPath + "/ptrFlowGraph.log",
-                analyzeContext.pointerFlowGraph.toSortedMap().toFormatedString()
-            )
-            PLUtils.writeFile(getConfig().outPath + "rm.log", analyzeContext.rm.toSortedSet().toFormatedString())
-//            exitProcess(3)
+                "$outPath/ptrFlowGraph.log",
+                analyzeContext.pointerFlowGraph.toSortedMap().toFormatedString())
+            PLUtils.writeFile(
+                "$outPath/rm.log",
+                analyzeContext.rm.toSortedSet().toFormatedString())
         }
         val g = analyzeContext.variableFlowGraph
         val path = bfsSearch(srcPtr, sinkPtrSet, g, getConfig().maxPathLength, rule.name) ?: return
