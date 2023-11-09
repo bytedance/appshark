@@ -260,7 +260,7 @@ object AndroidUtils {
         }
         if (getConfig().jimpleSource == true) {
             Log.logDebug("Dex to jimple code")
-            PackManager.v().writeOutput();
+            PackManager.v().writeOutput()
         }
 
         val targetAPK = File(apkAbsPath!!)
