@@ -55,6 +55,7 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
+import java.lang.reflect.Method
 import kotlin.system.exitProcess
 
 
@@ -253,16 +254,27 @@ object AndroidUtils {
                 e.printStackTrace()
             }
         }
-        apkAbsPath = apkPath
+
         if (getConfig().javaSource == true) {
             Log.logDebug("Dex to java code")
             dexToJava(apkPath, outPath, jadxPath)
         }
         if (getConfig().jimpleSource == true) {
             Log.logDebug("Dex to jimple code")
-            PackManager.v().writeOutput()
+            val excludeList = arrayListOf(
+                "android.", "androidx.", "kotlin.", "kotlinx.", "java.", "javax.",
+                "dalvik.", "org.", "sun.", "com.google.")
+
+            val writeList = Scene.v().applicationClasses.filter { sootClass ->
+                excludeList.none { exclude -> sootClass.name.startsWith(exclude) }
+            }
+
+            val method = PackManager.v()::class.java.getDeclaredMethod("writeOutput", Iterator::class.java)
+            method.isAccessible = true
+            method.invoke(PackManager.v(), writeList.iterator())
         }
 
+        apkAbsPath = apkPath
         val targetAPK = File(apkAbsPath!!)
         Log.logDebug("Load resource")
         resources = ARSCFileParser()
