@@ -91,6 +91,8 @@ fun newFunctionSignature(methodSig: String): FunctionSignature {
                         s = ""
                     }
 
+                    MethodSignatureParseState.ReturnType -> {}
+
                     else -> exitProcess(-8)
                 }
             }
