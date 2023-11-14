@@ -84,14 +84,8 @@ object MethodFinder {
     }
 
     private fun filterByClassName(className: String): Collection<SootClass> {
-        val results = ArrayList<SootClass>()
         //to avoid java.util.ConcurrentModificationException
-        for (c in PLUtils.classes) {
-            if (isMatched(className, c.name)) {
-                results.add(c)
-            }
-        }
-        return results
+        return PLUtils.classes.filter { isMatched(className, it.name) }
     }
 
     /**
@@ -105,10 +99,9 @@ object MethodFinder {
     private fun checkAndParseMethodSigInternal(methodSig: String): Set<SootMethod> {
         val matchedMethodSet: MutableSet<SootMethod> = HashSet()
         val fd = newFunctionSignature(methodSig)
-        if (!fd.className.contains("*") && !fd.functionName.contains("*") && !fd.args.contains("*") && !fd.returnType.contains(
-                "*"
-            )
-        ) {
+        if (!fd.className.contains("*") && !fd.functionName.contains("*") &&
+            !fd.args.contains("*") && !fd.returnType.contains("*"))
+        {
             val sc = Scene.v().getSootClassUnsafe(fd.className, false)
             val sm = Scene.v().grabMethod(methodSig)
             if (sc != null && sm != null) {
@@ -122,45 +115,35 @@ object MethodFinder {
                     }
                 }
             }
-
             return matchedMethodSet
         }
+
         val targetClassSet = getClassesByName(fd.className)
         val possibleMethodSigSet: MutableSet<SootMethod> = HashSet()
-        for (sc in targetClassSet) {
-            var methods: List<SootMethod>
-            if (sc.name.startsWith(PLUtils.CUSTOM_CLASS)) {
-                continue
-            } else {
-                methods = sc.methods
+        targetClassSet.filterNot { it.name.startsWith(PLUtils.CUSTOM_CLASS) }.forEach { sc ->
+            val methods = sc.methods
+
+            fun processMethod(method: SootMethod, predicate: (SootMethod) -> Boolean) {
+                if (predicate(method)) {
+                    matchedMethodSet.add(method)
+                    addMatchedMethodSet(possibleMethodSigSet, method)
+                }
             }
+
             if (fd.functionName.contains("*") || fd.args.contains("*") || fd.returnType.contains("*")) {
-                if (fd.functionName == "*") {
-                    methods.forEach {
-                        matchedMethodSet.add(it)
-                        addMatchedMethodSet(possibleMethodSigSet, it)
-                    }
-                } else {
-                    for (sm in methods) {
-                        if (isMatched(fd.functionName, sm.name)) {
-                            matchedMethodSet.add(sm)
-                            addMatchedMethodSet(possibleMethodSigSet, sm)
-                        }
+                methods.forEach { method ->
+                    if (fd.functionName == "*") {
+                        processMethod(method) { true }
+                    } else {
+                        processMethod(method) { isMatched(fd.functionName, it.name) }
                     }
                 }
             } else {
-                for (sm in methods) {
-                    if (fd.subSignature() == sm.subSignature) {
-                        matchedMethodSet.add(sm)
-                        addMatchedMethodSet(possibleMethodSigSet, sm)
-                    }
-                }
+                methods.forEach { processMethod(it) { fd.subSignature() == it.subSignature } }
             }
         }
 
-        for (otherSig in possibleMethodSigSet) {
-            matchedMethodSet.add(otherSig)
-        }
+        matchedMethodSet.addAll(possibleMethodSigSet)
         Log.logDebug(methodSig + " Parsed " + matchedMethodSet.size)
         return matchedMethodSet
     }
@@ -179,6 +162,7 @@ object MethodFinder {
         val start = System.currentTimeMillis()
         val s = checkAndParseMethodSigInternal(methodSig)
         profiler.checkAndParseMethodSigInternalTake(System.currentTimeMillis() - start)
+
         MethodSignatureCache[methodSig] = s
         return s
     }
@@ -237,15 +221,10 @@ object MethodFinder {
      * pattern matching based on class name
      */
     private fun getClassesByName(className: String): Collection<SootClass> {
-        return if (className == "*") {
-            PLUtils.classes
-        } else {
-            if (className.indexOf("*") >= 0) {
-                return filterByClassName(className)
-            } else {
-                val sc = Scene.v().getSootClassUnsafe(className, false) ?: return setOf()
-                return setOf(sc)
-            }
+        return when {
+            className == "*" -> PLUtils.classes
+            className.contains("*") -> filterByClassName(className)
+            else -> Scene.v().getSootClassUnsafe(className, false)?.let { setOf(it) } ?: setOf()
         }
     }
 }

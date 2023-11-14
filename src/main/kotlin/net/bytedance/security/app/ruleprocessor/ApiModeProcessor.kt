@@ -38,37 +38,50 @@ class ApiModeProcessor(val ctx: PreAnalyzeContext) : IRuleProcessor {
         if (rule !is ApiModeRule) {
             return
         }
-        val sinkObject = rule.sink
-        for (sinkRuleSig in sinkObject.keys) {
-            if (sinkRuleSig.isMethodSignature()) {
-                val methodSigSet = MethodFinder.checkAndParseMethodSig(sinkRuleSig)
-                methodSigSet.forEach {
-                    val callMap = ctx.findInvokeCallSite(it)
-                    apiModeToHtml(rule, callMap)
-                }
 
-            } else if (sinkRuleSig.isFieldSignature()) {
-                val callMap = ctx.findFieldCallSite(
-                    sinkRuleSig
-                )
-                apiModeToHtml(rule, callMap)
-            } else {
-                val matchedClasses = PLUtils.findMatchedChildClasses(setOf(sinkRuleSig))
-                val sinkClass = Scene.v().getSootClassUnsafe(sinkRuleSig, false)
-                if (sinkClass != null) {
-                    matchedClasses.add(sinkClass)
+        if (rule.apiPermission.isNotEmpty()) {
+            val callSet = mutableSetOf<String>()
+
+            rule.sink.keys.forEach { sinkRuleSig ->
+                if (sinkRuleSig.isMethodSignature()) {
+                    val methodSigSet = MethodFinder.checkAndParseMethodSig(sinkRuleSig)
+                    callSet.addAll(methodSigSet.map { it.signature })
+                } else if (sinkRuleSig.isFieldSignature()) {
+                    val fieldSigSet = MethodFinder.checkAndParseFieldSignature(sinkRuleSig)
+                    callSet.addAll(fieldSigSet.map { it.signature })
                 }
-                for (sc in matchedClasses) {
-                    val callMap = ctx.findInstantCallSite(sc.name)
-                    apiModeToHtml(rule, callMap)
+            }
+            apiPermissionToResults(rule.apiPermission, callSet)
+
+        } else {
+            rule.sink.keys.forEach { sinkRuleSig ->
+                val callMap = when {
+                    sinkRuleSig.isMethodSignature() -> {
+                        val methodSigSet = MethodFinder.checkAndParseMethodSig(sinkRuleSig)
+                        methodSigSet.map { ctx.findInvokeCallSite(it) }
+                    }
+
+                    sinkRuleSig.isFieldSignature() -> listOf(ctx.findFieldCallSite(sinkRuleSig))
+
+                    else -> {
+                        val matchedClasses = PLUtils.findMatchedChildClasses(setOf(sinkRuleSig))
+                        Scene.v().getSootClassUnsafe(sinkRuleSig, false)?.let { matchedClasses.add(it) }
+                        matchedClasses.map { ctx.findInstantCallSite(it.name) }
+                    }
                 }
+                callMap.forEach { apiModeToHtml(rule, it) }
             }
         }
     }
 
     private suspend fun apiModeToHtml(rule: IRule, callMap: Set<CallSite>) {
         for (site in callMap) {
-            APIModeHtmlWriter(OutputSecResults, rule, site.method, site.stmt).addVulnerabilityAndSaveResultToOutput()
+            APIModeHtmlWriter(OutputSecResults, rule, site.method, site.stmt)
+                .addVulnerabilityAndSaveResultToOutput()
         }
+    }
+
+    private fun apiPermissionToResults(apiPermission: String, callSet: Set<String>) {
+        OutputSecResults.ApiPermissionMapping[apiPermission] = callSet
     }
 }

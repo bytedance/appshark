@@ -82,7 +82,7 @@ object StaticAnalyzeMain {
 @Throws(Exception::class)
 fun main(args: Array<String>) {
     if (args.isEmpty()) {
-        println("Usage: java -jar appshark.jar  config.json5")
+        println("Usage: java -jar appshark.jar config.json5")
         return
     }
     val configPath = args[0]
@@ -98,6 +98,7 @@ fun main(args: Array<String>) {
                 EngineConfig.libraryConfig.setPackage(it)
             }
         }
+        Log.logDebug(Json.encodeToString(argumentConfig))
         runBlocking { StaticAnalyzeMain.startAnalyze(argumentConfig) }
     } catch (e: Exception) {
         e.printStackTrace()

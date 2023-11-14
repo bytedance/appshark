@@ -96,6 +96,7 @@ data class RuleData(
 
     val ManifestCheckMode: Boolean? = null,
     val APIMode: Boolean? = null,
+    val APIPermission: String? = null,
 
     val InternalMediaLocation: Boolean? = null,
 

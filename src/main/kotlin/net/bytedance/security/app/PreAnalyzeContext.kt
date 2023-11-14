@@ -178,26 +178,17 @@ open class PreAnalyzeContext {
     }
 
     fun findInstantCallSiteWithSubclass(className: String): Set<CallSite> {
-        val s = HashSet<CallSite>()
-        for (sc in PLUtils.classes) {
-            if (sc.name == className || sc.hasSuperclass() && className == sc.superclass.name) {
-                s.addAll(findInstantCallSite(sc))
-            }
-        }
-        return s
+        return PLUtils.classes.filter { it.name == className 
+            || (it.hasSuperclass() && className == it.superclass.name) }
+            .flatMap { findInstantCallSite(it) }.toSet()
     }
-
 
     /**
      * field load callsites
      */
     fun findFieldCallSite(field: String): Set<CallSite> {
-        val fields = MethodFinder.checkAndParseFieldSignature(field)
-        val results = HashSet<CallSite>()
-        for (f in fields) {
-            results.addAll(findFieldCallSite(f))
-        }
-        return results
+        return MethodFinder.checkAndParseFieldSignature(field)
+            .flatMap { findFieldCallSite(it) }.toSet()
     }
 
     /**

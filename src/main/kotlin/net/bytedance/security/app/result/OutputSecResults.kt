@@ -35,14 +35,14 @@ import kotlin.system.exitProcess
 @Serializable
 class Results {
     var AppInfo: AppInfo? = null
-    var ManifestRisk: ManifestRisk? = null
+    var ManifestRisk = ManifestRisk()
     var SecurityInfo: MutableMap<String, MutableMap<String, SecurityRiskItem>> = HashMap()
     var ComplianceInfo: MutableMap<String, MutableMap<String, SecurityRiskItem>> = HashMap()
     var DeepLinkInfo: MutableMap<String, MutableSet<String>>? = null
     var HTTP_API: MutableList<HttpAPI>? = null
     var JsBridgeInfo: MutableList<JsBridgeAPI>? = null
     var BasicInfo: BasicInfo? = null
-    var UsePermissions: Set<String>? = null
+    var UsePermissions: MutableMap<String, String> = mutableMapOf()
     var DefinePermissions: Map<String, String>? = null
     var Profile: String? = null
 }
@@ -58,18 +58,17 @@ object OutputSecResults {
     private var BasicInfo = BasicInfo()
     private var DeepLinkInfo: MutableMap<String, MutableSet<String>> = HashMap()
     var AppInfo = AppInfo()
-    var ManifestRisk = ManifestRisk()
     var APIList: MutableList<HttpAPI> = ArrayList()
     var JsBridgeList: MutableList<JsBridgeAPI> = ArrayList()
     var JSList: MutableList<String> = ArrayList()
     private var vulnerabilityItems = ArrayList<VulnerabilityItem>()
+    var ApiPermissionMapping: MutableMap<String, Set<String>> = mutableMapOf()
 
     fun init() {
         AppInfo.appsharkTakeTime = profiler.totalRange.takes
         AppInfo.classCount = profiler.ProcessMethodStatistics.availableClasses
         AppInfo.methodCount = profiler.ProcessMethodStatistics.availableMethods
         Results.AppInfo = AppInfo
-        Results.ManifestRisk = ManifestRisk
         Results.DeepLinkInfo = DeepLinkInfo
         Results.HTTP_API = APIList
         Results.JsBridgeInfo = JsBridgeList
@@ -99,13 +98,19 @@ object OutputSecResults {
     }
 
     private fun insertMani() {
-        ManifestRisk.debuggable = AndroidUtils.debuggable
-        ManifestRisk.allowBackup = AndroidUtils.allowBackup
-        ManifestRisk.usesCleartextTraffic = AndroidUtils.usesCleartextTraffic
+        Results.ManifestRisk.debuggable = AndroidUtils.debuggable
+        Results.ManifestRisk.allowBackup = AndroidUtils.allowBackup
+        Results.ManifestRisk.usesCleartextTraffic = AndroidUtils.usesCleartextTraffic
     }
 
     private fun insertPerm() {
-        Results.UsePermissions = AndroidUtils.usePermissionSet
+        AndroidUtils.usePermissionSet.forEach {
+            Results.UsePermissions[it] = when {
+                this.ApiPermissionMapping.contains(it) && this.ApiPermissionMapping[it]!!.isNotEmpty() -> "used"
+                this.ApiPermissionMapping.contains(it) -> "unused"
+                else -> "unknown"
+            }
+        }
         Results.DefinePermissions = AndroidUtils.permissionMap
     }
 

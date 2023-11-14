@@ -23,8 +23,10 @@ import net.bytedance.security.app.SinkBody
 class ApiModeRule(name: String, ruleData: RuleData) : AbstractRule(name, ruleData) {
     override val mode: String = "APIMode"
     val sink: Map<String, SinkBody>
+    val apiPermission: String
 
     init {
         sink = ruleData.sink!!
+        apiPermission = ruleData.APIPermission ?: ""
     }
 }
