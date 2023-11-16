@@ -25,10 +25,7 @@ import net.bytedance.security.app.pointer.PLLocalPointer
 import net.bytedance.security.app.pointer.PLObject
 import net.bytedance.security.app.pointer.PLPointer
 import net.bytedance.security.app.pointer.PointerFactory
-import net.bytedance.security.app.util.profiler
-import net.bytedance.security.app.util.runInMilliSeconds
-import net.bytedance.security.app.util.toSortedMap
-import net.bytedance.security.app.util.toSortedSet
+import net.bytedance.security.app.util.*
 import soot.*
 import soot.jimple.*
 import soot.jimple.internal.*
@@ -88,7 +85,7 @@ class TwoStagePointerAnalyze(
         profiler.startPointAnalyze(name)
         thisStageStart = System.currentTimeMillis()
         try {
-            val job = localScope.launch(Dispatchers.Default) {
+            val job = localScope.launch(Dispatchers.Default + CoroutineName("PointerAnalyzeStage1") + oomHandler) {
                 scope = this
                 analyzeMethod(entryMethod, null, 0)
             }
@@ -100,7 +97,7 @@ class TwoStagePointerAnalyze(
         Log.logInfo("$name fistStageAnalyze finished")
         thisStageStart = System.currentTimeMillis()
         try {
-            val job = localScope.launch(Dispatchers.Default) {
+            val job = localScope.launch(Dispatchers.Default + CoroutineName("PointerAnalyzeStage2") + oomHandler) {
                 scope = this
                 secondStageAnalyze()
             }

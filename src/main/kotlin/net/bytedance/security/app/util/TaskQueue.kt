@@ -24,6 +24,18 @@ import java.util.*
 import kotlin.system.exitProcess
 
 /**
+ * global hander for oom
+ */
+val oomHandler = CoroutineExceptionHandler { ctx, exception ->
+    if (exception is OutOfMemoryError) {
+        val coroutineName = ctx[CoroutineName]?.name
+        Log.logErr("${coroutineName} CoroutineException because of oom")
+        exitProcess(37)
+    }
+    throw exception
+}
+
+/**
  * A simple multithreaded task wrapper
  */
 class TaskQueue<TaskData>(
@@ -56,21 +68,16 @@ class TaskQueue<TaskData>(
     suspend fun runTask(): Job {
         val scope = CoroutineScope(Dispatchers.Default)
         val jobs = ArrayList<Job>()
+
         for (i in 0 until numberThreads) {
-            val handler = CoroutineExceptionHandler { _, exception ->
-                if (exception is OutOfMemoryError) {
-                    exitProcess(37)
-                }
-                throw exception
-            }
-            val job = scope.launch(CoroutineName("$name-$i") + handler) {
+            val job = scope.launch(CoroutineName("$name-$i") + oomHandler) {
                 for (taskData in queue) {
                     action(taskData, i)
                 }
             }
             jobs.add(job)
         }
-        return scope.launch(CoroutineName("$name-joinAll")) { jobs.joinAll() }
+        return scope.launch(CoroutineName("$name-joinAll") + oomHandler) { jobs.joinAll() }
     }
 }
 
@@ -101,3 +108,4 @@ suspend fun runInMilliSeconds(job: Job, milliSeconds: Long, name: String, timeou
         Log.logWarn("$name runInMilliSeconds cost more than expected expect=$milliSeconds, actual=${end - start}")
     }
 }
+

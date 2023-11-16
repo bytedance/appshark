@@ -26,6 +26,7 @@ import test.SootHelper
 import test.TestHelper
 import java.io.IOException
 import kotlin.concurrent.thread
+import kotlin.system.exitProcess
 
 class SootConcurrentErrorTest {
     private val ctx = PreAnalyzeContext()
@@ -102,4 +103,33 @@ class SootConcurrentErrorTest {
 
         Thread.sleep(5000)
     }
+
+    @Test
+    fun testlaunchOOM() {
+        runBlocking {
+            val handler = CoroutineExceptionHandler { _, exception ->
+                println("CoroutineExceptionHandler got $exception")
+            }
+            val job = GlobalScope.launch(handler) {
+                val inner = launch { // all this stack of coroutines will get cancelled
+                    launch {
+                        launch {
+                            val list = ArrayList<String>()
+                            for (i in 1..1000000) {
+                                list.add("12345".repeat(1000000))
+                            }
+                        }
+                    }
+                }
+                try {
+                    inner.join()
+                } catch (e: java.lang.OutOfMemoryError) {
+                    //oom should capture by handler
+                    exitProcess(33)
+                }
+            }
+            job.join()
+        }
+    }
+
 }

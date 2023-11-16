@@ -23,6 +23,7 @@ import net.bytedance.security.app.getConfig
 import net.bytedance.security.app.rules.DirectModeRule
 import net.bytedance.security.app.rules.SliceModeRule
 import net.bytedance.security.app.taintflow.TaintAnalyzer
+import net.bytedance.security.app.util.oomHandler
 import soot.SootMethod
 
 
@@ -62,7 +63,7 @@ class SliceModeProcessor(ctx: PreAnalyzeContext) : DirectModeProcessor(ctx) {
                 null
             }
             for (sinkPtr in taintRuleSourceSinkCollector.analyzerData.sinkPointerSet) {
-                val job = scope.launch(CoroutineName("createAnalyzersForSourceAndSink-${rule.name}")) {
+                val job = scope.launch(CoroutineName("createAnalyzersForSourceAndSink-${rule.name}") + oomHandler) {
 
                     val entryItem = if (callstacks == null) {
                         val result = ctx.callGraph.traceAndCross(
