@@ -41,7 +41,6 @@ import soot.jimple.infoflow.android.axml.AXmlHandler
 import soot.jimple.infoflow.android.axml.AXmlNode
 import soot.jimple.infoflow.android.axml.ApkHandler
 import soot.jimple.infoflow.android.axml.parsers.AXML20Parser
-import soot.jimple.infoflow.android.manifest.IAndroidApplication
 import soot.jimple.infoflow.android.manifest.ProcessManifest
 import soot.jimple.infoflow.android.manifest.binary.AbstractBinaryAndroidComponent
 import soot.jimple.infoflow.android.manifest.binary.BinaryAndroidApplication
@@ -56,6 +55,9 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import kotlin.system.exitProcess
 
+interface ManifestVulnerability {
+    fun check(manifest: ProcessManifest)
+}
 
 /**
  * for convenience to recognize a particular structure during serialization
@@ -178,7 +180,7 @@ object AndroidUtils {
     var debuggable: Boolean? = null
     var allowBackup: Boolean? = null
     var usesCleartextTraffic: Boolean? = null
-
+    private var manifestVulnerability: ManifestVulnerability? = null
     private fun dexToJava(apkPath: String, outPath: String, jadxPath: String) {
         JavaSourceDir = outPath + PLUtils.JAVA_SRC
         val thread = Runtime.getRuntime().availableProcessors() / 2
@@ -188,10 +190,10 @@ object AndroidUtils {
             val wapperFile: String
             val jadxFile: String
             if (isWindows()) {
-                wapperFile = File(jadxPath, "wapper.bat").path
+                wapperFile = File(jadxPath, "wrapper.bat").path
                 jadxFile = File(jadxPath, "jadx.bat").path
             } else {
-                wapperFile = File(jadxPath, "wapper.sh").path
+                wapperFile = File(jadxPath, "wrapper.sh").path
                 jadxFile = File(jadxPath, "jadx").path
             }
             val processBuilder = ProcessBuilder(
@@ -313,10 +315,12 @@ object AndroidUtils {
         layoutFileParser = LayoutFileParser(manifest.packageName, resources)
         layoutFileParser!!.parseLayoutFileDirect(apkPath)
         parseAllComponents(manifest)
+        this.manifestVulnerability?.check(manifest)
 
         debuggable = manifest.application.isDebuggable      // 默认false
         allowBackup = manifest.application.isAllowBackup    // 默认true
-        usesCleartextTraffic = manifest.application.isUsesCleartextTraffic ?: (TargetSdk < 28)  // API28以下默认true，否则默认false
+        usesCleartextTraffic =
+            manifest.application.isUsesCleartextTraffic ?: (TargetSdk < 28)  // API28以下默认true，否则默认false
         Log.logDebug("debuggable $debuggable")
         Log.logDebug("allowBackup $allowBackup")
         Log.logDebug("usesCleartextTraffic $usesCleartextTraffic")
@@ -357,6 +361,7 @@ object AndroidUtils {
                             is Int -> {
                                 protectionLevel.value
                             }
+
                             is String -> {
                                 try {
                                     (protectionLevel.value as String).toInt()
@@ -365,6 +370,7 @@ object AndroidUtils {
                                     0
                                 }
                             }
+
                             else -> {
                                 0
                             }
@@ -632,5 +638,9 @@ object AndroidUtils {
         val key = "res/layout/$name.xml"
         val fragments = layoutFileParser!!.fragments
         return fragments[key]
+    }
+
+    fun setManifestVulnerability(manifestVulnerability: ManifestVulnerability) {
+        this.manifestVulnerability = manifestVulnerability
     }
 }

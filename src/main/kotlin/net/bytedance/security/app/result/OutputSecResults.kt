@@ -209,6 +209,7 @@ object OutputSecResults {
             uploadJsonResult("$jsonName.json", s)
         } catch (ex: Exception) {
             ex.printStackTrace()
+            Log.logErr("ex=$ex,stack=\n${ex.stackTraceToString()}")
             exitProcess(21)
         }
     }
