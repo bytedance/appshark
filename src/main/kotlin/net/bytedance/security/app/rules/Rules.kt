@@ -30,7 +30,7 @@ import java.nio.file.Paths
 class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForContext {
     val allRules: MutableList<IRule> = ArrayList()
 
-    suspend fun loadRules(targetSdk: Int? = null) {
+    suspend fun loadRules(targetSdk: Int, minSdk: Int) {
         rulePaths.forEach {
             val jsonStr = loadConfigOrQuit(it)
             val rules = Json.parseToJsonElement(jsonStr)
@@ -40,7 +40,8 @@ class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForC
                     ruleData.sanitize = ruleData.sanitizer
                     ruleData.sanitizer = null
                 }
-                if (targetSdk == null || targetSdk in parseSdkVersion(ruleData.targetSdk)) {
+                if ((targetSdk == -1 || targetSdk in parseSdkVersion(ruleData.targetSdk)) &&
+                    (minSdk == -1 || parseSdkVersion("$minSdk:").any { it in parseSdkVersion(ruleData.runtimeSdk) })) {
                     val rule = factory.create(ruleName, ruleData)
                     allRules.add(rule)
                 } else {
@@ -95,7 +96,7 @@ class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForC
         }
     }
 
-    fun parseSdkVersion(input: String): List<Int> {
+    private fun parseSdkVersion(input: String): List<Int> {
         val MIN_SDK_VERSION = 9     // Android 2.3
         val MAX_SDK_VERSION = 50    // for future
 
