@@ -51,7 +51,6 @@ import java.io.File
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import kotlin.system.exitProcess
@@ -130,8 +129,7 @@ object ComponentDescriptionDataSerializer : KSerializer<ComponentDescription> {
 object AndroidUtils {
     var apkAbsPath: String? = null
     var JavaSourceDir: String? = null
-
-    var dexToJavaProcess: Process? = null
+    
     var resources: ARSCFileParser? = null
     var isApkParsed = false //
 
@@ -189,7 +187,7 @@ object AndroidUtils {
             val start = System.currentTimeMillis()
             Log.logInfo("==========>Start dex to Java")
 
-            val doneFile = File(JavaSourceDir,".done")
+            val doneFile = File(JavaSourceDir, ".done")
 
             if (doneFile.exists()) {
                 Log.logInfo("Using jadx cache")
@@ -222,7 +220,8 @@ object AndroidUtils {
             val timeoutMillis = 1800000L // 1800 seconds
             if (!processBuilder.waitFor(timeoutMillis, TimeUnit.MILLISECONDS)) {
                 processBuilder.destroyForcibly()
-                processBuilder.waitFor()
+                val exitCode = processBuilder.waitFor()
+                Log.logInfo("command ${command.joinToString(" ")} exit with $exitCode")
             }
 
             val exitCode = try {

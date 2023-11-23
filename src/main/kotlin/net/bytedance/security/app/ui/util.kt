@@ -19,7 +19,6 @@ package net.bytedance.security.app.ui
 
 import net.bytedance.security.app.Log
 import net.bytedance.security.app.PLUtils
-import net.bytedance.security.app.android.AndroidUtils
 import net.bytedance.security.app.engineconfig.isLibraryClass
 import net.bytedance.security.app.util.JavaAST
 import soot.Scene
@@ -33,9 +32,6 @@ import java.nio.file.Files
 return method's full Java source code,
  */
 internal fun getJavaSource(method: SootMethod): String? {
-    if (AndroidUtils.dexToJavaProcess == null) {
-        return null
-    }
     val methodSig = method.signature
 //    val anonymousMethodSig: String? = null
 //    val declaringClassName = method.declaringClass.name
