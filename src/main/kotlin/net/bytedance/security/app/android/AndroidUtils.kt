@@ -51,6 +51,7 @@ import java.io.File
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import kotlin.system.exitProcess
@@ -187,26 +188,59 @@ object AndroidUtils {
         try {
             val start = System.currentTimeMillis()
             Log.logInfo("==========>Start dex to Java")
-            val wapperFile: String
-            val jadxFile: String
-            if (isWindows()) {
-                wapperFile = File(jadxPath, "wrapper.bat").path
-                jadxFile = File(jadxPath, "jadx.bat").path
-            } else {
-                wapperFile = File(jadxPath, "wrapper.sh").path
-                jadxFile = File(jadxPath, "jadx").path
+
+            val doneFile = File(JavaSourceDir,".done")
+
+            if (doneFile.exists()) {
+                Log.logInfo("Using jadx cache")
+                return
             }
-            val processBuilder = ProcessBuilder(
-                wapperFile,
-                jadxFile,
-                apkPath,
-                JavaSourceDir, thread.toString()
+            JavaSourceDir?.let { File(it).deleteRecursively() }
+            val jadx = if (isWindows()) {
+                File(jadxPath, "jadx.bat").path
+            } else {
+                File(jadxPath, "jadx").path
+            }
+
+            val command = listOf(
+                jadx,
+                "--quiet",
+                "--no-imports",
+                "--show-bad-code",
+                "--no-debug-info",
+                "--output-dir", JavaSourceDir,
+                "--threads-count", thread.toString(),
+                "--export-gradle",
+                apkPath
             )
-            Log.logInfo(processBuilder.command().toString())
-            dexToJavaProcess = processBuilder.start()
-            dexToJavaProcess?.waitFor(1800, TimeUnit.SECONDS)
-            dexToJavaProcess?.destroy()
-            dexToJavaProcess?.waitFor()
+            Log.logInfo("Executing command: ${command.joinToString(" ")}")
+            val processBuilder: Process = ProcessBuilder(command)
+                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                .redirectError(ProcessBuilder.Redirect.INHERIT)
+                .start()
+
+            val timeoutMillis = 1800000L // 1800 seconds
+            if (!processBuilder.waitFor(timeoutMillis, TimeUnit.MILLISECONDS)) {
+                processBuilder.destroyForcibly()
+                processBuilder.waitFor()
+            }
+
+            val exitCode = try {
+                processBuilder.exitValue()
+            } catch (e: IllegalThreadStateException) {
+                // Process is still running
+                processBuilder.destroyForcibly()
+                processBuilder.waitFor()
+                -1 // Use a special code to indicate failure
+            }
+
+            if (exitCode == 0) {
+                Log.logInfo("Command executed successfully.")
+                doneFile.createNewFile()
+            } else {
+                Log.logInfo("Command execution failed with exit code: $exitCode")
+            }
+
             Log.logInfo("Dex to Java Done " + (System.currentTimeMillis() - start) + "ms<==========")
         } catch (e: Exception) {
             e.printStackTrace()
