@@ -29,8 +29,9 @@ import java.nio.file.Paths
 
 class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForContext {
     val allRules: MutableList<IRule> = ArrayList()
+    val UNLIMITED = -1
 
-    suspend fun loadRules(targetSdk: Int, minSdk: Int) {
+    suspend fun loadRules(targetSdk: Int = UNLIMITED, minSdk: Int = UNLIMITED) {
         rulePaths.forEach {
             val jsonStr = loadConfigOrQuit(it)
             val rules = Json.parseToJsonElement(jsonStr)
@@ -40,8 +41,8 @@ class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForC
                     ruleData.sanitize = ruleData.sanitizer
                     ruleData.sanitizer = null
                 }
-                if ((targetSdk == -1 || targetSdk in parseSdkVersion(ruleData.targetSdk)) &&
-                    (minSdk == -1 || parseSdkVersion("$minSdk:").any { it in parseSdkVersion(ruleData.runtimeSdk) })) {
+                if ((targetSdk == UNLIMITED || targetSdk in parseSdkVersion(ruleData.targetSdk)) &&
+                    (minSdk == UNLIMITED || parseSdkVersion("$minSdk:").any { it in parseSdkVersion(ruleData.runtimeSdk) })) {
                     val rule = factory.create(ruleName, ruleData)
                     allRules.add(rule)
                 } else {
