@@ -67,6 +67,9 @@ class TaintPathModeHtmlWriter(
     private var sourceStmt: Stmt? = null
     private var sinkStmt: Stmt? = null
 
+    //if there is only one pointer in the path, just display the method which  contains this pointer
+    private var singleMethod: SootMethod? = null
+
     init {
         if (rule is DirectModeRule && rule.throughAPI != null) {
             val throughAPI = rule.throughAPI
@@ -231,6 +234,20 @@ class TaintPathModeHtmlWriter(
                 }
                 genMethodJavaSource(this.consumer, sm)
             }
+            //if  there is no taint path edge, maybe it's a single variable
+            //source and sink are the same variable
+            if (methodArr.isEmpty()) {
+                singleMethod?.let {
+                    pre {
+                        code {
+                            for ((index, stmt) in it.activeBody.units.withIndex()) {
+                                +"$index:  $stmt\n"
+                            }
+                        }
+                    }
+                    genMethodJavaSource(this.consumer, it)
+                }
+            }
         }
     }
 
@@ -257,7 +274,14 @@ class TaintPathModeHtmlWriter(
 
 
         mergeTaintPath(methodArr, stmtsInMethod, edgesInMethod, result.curPath)
-
+        // source and sink are the same variable
+        // todo should it be treated as a special case without pointer analysis?
+        if (result.curPath.size == 1) {
+            val pointer = result.curPath[0]
+            if (pointer is PLLocalPointer) {
+                singleMethod = pointer.method
+            }
+        }
         val tosUrl = saveContent(generateHtml(), htmlName)
         Log.logDebug("Write vulnerability  taint mode to $tosUrl")
 
