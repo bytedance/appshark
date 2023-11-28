@@ -20,26 +20,12 @@ package net.bytedance.security.app.engineconfig
 class LibraryConfig(val libraryData: LibraryData) {
 
     private fun isInExcludeLibrary(className: String): Boolean {
-        for (excludeContain in libraryData.ExcludeLibraryContains) {
-            if (className.contains(excludeContain)) {
-                return true
-            }
-        }
-        return false
+        return libraryData.ExcludeLibraryContains.any { className.contains(it) }
     }
 
     fun isLibraryClass(className: String): Boolean {
-        for (packageName in libraryData.Package) {
-            //If it's library. It is necessary to continue to check
-            // whether it belongs to the whitelist which needs to be analyzed
-            if (className.startsWith(packageName)) {
-                // Only those not on the whitelist are considered libraries
-                if (!isInExcludeLibrary(className)) {
-                    return true
-                }
-            }
-        }
-        return false
+        // those belong to Package and not belong to ExcludeLibraryContains
+        return libraryData.Package.any { className.startsWith(it) && !isInExcludeLibrary(className) }
     }
 
     fun isLibraryMethod(methodSig: String): Boolean {
@@ -50,5 +36,4 @@ class LibraryConfig(val libraryData: LibraryData) {
     fun setPackage(packages: List<String>) {
         libraryData.Package = packages
     }
-
 }

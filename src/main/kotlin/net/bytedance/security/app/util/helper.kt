@@ -61,6 +61,7 @@ fun newFunctionSignature(methodSig: String): FunctionSignature {
     for (i in 1 until methodSig.length - 1) {
         when (val c = methodSig[i]) {
             ':' -> if (state != MethodSignatureParseState.Class) {
+                logErr("Format Error $methodSig")
                 exitProcess(-2)
             } else {
                 // state = ParseState.Space
@@ -80,7 +81,10 @@ fun newFunctionSignature(methodSig: String): FunctionSignature {
                         state = MethodSignatureParseState.FunctionName
                     }
 
-                    else -> exitProcess(-7)
+                    else -> {
+                        logErr("Format Error $methodSig")
+                        exitProcess(-7)
+                    }
                 }
             }
 
@@ -91,7 +95,10 @@ fun newFunctionSignature(methodSig: String): FunctionSignature {
                         s = ""
                     }
 
-                    else -> exitProcess(-8)
+                    else -> {
+                        logErr("Format Error $methodSig")
+                        exitProcess(-8)
+                    }
                 }
             }
 
@@ -103,7 +110,10 @@ fun newFunctionSignature(methodSig: String): FunctionSignature {
                         state = MethodSignatureParseState.Argument
                     }
 
-                    else -> exitProcess(-9)
+                    else -> {
+                        logErr("Format Error $methodSig")
+                        exitProcess(-9)
+                    }
                 }
             }
 
@@ -114,7 +124,10 @@ fun newFunctionSignature(methodSig: String): FunctionSignature {
                         s = ""
                     }
 
-                    else -> exitProcess(-10)
+                    else -> {
+                        logErr("Format Error $methodSig")
+                        exitProcess(-10)
+                    }
                 }
             }
 

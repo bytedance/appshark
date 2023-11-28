@@ -36,14 +36,17 @@ import kotlin.io.path.pathString
 import kotlin.streams.toList
 
 class AnalyzeStepByStep {
-    suspend fun loadRules(ruleList: String, targetSdk: Int): Rules {
-        val rulePathList = if (ruleList.isNotEmpty())
-            ruleList.split(",").map { "${getConfig().rulePath}/${it.trim()}" }.toList()
-        else
-            withContext(Dispatchers.IO) {
-                Files.walk(Paths.get(getConfig().rulePath), 1)
-            }.filter { it.pathString.endsWith(".json") }.map { it.pathString }
-                .toList()
+    suspend fun loadRules(targetSdk: Int): Rules {
+        val config = getConfig()
+        if (config.rules.isEmpty()) {
+            config.rules = withContext(Dispatchers.IO) {
+                Files.walk(Paths.get(config.rulePath), 1) }
+                .filter { it.pathString.endsWith(".json") || it.pathString.endsWith(".json5")}
+                .map { it.fileName }.toList().joinToString(separator = ",")
+        }
+        val rulePathList = config.rules.split(",")
+            .map { "${config.rulePath}/${it.trim()}" }.toList()
+
         val rules = Rules(rulePathList, RuleFactory())
         rules.loadRules(targetSdk)
         return rules
@@ -103,10 +106,11 @@ class AnalyzeStepByStep {
         // reduce time
         val excludeList = ArrayList<String>()
         excludeList.add("java.*")
+        excludeList.add("javax.*")
         excludeList.add("org.*")
         excludeList.add("sun.*")
-        //        excludeList.add("android.*");
-//        excludeList.add("androidx.*");
+        // excludeList.add("android.*")
+        // excludeList.add("androidx.*")
         Options.v().set_exclude(excludeList)
         // do not load body in exclude list
         Options.v().set_no_bodies_for_excluded(true)
@@ -166,7 +170,7 @@ class AnalyzeStepByStep {
         Options.v().set_debug(false)
         Options.v().set_verbose(false)
         Options.v().set_validate(false)
-//        Options.v().set_keep_line_number(true)
+        // Options.v().set_keep_line_number(true)
         setExclude()
         logInfo("loadNecessaryClasses")
         try {

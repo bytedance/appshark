@@ -28,14 +28,9 @@ class IgnoreListsConfig(ignoreListData: IgnoreListsData) {
     private var methodSigSet: HashSet<String> = HashSet()
 
     init {
-        ignoreListData.PackageName?.forEach {
-            packageNameSet.add(it)
-        }
-        ignoreListData.MethodName?.forEach {
-            methodNameSet.add(it)
-        }
+        ignoreListData.PackageName?.forEach { packageNameSet.add(it) }
+        ignoreListData.MethodName?.forEach { methodNameSet.add(it) }
         ignoreListData.MethodSignature?.forEach { methodSigSet.add(it) }
-
     }
 
     fun isInIgnoreList(className: String, methodName: String, methodSig: String): Boolean {
@@ -43,15 +38,7 @@ class IgnoreListsConfig(ignoreListData: IgnoreListsData) {
     }
 
     private fun containsPackageName(className: String): Boolean {
-        if (packageNameSet.contains(className)) {
-            return true
-        }
-        for (ignorePackageName in packageNameSet) {
-            if (className.startsWith(ignorePackageName)) {
-                return true
-            }
-        }
-        return false
+        return packageNameSet.any { className.startsWith(it) }
     }
 
     private fun containsMethodName(methodName: String): Boolean {
@@ -61,5 +48,4 @@ class IgnoreListsConfig(ignoreListData: IgnoreListsData) {
     private fun containsMethodSig(methodSig: String): Boolean {
         return methodSigSet.contains(methodSig)
     }
-
 }

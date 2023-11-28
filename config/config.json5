@@ -11,11 +11,14 @@
   //specifies the rule's parent directory, default is ./config/rules
   //  "rulePath": "config/rules",
 
-  //print more info about this rule
-  //  "debugRule": "unZipSlip",
+  //print more info about rules, specify "all" for all rules
+  //  "debugRule": "unZipSlip.json",
 
   //output log level
   //  "logLevel": 0,
+
+  //output jimple code for debug
+  //  "jimpleSource": true,
 
   //display the decompiled java code in the results
   //  "javaSource": true,
