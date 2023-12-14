@@ -20,10 +20,10 @@ package net.bytedance.security.app.rules
 import kotlinx.coroutines.runBlocking
 import net.bytedance.security.app.getConfig
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions.*
 import java.io.File
 
 internal class RulesTest {
-
 
     fun createDefaultRules(): Rules {
         val rules = Rules(
@@ -69,7 +69,22 @@ internal class RulesTest {
         println("const strings=${rules.constStringPatterns().toSortedSet().toList()}")
         println("fields=${rules.fields().toSortedSet().toList()}")
         println("new instances=${rules.newInstances().toSortedSet().toList()}")
+    }
 
+    @Test
+    fun testParseSdkVersion() {
+        assertEquals(
+            (9..50).toList(),
+            Rules.parseSdkVersion("")
+        )
+        assertEquals(
+            (9..50).toList(),
+            Rules.parseSdkVersion(":")
+        )
+        assertEquals(
+            (9..10).toList() + listOf(15) + (25..30).toList() + (45..50).toList(),
+            Rules.parseSdkVersion(":10, 15, 25:30, 45:")
+        )
     }
 
     companion object {

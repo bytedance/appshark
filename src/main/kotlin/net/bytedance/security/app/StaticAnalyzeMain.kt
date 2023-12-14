@@ -54,11 +54,10 @@ object StaticAnalyzeMain {
         profiler.parseApk.end()
 
         profiler.preProcessor.start()
-        val rules = v3.loadRules(argumentConfig.rules, AndroidUtils.TargetSdk)
+        val rules = v3.loadRules(argumentConfig.rules, AndroidUtils.TargetSdk, AndroidUtils.MinSdk)
         logInfo("rules loaded")
         val ctx = v3.createContext(rules)
         profiler.preProcessor.end()
-
 
         if (getConfig().doWholeProcessMode) {
             PLUtils.createWholeProgramAnalyze(ctx)

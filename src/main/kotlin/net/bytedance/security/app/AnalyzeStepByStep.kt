@@ -36,7 +36,7 @@ import kotlin.io.path.pathString
 import kotlin.streams.toList
 
 class AnalyzeStepByStep {
-    suspend fun loadRules(ruleList: String, targetSdk: Int): Rules {
+    suspend fun loadRules(ruleList: String, targetSdk: Int, minSdk: Int): Rules {
         val rulePathList = if (ruleList.isNotEmpty())
             ruleList.split(",").map { "${getConfig().rulePath}/${it.trim()}" }.toList()
         else
@@ -45,7 +45,7 @@ class AnalyzeStepByStep {
             }.filter { it.pathString.endsWith(".json") }.map { it.pathString }
                 .toList()
         val rules = Rules(rulePathList, RuleFactory())
-        rules.loadRules(targetSdk)
+        rules.loadRules(targetSdk, minSdk)
         return rules
     }
 
