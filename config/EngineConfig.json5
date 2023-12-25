@@ -1580,6 +1580,16 @@
             "ret"
           ]
         }
+      },
+      "<kotlin.io.ByteStreamsKt: long copyTo$default(java.io.InputStream,java.io.OutputStream,int,int,java.lang.Object)>": {
+        "p0->p1": {
+          "I": [
+            "p0"
+          ],
+          "O": [
+            "p1"
+          ]
+        }
       }
     }
   }
