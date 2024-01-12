@@ -32,6 +32,11 @@ val oomHandler = CoroutineExceptionHandler { ctx, exception ->
         Log.logErr("${coroutineName} CoroutineException because of oom")
         exitProcess(37)
     }
+    if (exception is StackOverflowError) {
+        val coroutineName = ctx[CoroutineName]?.name
+        Log.logErr("${coroutineName} CoroutineException because of oom")
+        exitProcess(38)
+    }
     throw exception
 }
 

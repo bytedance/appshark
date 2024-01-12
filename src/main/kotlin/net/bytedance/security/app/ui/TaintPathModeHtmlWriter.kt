@@ -224,7 +224,11 @@ class TaintPathModeHtmlWriter(
                                         if (gotoTgtLabelMap.containsKey(stmt)) {
                                             +"${gotoTgtLabelMap[stmt]}:\n"
                                         }
-                                        +"$index:  $stmt\n"
+                                        try {
+                                            +"$index:  $stmt\n"
+                                        } catch (ex: StackOverflowError) {
+                                            +"$index:   StackOverflowError: ${stmt.javaClass.canonicalName}"
+                                        }
                                     }
                                 }
                             }
