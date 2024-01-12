@@ -125,7 +125,8 @@ data class RuleData(
     val ConstNumberMode: Boolean? = null,
     val targetNumberArr: List<Int>? = null,
 
-    val targetSdk: String = "",
+    val targetSdk: String = "",     // 规则适用的targetSdk版本
+    val runtimeSdk: String = "",    // 规则适用的运行时系统版本
 )
 
 val defaultSourceReturn = SourceReturn()
