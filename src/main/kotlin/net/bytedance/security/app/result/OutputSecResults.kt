@@ -24,8 +24,10 @@ import net.bytedance.security.app.Log
 import net.bytedance.security.app.PLUtils
 import net.bytedance.security.app.PreAnalyzeContext
 import net.bytedance.security.app.android.AndroidUtils
+import net.bytedance.security.app.android.ComponentDescription
 import net.bytedance.security.app.getConfig
 import net.bytedance.security.app.result.model.*
+import net.bytedance.security.app.rules.AbstractRule
 import net.bytedance.security.app.util.Json
 import net.bytedance.security.app.util.TaskQueue
 import net.bytedance.security.app.util.profiler
@@ -152,6 +154,23 @@ object OutputSecResults {
     }
 
     /**
+     * filter results based on "exportedCompos" field
+     */
+    private fun filterExportedCompos(securityVulnerabilityItems: List<SecurityVulnerabilityItem>):
+            List<SecurityVulnerabilityItem> {
+        return securityVulnerabilityItems.filter {
+            it.details?.get("Manifest")?.let { manifest ->
+                val exported = (manifest as ComponentDescription).exported
+                when ((it.rule as AbstractRule).exportedCompos) {
+                    true -> exported
+                    false -> !exported
+                    null -> true
+                }
+            } ?: false
+        }
+    }
+
+    /**
      * group the results by the category
      */
     private fun groupResult(securityVulnerabilityItems: List<SecurityVulnerabilityItem>) {
@@ -196,7 +215,7 @@ object OutputSecResults {
             insertPerm()
             insertMani()
             addManifest(ctx)
-            groupResult(removeDup())
+            groupResult(filterExportedCompos(removeDup()))
             val jsonName =
                 "results_" + AndroidUtils.PackageName + "_" + java.lang.Long.toHexString(System.nanoTime() + (Math.random() * 100).toLong())
             val outputPath = getConfig().outPath + "/results.json"
