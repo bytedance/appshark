@@ -227,6 +227,7 @@ class TaintPathModeHtmlWriter(
                                         try {
                                             +"$index:  $stmt\n"
                                         } catch (ex: StackOverflowError) {
+                                            Log.logErr("${sm.signature} $index has JLookupStmt StackOverFlow error")
                                             +"$index:   StackOverflowError: ${stmt.javaClass.canonicalName}"
                                         }
                                     }

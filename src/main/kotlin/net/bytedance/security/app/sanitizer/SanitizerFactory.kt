@@ -149,7 +149,15 @@ object SanitizerFactory {
                 pointers.add(ptr)
             }
         }
-        return TaintCheckSanitizer(pointers.toSet(), emptySet(), emptyMap(), rule)
+        /*
+         if any field refer check passed, this sanitizer check should be passed.
+         */
+        val possibleMatches: MutableList<TaintCheckSanitizer> = ArrayList()
+        for (p in pointers) {
+            possibleMatches.add(TaintCheckSanitizer(setOf(p), emptySet(), emptyMap(), rule))
+        }
+        //create or rules for field
+        return SanitizeOrRules(possibleMatches)
     }
 
 }
