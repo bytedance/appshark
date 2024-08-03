@@ -37,6 +37,15 @@ give the source and destination pointer, find the jimple statements
 that assign the source pointer to the destination pointer
  */
 class TaintFlowEdgeFinder(val rule: TaintFlowRule) {
+    //todo 1. 这里面有一个问题，就是patchMethod的情况，会导致无法关联
+    /*
+    另外还有一种情况找不到关联的
+    obj->{obj1,obj2}
+    obj1.f(arg1); taintPath:arg1->obj1
+    //在另外一个地方
+    obj2.f(arg2); taintPath:arg2->obj2
+    在经过指针传播后，会得到arg1->obj2的传播关系，这时候也会找不到关联路径
+     */
 
     companion object {
         /**

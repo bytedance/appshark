@@ -1,0 +1,160 @@
+{
+  "LoadSensitiveFileFromExternalPath": {
+    "enable": true,
+    "SliceMode": true,
+    "traceDepth": 9,
+    "desc": {
+      "name": "LoadSensitiveFileFromExternalPath",
+      "category": "MiscRisk",
+      "wiki": "端上XSS相关安全问题",
+      "detail": "禁止从外部目录加载敏感文件",
+      "possibility": "确定",
+      "model": "高危"
+    },
+    "entry": {},
+    "source": {
+      "Return": [
+        "<android.content.Context: * getExternalFilesDir(*)>"
+      ]
+    },
+    "sink": {
+      "<java.io.OutputStream: * write(*)>": {
+        "TaintCheck": [
+          "@this"
+        ]
+      }
+    },
+    "sanitizer": {
+      "rule6_new": {
+        "relation": "all",
+        "checks": [
+          {
+            "checkType": "field",
+            "subCheckContentRelation": "all",
+            "fieldSignature": "<android.content.pm.ComponentInfo: boolean exported>",
+            "subCheckContent": [
+              {
+                "relation": "all",
+                "position": [
+                  "@this"
+                ],
+                "positionCheckType": "taint_from_source"
+              }
+            ]
+          },
+          {
+            "checkType": "method",
+            "subCheckContentRelation": "all",
+            "methodSignature": "<android.content.Intent: android.content.Intent setAction(java.lang.String)>",
+            "subCheckContent": [
+              {
+                "relation": "all",
+                "position": [
+                  "@this"
+                ],
+                "positionCheckType": "taint_from_source"
+              },
+              {
+                "relation": "all",
+                "position": [
+                  "p0"
+                ],
+                "positionCheckType": "const_value_check",
+                "argumentValue": [
+                  "null"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "rule4_new": {
+        "relation": "all",
+        "checks": [
+          {
+            "checkType": "method",
+            "subCheckContentRelation": "all",
+            "methodSignature": "<android.content.Intent: android.content.Intent setClassName(java.lang.String,java.lang.String)>",
+            "subCheckContent": [
+              {
+                "relation": "all",
+                "position": [
+                  "@this"
+                ],
+                "positionCheckType": "taint_from_source"
+              },
+              {
+                "relation": "not_all",
+                "position": [
+                  "p0",
+                  "p1"
+                ],
+                "positionCheckType": "taint_from_source"
+              }
+            ]
+          }
+        ]
+      },
+      "rule1": {
+        "relation": "all",
+        "checks": [
+          {
+            "checkType": "const_string",
+            "subCheckContentRelation": "all",
+            "subCheckContent": [
+              {
+                "relation": "not_any",
+                "position": [
+                  ".so",
+                  ".apk"
+                ],
+                "positionCheckType": "taint_to_sink"
+              }
+            ]
+          }
+        ]
+      },
+      "rule2": {
+        "relation": "all",
+        "checks": [
+          {
+            "checkType": "method",
+            "subCheckContentRelation": "all",
+            "methodSignature": "<android.content.Context: * getExternalFilesDir(*)>",
+            "subCheckContent": [
+              {
+                "relation": "not_any",
+                "position": [
+                  "ret"
+                ],
+                "positionCheckType": "taint_to_sink"
+              }
+            ]
+          },
+          {
+            "checkType": "method",
+            "subCheckContentRelation": "all",
+            "methodSignature": "<android.content.Intent: android.content.Intent setClassName(java.lang.String,java.lang.String)>",
+            "subCheckContent": [
+              {
+                "relation": "all",
+                "position": [
+                  "@this"
+                ],
+                "positionCheckType": "taint_from_source"
+              },
+              {
+                "relation": "not_all",
+                "position": [
+                  "p0",
+                  "p1"
+                ],
+                "positionCheckType": "taint_from_source"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

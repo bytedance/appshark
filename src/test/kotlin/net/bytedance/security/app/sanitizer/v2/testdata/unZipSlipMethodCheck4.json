@@ -1,0 +1,39 @@
+{
+  "unZipSlipMethodCheck4": {
+    "SliceMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "unZipSlipMethodCheck4"
+    },
+    "entry": {
+      "methods": [
+        "<net.bytedance.security.app.sanitizer.ZipSlip: void f()>"
+      ]
+    },
+    "source": {
+      "Return": [
+        "<java.util.zip.ZipEntry: java.lang.String getName()>"
+      ]
+    },
+    "sink": {
+      "<java.io.FileWriter: * <init>(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      }
+    },
+    "sanitizer": {
+      "containsDotDot2": {
+        "relation": "all",
+        "checks": [
+          {
+            "subCheckContentRelation": "all",
+            "checkType": "method",
+            "methodSignature": "<soot.dummy.InvokeDynamic: java.lang.String makeConcatWithConstants(java.lang.String,java.lang.String,java.lang.String,java.lang.String)>",
+            "subCheckContent": []
+          }
+        ]
+      }
+    }
+  }
+}

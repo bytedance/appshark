@@ -41,28 +41,28 @@ class DecodeJson5ObjectTest {
         val jsonString = j5.encodeToString(jsonObject)
 
         println(jsonString)
-/*
-{
-  "unquoted": "and you can quote me on that",
-  "singleQuotes": "I can use \"double quotes\" here",
-  "lineBreaks": "Look, Mom! No \\n's!",
-  "hexadecimal": 912559,
-  "leadingDecimalPoint": 0.8675309,
-  "andTrailing": 8675309.0,
-  "positiveSign": 1,
-  "trailingComma": "in objects",
-  "andIn": [
-  "arrays"
-  ],
-  "backwardsCompatible": "with JSON"
-}
-*/
+        /*
+        {
+          "unquoted": "and you can quote me on that",
+          "singleQuotes": "I can use \"double quotes\" here",
+          "lineBreaks": "Look, Mom! No \\n's!",
+          "hexadecimal": 912559,
+          "leadingDecimalPoint": 0.8675309,
+          "andTrailing": 8675309.0,
+          "positiveSign": 1,
+          "trailingComma": "in objects",
+          "andIn": [
+          "arrays"
+          ],
+          "backwardsCompatible": "with JSON"
+        }
+        */
     }
 
     @Test
     fun testReadConfigFile() {
         val jsonStr = try {
-            String(Files.readAllBytes(Paths.get("config/config.json5")))
+            String(Files.readAllBytes(Paths.get("/Users/bai_1/server/test.json5")))
         } catch (e: IOException) {
             e.printStackTrace()
             return
@@ -72,7 +72,8 @@ class DecodeJson5ObjectTest {
         }
         val obj = j5.decodeObject(jsonStr)
         val s = j5.encodeToString(obj)
-        println(s)
+        assert(s.isNotEmpty())
+//        println(s)
     }
 
 }

@@ -1,0 +1,61 @@
+{
+  "PendingIntentMutable": {
+    "SliceMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "PendingIntentMutable",
+      "category": "PendingIntent",
+      "detail": "When a malicious application received the vulnerable PendingIntent, the malicious application can modify the content of the original intent and the intent will be send under the context of the vulnerable application.",
+      "wiki": "",
+      "possibility": "4",
+      "model": "middle"
+    },
+    "source": {
+      "NewInstance": [
+        "net.bytedance.security.app.sanitizer.v2.testdata.PendingIntentMutable$Intent"
+      ]
+    },
+    "sink": {
+      "<net.bytedance.security.app.sanitizer.v2.testdata.PendingIntentMutable$PendingIntent: net.bytedance.security.app.sanitizer.v2.testdata.PendingIntentMutable$PendingIntent getService(*)>": {
+        "TaintCheck": [
+          "p2"
+        ],
+        "TaintParamType": [
+          "android.content.Intent",
+          "android.content.Intent[]"
+        ]
+      }
+    },
+    "sanitizer": {
+      "immutable": {
+        "relation": "all",
+        "checks": [
+          {
+            "subCheckContentRelation": "all",
+            "checkType": "method",
+            "methodSignature": "<net.bytedance.security.app.sanitizer.v2.testdata.PendingIntentMutable$PendingIntent: net.bytedance.security.app.sanitizer.v2.testdata.PendingIntentMutable$PendingIntent getService(*)>",
+            "subCheckContent": [
+              {
+                "relation": "all",
+                "position": [
+                  "p3"
+                ],
+                "positionCheckType": "const_value_check",
+                "argumentValue": [
+                  "67108864:&"
+                ]
+              },
+              {
+                "relation": "all",
+                "position": [
+                  "p2"
+                ],
+                "positionCheckType": "taint_from_source"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

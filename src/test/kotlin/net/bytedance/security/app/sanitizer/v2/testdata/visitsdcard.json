@@ -1,0 +1,49 @@
+{
+  "LoadSensitiveFileFromExternalPath": {
+    "enable": true,
+    "SliceMode": true,
+    "traceDepth": 9,
+    "desc": {
+      "name": "LoadSensitiveFileFromExternalPath",
+      "category": "MiscRisk",
+      "wiki": "端上XSS相关安全问题",
+      "detail": "禁止从外部目录加载敏感文件",
+      "possibility": "确定",
+      "model": "高危"
+    },
+    "entry": {},
+    "source": {
+      "Return": [
+        "<net.bytedance.security.app.sanitizer.v2.testdata.TestSdCardVisit: java.lang.String getExternalFilesDir()>"
+      ]
+    },
+    "sink": {
+      "<java.io.OutputStream: * write(*)>": {
+        "TaintCheck": [
+          "@this"
+        ]
+      }
+    },
+    "sanitizer": {
+      "rule1": {
+        "relation": "all",
+        "checks": [
+          {
+            "checkType": "const_string",
+            "subCheckContentRelation": "all",
+            "subCheckContent": [
+              {
+                "relation": "not_any",
+                "position": [
+                  "*.so",
+                  "*.apk"
+                ],
+                "positionCheckType": "taint_to_sink"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

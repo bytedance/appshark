@@ -1,0 +1,33 @@
+{
+  "unZipSlipConstStringSanitizer": {
+    "SliceMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "unZipSlipConstStringSanitizer"
+    },
+    "entry": {
+      "methods": [
+        "<net.bytedance.security.app.sanitizer.ZipSlip: void f()>"
+      ]
+    },
+    "source": {
+      "Return": [
+        "<java.util.zip.ZipEntry: java.lang.String getName()>"
+      ]
+    },
+    "sink": {
+      "<java.io.FileWriter: * <init>(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      }
+    },
+    "sanitizer": {
+      "rule2": {
+        "ConstString": [
+          "..*"
+        ]
+      }
+    }
+  }
+}

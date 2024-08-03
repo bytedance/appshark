@@ -1,0 +1,64 @@
+{
+  "unZipSlipSliceMode2": {
+    "SliceMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "unZipSlipSliceMode2"
+    },
+    "entry": {
+    },
+    "source": {
+      "Return": [
+        "<java.util.zip.ZipEntry: java.lang.String getName()>"
+      ]
+    },
+    "sink": {
+      "<java.io.FileWriter: * <init>(*)>": {
+        "TaintCheck": [
+          "p*"
+        ]
+      }
+    },
+    "sanitizer": {
+      "rule1": {
+        "<java.io.File: java.lang.String getCanonicalPath()>": {
+          "TaintCheck":["@this"]
+        }
+      },
+
+      "containsDotDot": {
+        "<java.lang.String: boolean contains(java.lang.CharSequence)>": {
+          "TaintCheck": ["@this"],
+          "p0":["..*"]
+        }
+      },
+      "kotlinContainsDotdot": {
+        "<*: boolean contains$default(java.lang.CharSequence,java.lang.CharSequence,boolean,int,java.lang.Object)>":{
+          "TaintCheck": ["p0"],
+          "p1": ["..*"]
+        }
+      },
+      "indexDotDot": {
+        "<java.lang.String: boolean indexOf(java.lang.String)>": {
+          "TaintCheck": ["@this"],
+          "p0":["..*"]
+        }
+      },
+      "kotlinIndexDotdot": {
+        "<*: int indexOf$default(java.lang.CharSequence,java.lang.String,int,boolean,int,java.lang.Object)>": {
+          "TaintCheck": [
+            "p0"
+          ],
+          "p1": [
+            "..*"
+          ]
+        }
+      },
+      "lastIndexOf": {
+        "<java.lang.String: int lastIndexOf(java.lang.String)>": {},
+        "<java.lang.String: java.lang.String substring(int)>": {
+          "TaintCheck": ["@this"]
+        }
+      }
+  }
+},

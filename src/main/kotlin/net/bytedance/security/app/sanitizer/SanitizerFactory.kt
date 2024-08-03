@@ -27,7 +27,6 @@ import net.bytedance.security.app.pointer.PLLocalPointer
 import net.bytedance.security.app.rules.TaintFlowRule
 import net.bytedance.security.app.util.Json
 import net.bytedance.security.app.util.isFieldSignature
-import soot.RefType
 import soot.Scene
 import soot.jimple.internal.JAssignStmt
 import soot.jimple.internal.JInstanceFieldRef
@@ -37,24 +36,24 @@ import soot.jimple.internal.JimpleLocal
  * SanitizerFactory is used to create Sanitizer
  * Because a rule can be used in many places, sanitizer is cached for each rule
  */
-object SanitizerFactory {
-    private val cache = HashMap<String, List<ISanitizer>>()
+open class SanitizerFactory {
+    val cache = HashMap<String, List<ISanitizer>>()
 
     @Synchronized
-    fun createSanitizers(
+    open fun createSanitizers(
         rule: TaintFlowRule,
         ctx: PreAnalyzeContext,
     ): List<ISanitizer> {
         if (cache.contains(rule.name)) {
             return cache[rule.name]!!
         }
-        val sanitizes = rule.sanitize ?: return listOf()
+        val sanitizes = rule.sanitizer ?: return listOf()
         val result = ArrayList<ISanitizer>()
         for ((_, sanitizeRules) in sanitizes) {
             val andRules = ArrayList<ISanitizer>()
             for ((key, body) in sanitizeRules) {
                 if (key == "ConstString") {
-                    andRules.add(createConstStringSanitizer(body, ctx))
+                    andRules.add(ConstStringCheckSanitizer.createConstStringSanitizer(body, ctx))
                 } else if (key.isFieldSignature()) {
                     andRules.add(createFieldSanitizer(body, key, ctx, rule))
                 } else {
@@ -79,25 +78,6 @@ object SanitizerFactory {
     @Synchronized
     fun clearCache() {
         cache.clear()
-    }
-
-    private fun createConstStringSanitizer(array: JsonElement, ctx: PreAnalyzeContext): ISanitizer {
-        val constStrings: List<String> = Json.decodeFromJsonElement(array)
-        val pointers = ArrayList<PLLocalPointer>()
-        for (pattern in constStrings) {
-            val constCallMap = ctx.findConstStringPatternCallSite(pattern)
-            for (callsite in constCallMap) {
-                for (str in callsite.constString()) {
-                    val ptr = PLLocalPointer(
-                        callsite.method,
-                        PLUtils.constStrSig(str),
-                        RefType.v("java.lang.String")
-                    )
-                    pointers.add(ptr)
-                }
-            }
-        }
-        return ConstStringCheckSanitizer(pointers)
     }
 
 

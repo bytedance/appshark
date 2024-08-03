@@ -22,6 +22,8 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import net.bytedance.security.app.*
+import net.bytedance.security.app.result.model.toJsonElement
+import net.bytedance.security.app.sanitizer.v2.SanitizerRule
 import net.bytedance.security.app.util.Json
 import net.bytedance.security.app.util.isFieldSignature
 
@@ -49,30 +51,26 @@ open class DirectModeRule(name: String, ruleData: RuleData) : TaintFlowRule(name
         val constStrings = source?.ConstString?.let {
             ArrayList(it)
         } ?: ArrayList()
-        if (sanitize != null) {
-            val values = sanitize.values
-            for (m in values) {
-                for ((sig, sinkBodyElement) in m) {
-                    if (sig == "ConstString") {
-                        val strings: List<String> = Json.decodeFromJsonElement(sinkBodyElement)
-                        constStrings.addAll(strings)
-                        continue
-                    }
-                    val sinkBody = Json.decodeFromJsonElement<SinkBody>(sinkBodyElement)
-                    if (sinkBody.pstar != null) {
-                        val pstar = sinkBody.pstar
-                        for (p in pstar) {
-                            if (p.jsonPrimitive.isString) {
-                                val s = p.jsonPrimitive.content
-                                if (!s.startsWith("@")) {
-                                    constStrings.add(s)
-                                }
-                            }
+        if (sanitizer != null) {
+            if (this.isSanitizerV2()) {
+                for (m in this.sanitizer.values) {
+                    val m = m.toJsonElement();
+                    val sr: SanitizerRule = Json.decodeFromJsonElement(m)
+                    constStrings.addAll(sr.constStrings())
+                }
+            } else {
+                val values = sanitizer.values
+                for (m in values) {
+                    for ((sig, sinkBodyElement) in m) {
+                        if (sig == "ConstString") {
+                            val strings: List<String> = Json.decodeFromJsonElement(sinkBodyElement)
+                            constStrings.addAll(strings)
+                            continue
                         }
-                    }
-                    if (sinkBody.pmap != null) {
-                        for ((_, value) in sinkBody.pmap!!) {
-                            for (p in value) {
+                        val sinkBody = Json.decodeFromJsonElement<SinkBody>(sinkBodyElement)
+                        if (sinkBody.pstar != null) {
+                            val pstar = sinkBody.pstar
+                            for (p in pstar) {
                                 if (p.jsonPrimitive.isString) {
                                     val s = p.jsonPrimitive.content
                                     if (!s.startsWith("@")) {
@@ -81,8 +79,20 @@ open class DirectModeRule(name: String, ruleData: RuleData) : TaintFlowRule(name
                                 }
                             }
                         }
-                    }
+                        if (sinkBody.pmap != null) {
+                            for ((_, value) in sinkBody.pmap!!) {
+                                for (p in value) {
+                                    if (p.jsonPrimitive.isString) {
+                                        val s = p.jsonPrimitive.content
+                                        if (!s.startsWith("@")) {
+                                            constStrings.add(s)
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
+                    }
                 }
             }
         }
@@ -103,12 +113,20 @@ open class DirectModeRule(name: String, ruleData: RuleData) : TaintFlowRule(name
                 fieldPatternResults.add(field)
             }
         }
-        if (sanitize != null) {
-            val values = sanitize.values
-            for (m in values) {
-                for ((key, _) in m) {
-                    if (key.isFieldSignature()) {
-                        fieldPatternResults.add(key)
+        if (sanitizer != null) {
+            if (this.isSanitizerV2()) {
+                for (m in this.sanitizer.values) {
+                    val m = m.toJsonElement();
+                    val sr: SanitizerRule = Json.decodeFromJsonElement(m)
+                    fieldPatternResults.addAll(sr.fields())
+                }
+            } else {
+                val values = sanitizer.values
+                for (m in values) {
+                    for ((key, _) in m) {
+                        if (key.isFieldSignature()) {
+                            fieldPatternResults.add(key)
+                        }
                     }
                 }
             }

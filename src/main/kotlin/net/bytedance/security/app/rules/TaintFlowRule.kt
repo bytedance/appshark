@@ -24,7 +24,7 @@ import net.bytedance.security.app.*
 abstract class TaintFlowRule(name: String, ruleData: RuleData) : AbstractRule(name, ruleData) {
 
     var sink: Map<String, SinkBody>
-    val sanitize: Map<String, LinkedHashMap<String, JsonElement>>?
+    val sanitizer: Map<String, LinkedHashMap<String, JsonElement>>?
     var source: SourceBody?
 
     val polymorphismBackTrace: Boolean
@@ -36,7 +36,7 @@ abstract class TaintFlowRule(name: String, ruleData: RuleData) : AbstractRule(na
 
     init {
         sink = ruleData.sink ?: emptyMap()
-        sanitize = ruleData.sanitize
+        sanitizer = ruleData.sanitize
         source = ruleData.source
         polymorphismBackTrace = ruleData.PolymorphismBackTrace == true
         primTypeAsTaint = ruleData.PrimTypeAsTaint == true
@@ -51,4 +51,17 @@ abstract class TaintFlowRule(name: String, ruleData: RuleData) : AbstractRule(na
     fun isThroughEnable(): Boolean {
         return false
     }
+
+    fun isSanitizerV2(): Boolean {
+        return this.sanitizer?.isSanitizerV2() ?: false
+    }
+}
+
+fun Map<String, LinkedHashMap<String, JsonElement>>.isSanitizerV2(): Boolean {
+    this.forEach {
+        if (it.value.keys.contains("relation")) {
+            return true
+        }
+    }
+    return false
 }

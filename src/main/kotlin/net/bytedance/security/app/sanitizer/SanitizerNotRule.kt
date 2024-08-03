@@ -17,16 +17,12 @@
 
 package net.bytedance.security.app.sanitizer
 
-import net.bytedance.security.app.pointer.PLLocalPointer
-import net.bytedance.security.app.pointer.PLPointer
-import net.bytedance.security.app.taintflow.AnalyzeContext
+/**
+ * and  reverse value of rules
+ */
+class SanitizerNotRule(val rule: ISanitizer) : ISanitizer {
 
-//肯定是单线程的工作模式
-class SanitizeContext(val ctx: AnalyzeContext, val src: PLPointer, val sink: Set<PLLocalPointer>)
-
-interface ISanitizer {
-    /**
-     * whether the ctx matches a sanitizer
-     */
-    fun matched(ctx: SanitizeContext): Boolean
+    override fun matched(ctx: SanitizeContext): Boolean {
+        return !rule.matched(ctx)
+    }
 }

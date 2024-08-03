@@ -26,6 +26,7 @@ import net.bytedance.security.app.ruleprocessor.RuleProcessorFactoryTest.Compani
 import net.bytedance.security.app.rules.DirectModeRule
 import net.bytedance.security.app.rules.RuleFactory
 import net.bytedance.security.app.rules.Rules
+import net.bytedance.security.app.sanitizer.v2.SanitizerFactoryV2
 import net.bytedance.security.app.taintflow.TwoStagePointerAnalyzeTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -49,7 +50,7 @@ internal class SanitizerFactoryTest {
 
     @BeforeEach
     fun clearCache() {
-        SanitizerFactory.clearCache()
+        SanitizerFactoryV2.clearCache()
         MethodFinder.clearCache()
     }
 
@@ -68,7 +69,7 @@ internal class SanitizerFactoryTest {
         assert(strs.size == 1)
         runBlocking {
             val ctx = createContext(rules)
-            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            val sanitizers = SanitizerFactoryV2.createSanitizers(taintedRule, ctx)
             assertTrue(sanitizers.size == 1)
             val s0 = sanitizers[0]
             assertTrue(s0 is ConstStringCheckSanitizer)
@@ -110,7 +111,7 @@ internal class SanitizerFactoryTest {
             tsp.doPointerAnalyze()
         }
         for (s in sanitizers) {
-            if (s.matched(SanitizeContext(tsp.ctx, src))) {
+            if (s.matched(SanitizeContext(tsp.ctx, src, setOf()))) {
                 return true
             }
         }
@@ -133,9 +134,11 @@ internal class SanitizerFactoryTest {
         runBlocking {
             val ctx = createContext(rules)
 //            PLUtils.DumpClass("net.bytedance.security.app.sanitizer.testdata.ZipSlip")
-            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            val sanitizers = SanitizerFactoryV2.createSanitizers(taintedRule, ctx)
             assertTrue(sanitizers.size == 1)
-            val s0 = sanitizers[0]
+            var s0 = sanitizers[0]
+            assertTrue(s0 is SanitizeOrRules)
+            s0 = (s0 as SanitizeOrRules).rules[0]
             assertTrue(s0 is TaintCheckSanitizer)
 //            assertTrue((s0 as ConstStringCheckSanitizer).consts.size == 1)
             val taints = (s0 as TaintCheckSanitizer).taints
@@ -160,7 +163,7 @@ internal class SanitizerFactoryTest {
         runBlocking {
             val ctx = createContext(rules)
 //            PLUtils.DumpClass("net.bytedance.security.app.sanitizer.testdata.ZipSlip")
-            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            val sanitizers = SanitizerFactoryV2.createSanitizers(taintedRule, ctx)
             assertEquals(sanitizers.size, 1)
             val s0 = sanitizers[0]
             assertTrue(s0 is SanitizeOrRules)
@@ -193,7 +196,7 @@ internal class SanitizerFactoryTest {
         runBlocking {
             val ctx = createContext(rules)
 //            PLUtils.DumpClass("net.bytedance.security.app.sanitizer.testdata.ZipSlip")
-            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            val sanitizers = SanitizerFactoryV2.createSanitizers(taintedRule, ctx)
             assertEquals(sanitizers.size, 1)
             val s0 = sanitizers[0]
             assertTrue(s0 is MethodCheckSanitizer)
@@ -257,7 +260,7 @@ internal class SanitizerFactoryTest {
         runBlocking {
             val ctx = createContext(rules)
 //            PLUtils.dumpClass("net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable")
-            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            val sanitizers = SanitizerFactoryV2.createSanitizers(taintedRule, ctx)
             assertEquals(sanitizers.size, 1)
             val s0 = sanitizers[0]
             assertTrue(s0 is SanitizeOrRules)
@@ -283,7 +286,7 @@ internal class SanitizerFactoryTest {
         runBlocking {
             val ctx = createContext(rules)
 //            PLUtils.dumpClass("net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable")
-            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            val sanitizers = SanitizerFactoryV2.createSanitizers(taintedRule, ctx)
             assertEquals(sanitizers.size, 1)
             val s0 = sanitizers[0]
             assertTrue(s0 is SanitizeOrRules)
@@ -335,7 +338,7 @@ internal class SanitizerFactoryTest {
         runBlocking {
             val ctx = createContext(rules)
 //            PLUtils.dumpClass("net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable")
-            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            val sanitizers = SanitizerFactoryV2.createSanitizers(taintedRule, ctx)
             assertEquals(sanitizers.size, 1)
             val s0 = sanitizers[0]
             assertTrue(s0 is SanitizeOrRules)
@@ -375,7 +378,7 @@ internal class SanitizerFactoryTest {
         runBlocking {
             val ctx = createContext(rules)
 //            PLUtils.dumpClass("net.bytedance.security.app.sanitizer.testdata.PendingIntentMutable")
-            val sanitizers = SanitizerFactory.createSanitizers(taintedRule, ctx)
+            val sanitizers = SanitizerFactoryV2.createSanitizers(taintedRule, ctx)
             assertEquals(sanitizers.size, 1)
             val s0 = sanitizers[0]
             assertTrue(s0 is SanitizeOrRules)

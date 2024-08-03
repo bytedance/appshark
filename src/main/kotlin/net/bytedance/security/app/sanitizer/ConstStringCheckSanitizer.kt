@@ -17,7 +17,12 @@
 
 package net.bytedance.security.app.sanitizer
 
+import kotlinx.serialization.json.JsonElement
+import net.bytedance.security.app.PLUtils
+import net.bytedance.security.app.PreAnalyzeContext
 import net.bytedance.security.app.pointer.PLLocalPointer
+import net.bytedance.security.app.util.Json
+import soot.RefType
 
 /**
  * if these const strings are referenced, they are considered to satisfy the sanitizer condition
@@ -31,5 +36,27 @@ class ConstStringCheckSanitizer(val constStrings: List<PLLocalPointer>) :
             }
         }
         return false
+    }
+
+    companion object {
+        fun createConstStringSanitizer(array: JsonElement, ctx: PreAnalyzeContext): ISanitizer {
+            val constStrings: List<String> = Json.decodeFromJsonElement(array)
+            val pointers = ArrayList<PLLocalPointer>()
+            for (pattern in constStrings) {
+                val constCallMap = ctx.findConstStringPatternCallSite(pattern)
+                for (callsite in constCallMap) {
+                    for (str in callsite.constString()) {
+                        val ptr = PLLocalPointer(
+                            callsite.method,
+                            PLUtils.constStrSig(str),
+                            RefType.v("java.lang.String")
+                        )
+                        pointers.add(ptr)
+                    }
+                }
+            }
+            return ConstStringCheckSanitizer(pointers)
+        }
+
     }
 }

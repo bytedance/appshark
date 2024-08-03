@@ -29,7 +29,7 @@ import net.bytedance.security.app.rules.ConstNumberModeRule
 import net.bytedance.security.app.rules.ConstStringModeRule
 import net.bytedance.security.app.rules.TaintFlowRule
 import net.bytedance.security.app.sanitizer.SanitizeContext
-import net.bytedance.security.app.sanitizer.SanitizerFactory
+import net.bytedance.security.app.sanitizer.v2.SanitizerFactoryV2
 import net.bytedance.security.app.taintflow.AnalyzeContext
 import net.bytedance.security.app.taintflow.TaintAnalyzer
 import net.bytedance.security.app.taintflow.TwoStagePointerAnalyze
@@ -234,7 +234,10 @@ class TaintPathFinder(
         sinkPtrSet: Set<PLLocalPointer>,
     ) {
         for (sourcePtr in sourcePtrSet) {
-            if (checkSanitizeRules(sourcePtr)) {
+//            if (sourcePtr.signature() != "<com.security.bvaa.ComponentRisk.IntentBridge: void testExportedAndGetAction()>->\$r1") {
+//                continue
+//            }
+            if (checkSanitizeRules(sourcePtr, sinkPtrSet)) {
                 Log.logDebug("Sanitize Check Pass")
                 continue
             }
@@ -305,9 +308,9 @@ class TaintPathFinder(
     /**
      *  entry point of  the sanitizer
      */
-    private fun checkSanitizeRules(sourcePtr: PLLocalPointer): Boolean {
-        val sanitizeContext = SanitizeContext(analyzeContext, sourcePtr)
-        SanitizerFactory.createSanitizers(rule, ctx).forEach {
+    private fun checkSanitizeRules(sourcePtr: PLLocalPointer, sinkPtrSet: Set<PLLocalPointer>): Boolean {
+        val sanitizeContext = SanitizeContext(analyzeContext, sourcePtr, sinkPtrSet)
+        SanitizerFactoryV2.createSanitizers(rule, ctx).forEach {
             if (it.matched(sanitizeContext)) {
                 return true
             }

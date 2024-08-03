@@ -18,7 +18,7 @@
 package test
 
 import net.bytedance.security.app.MethodFinder
-import net.bytedance.security.app.sanitizer.SanitizerFactory
+import net.bytedance.security.app.sanitizer.v2.SanitizerFactoryV2
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -36,7 +36,7 @@ object TestHelper {
 
     fun appsharkInit() {
         MethodFinder.clearCache()
-        SanitizerFactory.clearCache()
+        SanitizerFactoryV2.clearCache()
     }
 
     @Test
