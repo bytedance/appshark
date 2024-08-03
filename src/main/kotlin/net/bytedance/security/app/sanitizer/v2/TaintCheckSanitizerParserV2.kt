@@ -83,7 +83,7 @@ class TaintCheckSanitizerParserV2(
                 )
             )
         }
-        var relation = SANITIZER_RELATION_NOT_ANY
+        var relation = SANITIZER_RELATION_ANY
         if (check.instanceRelation != null && check.instanceRelation!!.isNotEmpty()) {
             relation = check.instanceRelation!!
         }

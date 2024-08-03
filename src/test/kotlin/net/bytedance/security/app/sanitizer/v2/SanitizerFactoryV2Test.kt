@@ -66,7 +66,7 @@ internal class SanitizerFactoryV2Test {
         runBlocking {
             val ctx = RuleProcessorFactoryTest.createContext(rules)
             val sanitizers = SanitizerFactoryV2.createSanitizers(taintedRule, ctx)
-            assertTrue(sanitizers.size == 0)
+            assertTrue(sanitizers.size > 0)
         }
     }
 

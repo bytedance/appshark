@@ -190,7 +190,7 @@ object SanitizerFactoryV2 : SanitizerFactory() {
         }
 
         //create or rules for field
-        var relation = SANITIZER_RELATION_NOT_ANY
+        var relation = SANITIZER_RELATION_ANY
         if (check.instanceRelation != null && check.instanceRelation!!.isNotEmpty()) {
             relation = check.instanceRelation!!
         }
