@@ -60,6 +60,7 @@ object SanitizerFactoryV2 : SanitizerFactory() {
             results.add(createRuleForSanitizerRule(sanitizer, ctx, rule))
         }
         Log.logInfo("sanitizersV2=${sanitizersV2.toJsonString()}")
+        cache[rule.name] = results
         return results
     }
 
