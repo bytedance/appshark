@@ -59,7 +59,7 @@ abstract class TaintFlowRule(name: String, ruleData: RuleData) : AbstractRule(na
 
 fun Map<String, LinkedHashMap<String, JsonElement>>.isSanitizerV2(): Boolean {
     this.forEach {
-        if (it.value.keys.contains("relation")) {
+        if (it.value.keys.contains("checks")) {
             return true
         }
     }

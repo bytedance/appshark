@@ -175,13 +175,7 @@ data class RuleObjBody(
 @Serializable(with = SinkBodySerializer::class)
 class SinkBody(
     val TaintCheck: List<String>? = null,
-    //only used in sanitizer
-    val SinkReverseTaintCheck: List<String>? = null,
     val NotTaint: List<String>? = null,
-    //only used in sanitizer
-    val NotSinkReverseTaintCheck: List<String>? = null,
-    //only used in sanitizer
-    val Reference: List<String>? = null,
     val LibraryOnly: Boolean? = null,
     val TaintParamType: List<String>? = null,
     @SerialName("p*") val pstar: List<JsonElement>? = null,

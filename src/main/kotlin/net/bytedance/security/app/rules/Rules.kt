@@ -41,13 +41,8 @@ class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForC
                     ruleData.sanitize = ruleData.sanitizer
                     ruleData.sanitizer = null
                 }
-                if ((targetSdk == UNLIMITED || targetSdk in parseSdkVersion(ruleData.targetSdk)) &&
-                    (minSdk == UNLIMITED || parseSdkVersion("$minSdk:").any { it in parseSdkVersion(ruleData.runtimeSdk) })) {
-                    val rule = factory.create(ruleName, ruleData)
-                    allRules.add(rule)
-                } else {
-                    Log.logDebug("ignore rule: $ruleName")
-                }
+                val rule = factory.create(ruleName, ruleData)
+                allRules.add(rule)
             }
         }
     }
@@ -113,9 +108,11 @@ class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForC
                             !hasEnd -> {
                                 (splitPart[0].toIntOrNull() ?: return@flatMap listOf())..MAX_SDK_VERSION
                             }
+
                             !hasStart -> {
                                 (MIN_SDK_VERSION..(splitPart[1].toIntOrNull() ?: return@flatMap listOf())).toList()
                             }
+
                             else -> {
                                 val start = splitPart[0].toIntOrNull() ?: return@flatMap listOf()
                                 val end = splitPart[1].toIntOrNull() ?: return@flatMap listOf()
@@ -123,6 +120,7 @@ class Rules(val rulePaths: List<String>, val factory: IRuleFactory) : IRulesForC
                             }
                         }
                     }
+
                     else -> listOf(part.toIntOrNull() ?: return@flatMap listOf())
                 }
             }
