@@ -17,6 +17,8 @@
 
 package net.bytedance.security.app.pointer
 
+import soot.Scene
+import soot.SootField
 import soot.Type
 
 /**
@@ -28,4 +30,21 @@ import soot.Type
 interface PLPointer {
     val ptrType: Type
     fun signature(): String
+}
+
+fun PLPointer.sootField(): SootField? {
+    val dst = when (this) {
+        is PLPtrStaticField -> {
+            Scene.v().getField(this.signature())
+        }
+
+        is PLPtrObjectField -> {
+            this.sootField
+        }
+
+        else -> {
+            return null
+        }
+    }
+    return dst
 }

@@ -32,6 +32,7 @@ import net.bytedance.security.app.result.OutputSecResults
 import net.bytedance.security.app.result.VulnerabilityItem
 import net.bytedance.security.app.rules.DirectModeRule
 import net.bytedance.security.app.rules.TaintFlowRule
+import net.bytedance.security.app.taintflow.AnalyzeContext
 import net.bytedance.security.app.taintflow.TaintAnalyzer
 import soot.SootMethod
 import soot.jimple.Stmt
@@ -48,6 +49,7 @@ class TaintPathModeHtmlWriter(
     val analyzer: TaintAnalyzer,
     val result: PathResult,
     val rule: TaintFlowRule,
+    val ctx: AnalyzeContext,
 ) : HtmlWriter(rule.desc), AddVulnerabilityAndSaveResult {
     private val ruleThroughAPISet: HashSet<String> = HashSet()
 
@@ -278,7 +280,7 @@ class TaintPathModeHtmlWriter(
         }
 
 
-        mergeTaintPath(methodArr, stmtsInMethod, edgesInMethod, result.curPath)
+        mergeTaintPath(methodArr, stmtsInMethod, edgesInMethod, result.curPath, ctx)
         // source and sink are the same variable
         // todo should it be treated as a special case without pointer analysis?
         if (result.curPath.size == 1) {
@@ -333,14 +335,14 @@ class TaintPathModeHtmlWriter(
         /**
         calculate each statement corresponding to the propagation path
          */
-        fun getTaintEdges(curPath: List<PLPointer>): List<Pair<TaintEdge, Range>> {
+        fun getTaintEdges(curPath: List<PLPointer>, ctx: AnalyzeContext): List<Pair<TaintEdge, Range>> {
             val result = ArrayList<Pair<TaintEdge, Range>>()
             assert(curPath.isNotEmpty())
             var lastRange = Range(0, 0)
             for (i in 0 until curPath.size - 1) {
                 val cur = curPath[i]
                 val next = curPath[i + 1]
-                val edges = TaintFlowEdgeFinder.getPossibleEdge(cur, next)
+                val edges = TaintFlowEdgeFinder(ctx).getPossibleEdge(cur, next)
                 if (edges != null) {
                     if (lastRange.end > 0) {
                         lastRange.end = i     //the first step is @data
@@ -359,12 +361,13 @@ class TaintPathModeHtmlWriter(
             methodArr: MutableList<SootMethod>,
             stmtsInMethod: MutableList<List<Stmt>>,
             edgesInMethod: MutableList<List<PLPointer>>,
-            curPath: List<PLPointer>
+            curPath: List<PLPointer>,
+            ctx: AnalyzeContext
         ) {
             var stmts: MutableList<Stmt> = ArrayList()
             var edges: MutableList<PLPointer> = ArrayList()
             val path = ArrayList<PLPointer>(curPath)
-            val taintEdges = getTaintEdges(path)
+            val taintEdges = getTaintEdges(path, ctx)
             var prevMethod: SootMethod? = null
             for (edge in taintEdges) {
                 if (edge.first.method != prevMethod && prevMethod != null) {

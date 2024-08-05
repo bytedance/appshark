@@ -66,6 +66,7 @@ class ObscureRuleHandler(
                         baseToArgEdge(isPointerRule, stmt, basePointer, argPointers[index])
                     }
                 }
+
                 TaintPosition.ThisAllField -> when (to.position) {
                     TaintPosition.Return -> baseDataToReturnEdge(isPointerRule, stmt, baseDataPointers, receivePointer)
 //                    Wrapper.RET_DATA -> baseDataToReturnDataEdge(isPointerRule, stmt, baseDataPtrs, recvDataPtrs)
@@ -78,12 +79,14 @@ class ObscureRuleHandler(
                         baseDataToArgEdge(isPointerRule, stmt, baseDataPointers, argPointers[index])
                     }
                 }
+
                 TaintPosition.AllArgument -> when (to.position) {
                     TaintPosition.This -> argToBaseEdge(isPointerRule, stmt, argPointers, basePointer)
                     TaintPosition.ThisAllField -> argToBaseDataEdge(isPointerRule, stmt, argPointers, baseDataPointers)
                     TaintPosition.Return -> argToRetEdge(isPointerRule, stmt, argPointers, receivePointer)
 //                    Wrapper.RET_DATA -> argToRetDataEdge(isPointerRule, stmt, argPtrs, recvDataPtrs)
                 }
+
                 else -> {
                     val fromIndex = from.position
                     if (fromIndex >= argPointers.size) {
@@ -97,6 +100,7 @@ class ObscureRuleHandler(
                             argPointers[fromIndex],
                             baseDataPointers
                         )
+
                         TaintPosition.Return -> argToRetEdge(
                             isPointerRule,
                             stmt,
@@ -378,7 +382,7 @@ class ObscureRuleHandler(
         isPointerRule: Boolean,
         srcPtr: PLPointer,
         dstPtr: PLPointer?,
-        @Suppress("UNUSED_PARAMETER") stmt: Stmt
+        stmt: Stmt
     ) {
         if (dstPtr == null) {
             return
@@ -386,7 +390,7 @@ class ObscureRuleHandler(
         if (isPointerRule) {
             ctx.addPtrEdge(srcPtr, dstPtr, !getConfig().skipPointerPropagationForLibraryMethod)
         } else {
-            ctx.addVariableFlowEdge(srcPtr, dstPtr)
+            ctx.addVariableFlowEdgeWithStmt(srcPtr, dstPtr, stmt)
         }
     }
 

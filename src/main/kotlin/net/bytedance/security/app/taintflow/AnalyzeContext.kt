@@ -24,6 +24,7 @@ import net.bytedance.security.app.util.toFormatedString
 import net.bytedance.security.app.util.toSortedMap
 import soot.PrimType
 import soot.SootMethod
+import soot.jimple.Stmt
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -57,6 +58,12 @@ class AnalyzeContext(val pt: PointerFactory) {
      */
     var pointerFlowGraph: MutableMap<PLPointer, MutableSet<PLPointer>> = HashMap()
 
+    //变量在哪些语句中作为右值使用
+    var RPtrToStmts: MutableMap<PLPointer, MutableSet<Stmt>> = java.util.HashMap()
+
+    //变量在哪些语句中作为左值使用
+    var LPtrToStmts: MutableMap<PLPointer, MutableSet<Stmt>> = java.util.HashMap()
+
     fun dump(): String {
         return """
             ptrToSet={${pointerToObjectSet.toSortedMap().toFormatedString()}},
@@ -80,11 +87,34 @@ class AnalyzeContext(val pt: PointerFactory) {
         """.trimIndent()
     }
 
+    fun addToRPtr(ptr: PLPointer, stmt: Stmt) {
+        var stmtSet: MutableSet<Stmt>? = RPtrToStmts.get(ptr)
+        if (stmtSet == null) {
+            stmtSet = java.util.HashSet()
+            RPtrToStmts[ptr] = stmtSet
+        }
+        stmtSet.add(stmt)
+    }
+
+    fun addToLPtr(ptr: PLPointer, stmt: Stmt) {
+        var stmtSet: MutableSet<Stmt>? = LPtrToStmts.get(ptr)
+        if (stmtSet == null) {
+            stmtSet = java.util.HashSet()
+            LPtrToStmts[ptr] = stmtSet
+        }
+        stmtSet.add(stmt)
+    }
+
     private fun addTaintPFGEdge(
         srcPtr: PLPointer,
         dstPtr: PLPointer,
-        @Suppress("UNUSED_PARAMETER") isPrime: Boolean
+        @Suppress("UNUSED_PARAMETER") isPrime: Boolean,
+        stmt: Stmt? = null
     ): Boolean {
+        if (stmt != null) {
+            addToLPtr(dstPtr, stmt)
+            addToRPtr(srcPtr, stmt)
+        }
         addToPointFlowGraph(dstPtr, srcPtr, reverseVariableFlowGraph)
         return addToPointFlowGraph(srcPtr, dstPtr, variableFlowGraph)
     }
@@ -208,8 +238,8 @@ class AnalyzeContext(val pt: PointerFactory) {
     }
 
 
-    fun addVariableFlowEdge(srcPtr: PLPointer, dstPtr: PLPointer, isPrime: Boolean) {
-        addTaintPFGEdge(srcPtr, dstPtr, isPrime)
+    fun addVariableFlowEdge(srcPtr: PLPointer, dstPtr: PLPointer, isPrime: Boolean, stmt: Stmt? = null) {
+        addTaintPFGEdge(srcPtr, dstPtr, isPrime, stmt)
     }
 
     fun addVariableFlowEdge(srcPtr: PLPointer, dstPtr: PLPointer) {
@@ -220,6 +250,13 @@ class AnalyzeContext(val pt: PointerFactory) {
         }
     }
 
+    fun addVariableFlowEdgeWithStmt(srcPtr: PLPointer, dstPtr: PLPointer, stmt: Stmt) {
+        if (isPrimePtr(srcPtr) || isPrimePtr(dstPtr)) {
+            addVariableFlowEdge(srcPtr, dstPtr, true, stmt)
+        } else {
+            addVariableFlowEdge(srcPtr, dstPtr, false, stmt)
+        }
+    }
 
     fun addObjToPTS(srcPtr: PLPointer, obj: PLObject) {
         addToPointToSet(srcPtr, obj)

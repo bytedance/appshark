@@ -298,7 +298,13 @@ class TaintPathFinder(
         val path = bfsSearch(srcPtr, sinkPtrSet, g, getConfig().maxPathLength, rule.name) ?: return
         val result = PathResult(path)
         try {
-            TaintPathModeHtmlWriter(OutputSecResults, analyzer, result, rule).addVulnerabilityAndSaveResultToOutput()
+            TaintPathModeHtmlWriter(
+                OutputSecResults,
+                analyzer,
+                result,
+                rule,
+                analyzeContext
+            ).addVulnerabilityAndSaveResultToOutput()
         } catch (ex: Exception) {
             ex.printStackTrace()
         }

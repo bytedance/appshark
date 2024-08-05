@@ -25,6 +25,7 @@ import net.bytedance.security.app.preprocess.AnalyzePreProcessor
 import net.bytedance.security.app.preprocess.MethodFieldConstCacheVisitor
 import net.bytedance.security.app.preprocess.MethodSSAVisitor
 import net.bytedance.security.app.preprocess.MethodStmtFieldCache
+import net.bytedance.security.app.taintflow.AnalyzeContext
 import net.bytedance.security.app.taintflow.TwoStagePointerAnalyze
 import net.bytedance.security.app.taintflow.TwoStagePointerAnalyzeTest.Companion.createDefaultTwoStagePointerAnalyze
 import net.bytedance.security.app.ui.TaintPathModeHtmlWriter
@@ -94,17 +95,17 @@ internal class TaintFlowEdgeFinderTest {
         }
     }
 
-    fun assertPathValid(path: List<PLPointer>) {
+    fun assertPathValid(path: List<PLPointer>, ctx: AnalyzeContext) {
         val edges = ArrayList<Path>()
         for (i in 0 until path.size - 1) {
-            val edge = TaintFlowEdgeFinder.getPossibleEdge(path[i], path[i + 1])
+            val edge = TaintFlowEdgeFinder(ctx).getPossibleEdge(path[i], path[i + 1])
             edges.add(Path(path[i], path[i + 1], edge))
         }
         edges.forEach {
             Assertions.assertTrue(it.isValid(), "path=${it}")
         }
 
-        val edgesWithRange = TaintPathModeHtmlWriter.getTaintEdges(path)
+        val edgesWithRange = TaintPathModeHtmlWriter.getTaintEdges(path, ctx)
         println("path len=${path.size}")
         edgesWithRange.forEach {
             println("${it.first.method.name}======> ${it.second}")
@@ -113,7 +114,7 @@ internal class TaintFlowEdgeFinderTest {
         val methods = ArrayList<SootMethod>()
         val stmts = ArrayList<List<Stmt>>()
         val edgesInMethod = ArrayList<List<PLPointer>>()
-        TaintPathModeHtmlWriter.mergeTaintPath(methods, stmts, edgesInMethod, path)
+        TaintPathModeHtmlWriter.mergeTaintPath(methods, stmts, edgesInMethod, path, ctx)
         methods.forEachIndexed { index, sootMethod ->
             println("index=$index, method=${sootMethod.name}")
             stmts[index].forEach {
@@ -146,7 +147,7 @@ internal class TaintFlowEdgeFinderTest {
         Assertions.assertEquals(3, path!!.size)
         Assertions.assertEquals(srcPtr.signature(), path.first().signature())
         Assertions.assertEquals(sinkPtr.signature(), path.last().signature())
-        assertPathValid(path)
+        assertPathValid(path, tsp.ctx)
     }
 
     @Test
@@ -169,17 +170,17 @@ internal class TaintFlowEdgeFinderTest {
         val sink = tsp.ctx.pt.allocLocal(m2, "\$r0", UnknownType.v())
         val path = listOf<PLPointer>(src, node0, node1, field, sink)
         println("path=$path")
-        testpath(path)
+        testpath(path, tsp.ctx)
     }
 
-    fun testpath(path: List<PLPointer>) {
+    fun testpath(path: List<PLPointer>, ctx: AnalyzeContext) {
         val edges = ArrayList<Path>()
         for (i in 0 until path.size - 1) {
-            val edge = TaintFlowEdgeFinder.getPossibleEdge(path[i], path[i + 1])
+            val edge = TaintFlowEdgeFinder(ctx).getPossibleEdge(path[i], path[i + 1])
             edges.add(Path(path[i], path[i + 1], edge))
         }
 
-        val edgesWithRange = TaintPathModeHtmlWriter.getTaintEdges(path)
+        val edgesWithRange = TaintPathModeHtmlWriter.getTaintEdges(path, ctx)
         println("path len=${path.size}")
         edgesWithRange.forEach {
             println("${it.first.method.name}======> ${it.second}")
@@ -188,7 +189,7 @@ internal class TaintFlowEdgeFinderTest {
         val methods = ArrayList<SootMethod>()
         val stmts = ArrayList<List<Stmt>>()
         val edgesInMethod = ArrayList<List<PLPointer>>()
-        TaintPathModeHtmlWriter.mergeTaintPath(methods, stmts, edgesInMethod, path)
+        TaintPathModeHtmlWriter.mergeTaintPath(methods, stmts, edgesInMethod, path, ctx)
         methods.forEachIndexed { index, sootMethod ->
             println("index=$index, method=${sootMethod.name}")
             stmts[index].forEach {
@@ -222,7 +223,7 @@ internal class TaintFlowEdgeFinderTest {
         Assertions.assertEquals(9, path!!.size)
         Assertions.assertEquals(srcPtr.signature(), path.first().signature())
         Assertions.assertEquals(sinkPtr.signature(), path.last().signature())
-        assertPathValid(path)
+        assertPathValid(path, tsp.ctx)
     }
 
     @Test
@@ -254,7 +255,7 @@ internal class TaintFlowEdgeFinderTest {
         Assertions.assertEquals(3, path!!.size)
         Assertions.assertEquals(srcPtr.signature(), path.first().signature())
         Assertions.assertEquals(sinkPtr.signature(), path.last().signature())
-        assertPathValid(path)
+        assertPathValid(path, tsp.ctx)
     }
 
     @Test
