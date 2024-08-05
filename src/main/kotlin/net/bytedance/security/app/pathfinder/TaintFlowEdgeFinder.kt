@@ -96,35 +96,9 @@ class TaintFlowEdgeFinder(val ctx: AnalyzeContext) {
             }
         }
         if (edges.isEmpty()) {
-            return localToThisFindInCacheStmts(localPtr.method, localPtr, thisPtr)
+            return findFlowFromCacheStmts(localPtr.method, localPtr, thisPtr)
         }
         return edges
-    }
-
-    //尝试在
-    private fun localToThisFindInCacheStmts(
-        method: SootMethod,
-        localPtr: PLLocalPointer,
-        thisPtr: PLLocalPointer
-    ): List<TaintEdge>? {
-        val dstStmtSet = HashSet(ctx.LPtrToStmts.get(thisPtr))
-        if (dstStmtSet.isEmpty()) {
-            return null
-        }
-        val srcStmts = ctx.RPtrToStmts.get(localPtr) ?: setOf()
-        dstStmtSet.retainAll(ctx.RPtrToStmts.get(localPtr)!!)
-        for (unit in method.activeBody.units) {
-            if (unit !is Stmt) {
-                continue
-            }
-            val stmt = unit as Stmt
-            if (dstStmtSet.contains(stmt)) {
-                val edges = ArrayList<TaintEdge>()
-                edges.add(TaintEdge(localPtr.method, stmt))
-                return edges
-            }
-        }
-        return null
     }
 
     /**
@@ -158,7 +132,7 @@ class TaintFlowEdgeFinder(val ctx: AnalyzeContext) {
             }
         }
         if (edges.isEmpty()) {
-            return null
+            return findFlowFromCacheStmts(srcPtr.method, srcPtr, dstPtr)
         }
 
         return edges
@@ -201,7 +175,7 @@ class TaintFlowEdgeFinder(val ctx: AnalyzeContext) {
             }
         }
         if (edges.isEmpty()) {
-            return null
+            return findFlowFromCacheStmts(srcPtr.method, srcPtr, dstPtr)
         }
 
         return edges
@@ -243,7 +217,7 @@ class TaintFlowEdgeFinder(val ctx: AnalyzeContext) {
             }
         }
         if (edges.isEmpty()) {
-            return null
+            return findFlowFromCacheStmts(dstPtr.method, srcPtr, dstPtr)
         }
         return edges
     }
@@ -256,7 +230,7 @@ class TaintFlowEdgeFinder(val ctx: AnalyzeContext) {
         val dst = dstPtr.sootField()
         if (dst == null) {
             //没有相关的field，可能是通过patchMethod关联的variable flow问题
-            return localToFieldFindInCacheStmts(srcPtr.method, srcPtr, dstPtr)
+            return findFlowFromCacheStmts(srcPtr.method, srcPtr, dstPtr)
         }
         val edges = ArrayList<TaintEdge>()
         for (unit in srcPtr.method.activeBody.units) {
@@ -275,7 +249,7 @@ class TaintFlowEdgeFinder(val ctx: AnalyzeContext) {
             edges.add(TaintEdge(srcPtr.method, stmt))
         }
         if (edges.isEmpty()) {
-            return localToFieldFindInCacheStmts(srcPtr.method, srcPtr, dstPtr)
+            return findFlowFromCacheStmts(srcPtr.method, srcPtr, dstPtr)
         }
         return edges
     }
@@ -285,7 +259,7 @@ class TaintFlowEdgeFinder(val ctx: AnalyzeContext) {
     1. r3=r0.f(r1)
     这种可能会出现r1->r0,r1->r3,r1->r0.data r0->r3 指定的传播关系
      */
-    private fun localToFieldFindInCacheStmts(
+    private fun findFlowFromCacheStmts(
         method: SootMethod,
         srcPtr: PLPointer,
         dstPtr: PLPointer
@@ -316,7 +290,7 @@ class TaintFlowEdgeFinder(val ctx: AnalyzeContext) {
         if (dstPtr.ptrType !is UnknownType) {
             return localToField(srcPtr, dstPtr)
         }
-        return localToFieldFindInCacheStmts(srcPtr.method, srcPtr, dstPtr)
+        return findFlowFromCacheStmts(srcPtr.method, srcPtr, dstPtr)
     }
 
     //r1=r0.field
@@ -327,7 +301,7 @@ class TaintFlowEdgeFinder(val ctx: AnalyzeContext) {
         val src = srcPtr.sootField()
         if (src != null) {
             //src 可能是@data这种情况，尝试直接从cache中找
-            return localToFieldFindInCacheStmts(dstPtr.method, srcPtr, dstPtr)
+            return findFlowFromCacheStmts(dstPtr.method, srcPtr, dstPtr)
         }
         val edges = ArrayList<TaintEdge>()
         for (unit in dstPtr.method.activeBody.units) {
@@ -346,7 +320,7 @@ class TaintFlowEdgeFinder(val ctx: AnalyzeContext) {
             edges.add(TaintEdge(dstPtr.method, stmt))
         }
         if (edges.isEmpty()) {
-            return localToFieldFindInCacheStmts(dstPtr.method, srcPtr, dstPtr)
+            return findFlowFromCacheStmts(dstPtr.method, srcPtr, dstPtr)
         }
         return edges
     }
