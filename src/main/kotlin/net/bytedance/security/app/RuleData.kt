@@ -127,6 +127,8 @@ data class RuleData(
 
     val targetSdk: String = "",     // 规则适用的targetSdk版本
     val runtimeSdk: String = "",    // 规则适用的运行时系统版本
+
+    val exportedCompos: Boolean? = null,    // 是否过滤导出组件
 )
 
 val defaultSourceReturn = SourceReturn()
