@@ -119,14 +119,14 @@ class PLLocalPointer : PLPointer {
 
 fun SootMethod.shortSignature(): String {
     if (shortNameEnable) {
-        return "${this.declaringClass.shortName}:${this.name}" // soot remove some numbers which are actually not really needed (https://github.com/soot-oss/soot/commit/554dbc3815b12165086850b27517a8d1fda72488)
+        return "${this.declaringClass.shortName}:${this.name}.${this.number}"
     }
     return this.signature
 }
 
 fun SootField.shortSignature(): String {
     if (shortNameEnable) {
-        return "${this.declaringClass.shortName}:${this.name}" // soot remove some numbers which are actually not really needed (https://github.com/soot-oss/soot/commit/554dbc3815b12165086850b27517a8d1fda72488)
+        return "${this.declaringClass.shortName}:${this.name}.${this.number}"
     }
     return this.signature
 }

@@ -34,7 +34,7 @@ dependencies {
 //    implementation("de.fraunhofer.sit.sse.flowdroid:soot-infoflow:2.10.0")
 //    implementation("de.fraunhofer.sit.sse.flowdroid:soot-infoflow-android:2.10.0")
 
-    implementation("de.fraunhofer.sit.sse.flowdroid:soot-infoflow-android:2.14.1")
+    implementation("io.github.nkbai:soot-infoflow-android:2.10.4")
 
     implementation("org.eclipse.jdt:org.eclipse.jdt.core:3.24.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
