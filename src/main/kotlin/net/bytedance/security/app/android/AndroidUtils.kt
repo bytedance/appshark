@@ -297,7 +297,7 @@ object AndroidUtils {
         Log.logDebug("Load resource")
         resources = ARSCFileParser()
         try {
-            resources!!.parse(targetAPK.absolutePath)
+            resources!!.parse(File(targetAPK.absolutePath)) // use proper Files instead of strings and set the proper root directory (https://github.com/secure-software-engineering/FlowDroid/commit/cc921a6b714ca8418da92806a743f8c6ef06c40d)
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -346,7 +346,7 @@ object AndroidUtils {
         TargetSdk = manifest.targetSdkVersion
         Log.logDebug("TargetSdk $TargetSdk")
         layoutFileParser = LayoutFileParser(manifest.packageName, resources)
-        layoutFileParser!!.parseLayoutFileDirect(apkPath)
+        layoutFileParser!!.parseLayoutFileDirect(File(apkPath)) // use proper Files instead of strings and set the proper root directory (https://github.com/secure-software-engineering/FlowDroid/commit/cc921a6b714ca8418da92806a743f8c6ef06c40d)
         parseAllComponents(manifest)
         this.manifestVulnerability?.check(manifest)
 
