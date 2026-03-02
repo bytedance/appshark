@@ -58,7 +58,13 @@ class SliceModeProcessor(ctx: PreAnalyzeContext) : DirectModeProcessor(ctx) {
         for (srcPtr in taintRuleSourceSinkCollector.analyzerData.sourcePointerSet) {
             //if srcPtr is a library method, it
             val callstacks = if (taintRuleSourceSinkCollector.parameterSources.contains(srcPtr)) {
-                this.ctx.callGraph.getAllCallees(srcPtr.method, rule.traceDepth)
+                //source is param, callstacks should contain itself
+                // otherwise when source & sink are in the same method, appshark will miss report
+                val s = this.ctx.callGraph.getAllCallees(srcPtr.method, rule.traceDepth)
+                val s2 = HashSet<SootMethod>()
+                s2.addAll(s)
+                s2.add(srcPtr.method)
+                s2
             } else {
                 null
             }
