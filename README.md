@@ -150,6 +150,8 @@ Below is an example of the `results.json`.
 
 AppShark is licensed under the [APACHE LICENSE, VERSION 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
+# Security Notice
+UI/Server is an auxiliary testing tool that should not be used in production environments and can only be deployed for local testing.
 # Contact Us
 
 Lark ![](appshark-lark.png)
