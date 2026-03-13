@@ -21,9 +21,6 @@ import net.bytedance.security.app.RuleData
 import net.bytedance.security.app.RuleDescription
 
 abstract class AbstractRule(override val name: String, ruleData: RuleData) : IRule {
-    final override val desc: RuleDescription
-
-    init {
-        desc = ruleData.desc
-    }
+    final override val desc: RuleDescription = ruleData.desc
+    val exportedCompos: Boolean? = ruleData.exportedCompos
 }
