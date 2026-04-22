@@ -1,0 +1,60 @@
+{
+  "ARouterIntentRedirection": {
+    "enable": true,
+    "SliceMode": true,
+    "traceDepth": 8,
+    "desc": {
+      "name": "ARouterIntentRedirection",
+      "category": "IntentRedirection",
+      "detail": "Detects taint flowing from an exported component's Intent extras through Alibaba ARouter (com.alibaba.android.arouter) Postcard navigation into WebView.loadUrl. Tracks the chain reported in issue #73: Intent.getStringExtra -> Postcard.withString(...) -> ARouter.navigation() -> Bundle.getString(WEB_URL) -> WebView.loadUrl, which today causes Appshark to lose the taint chain at the ARouter boundary and report the WebView loadUrl call as a clean sink.",
+      "wiki": "https://github.com/bytedance/appshark/issues/73",
+      "possibility": "3",
+      "model": "high"
+    },
+    "entry": {},
+    "source": {
+      "Return": [
+        "<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>",
+        "<android.content.Intent: android.os.Parcelable getParcelable*(java.lang.String)>",
+        "<android.content.Intent: android.net.Uri getData()>",
+        "<android.os.Bundle: java.lang.String getString(java.lang.String)>",
+        "<android.os.Bundle: java.lang.String getString(java.lang.String,java.lang.String)>"
+      ]
+    },
+    "sink": {
+      "<com.alibaba.android.arouter.facade.Postcard: com.alibaba.android.arouter.facade.Postcard withString(java.lang.String,java.lang.String)>": {
+        "TaintCheck": [
+          "p1"
+        ]
+      },
+      "<com.alibaba.android.arouter.facade.Postcard: com.alibaba.android.arouter.facade.Postcard withObject(java.lang.String,java.lang.Object)>": {
+        "TaintCheck": [
+          "p1"
+        ]
+      },
+      "<com.alibaba.android.arouter.facade.Postcard: com.alibaba.android.arouter.facade.Postcard with(android.os.Bundle)>": {
+        "TaintCheck": [
+          "p0"
+        ]
+      },
+      "<android.webkit.WebView: void loadUrl(java.lang.String)>": {
+        "LibraryOnly": false,
+        "TaintCheck": [
+          "p0"
+        ]
+      },
+      "<android.webkit.WebView: void loadUrl(java.lang.String,java.util.Map)>": {
+        "LibraryOnly": false,
+        "TaintCheck": [
+          "p0"
+        ]
+      },
+      "<android.webkit.WebView: void postUrl(java.lang.String,byte[])>": {
+        "LibraryOnly": false,
+        "TaintCheck": [
+          "p0"
+        ]
+      }
+    }
+  }
+}
